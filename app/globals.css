@@ -1,26 +1,88 @@
 @import "tailwindcss";
 
+/* ================================
+   Root Color Variables
+   ================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Base Colors */
+  --background: #ffffff;       /* General background */
+  --foreground: #171717;       /* Default text */
+
+  /* Brand / Accent */
+  --primary: #ff6600;          /* Button background / accents */
+  --primary-foreground: #ffffff; /* Button text */
+
+  /* Header / Navigation */
+  --header-background: #ffffff;
+  --header-text: #1a2b4c;      /* Darkish blue for navlinks/sublinks */
+
+  /* Hero Section */
+  --hero-heading: #ffffff;     /* Main heading in hero */
+  --hero-subheading: var(--primary); /* Subheading like button bg */
+  --hero-text: var(--header-text);   /* Paragraphs/statements in hero */
+
+  /* General Typography */
+  --heading-color: var(--hero-heading);
+  --subheading-color: var(--hero-subheading);
+  --paragraph-color: var(--header-text);
+
+  /* Borders / Dividers */
+  --border-color: #e5e7eb;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-header-background: var(--header-background);
+  --color-header-text: var(--header-text);
+
+  --color-hero-heading: var(--hero-heading);
+  --color-hero-subheading: var(--hero-subheading);
+  --color-hero-text: var(--hero-text);
+
+  --color-heading: var(--heading-color);
+  --color-subheading: var(--subheading-color);
+  --color-paragraph: var(--paragraph-color);
+
+  --color-border: var(--border-color);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+/* ================================
+   Dark Mode Support
+   ================================ */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+
+    --header-background: #0f0f0f;
+    --header-text: #dbe4f0;      /* Softer bluish for navlinks */
+
+    --hero-heading: #ffffff;
+    --hero-subheading: var(--primary);
+    --hero-text: #cbd5e1;
+
+    --paragraph-color: #dbe4f0;
+    --border-color: #333;
   }
 }
 
+/* ================================
+   Global Body
+   ================================ */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+
+.clip-diagonal {
+  clip-path: polygon(8% 0, 100% 0, 100% 100%, 0 100%);
 }
