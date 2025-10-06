@@ -86,3 +86,49 @@ body {
 .clip-diagonal {
   clip-path: polygon(8% 0, 100% 0, 100% 100%, 0 100%);
 }
+
+.clip-diagonal1 {
+  clip-path: polygon(2% 0, 98% 0, 100% 100%, 0 100%);
+}
+
+.clip-slant {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 100%, 12px 100%);
+}
+
+.clip-footer {
+  clip-path: polygon(93% 0, 100% 100%, 0 100%);
+}
+
+.clip-left-arrow {
+  clip-path: polygon(0 0, 100% 20%, 100% 80%, 0 100%);
+}
+
+.clip-right-arrow {
+  clip-path: polygon(0 20%, 100% 0, 100% 100%, 0 80%);
+}
+
+.clip-button {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 100%, 12px 100%);
+}
+
+
+
+
+.clip-diagonal10 {
+  clip-path: polygon(8% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.clip-slant10 {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 100%, 12px 100%);
+}
+
+.clip-right-arrow10 {
+  clip-path: polygon(0 20%, 100% 0, 100% 100%, 0 80%);
+}
+
+.clip-top-bar {
+  clip-path: polygon(0 15%, 100% 80%, 100% 100%, 0 100%);
+}
+.clip-button-side {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 20% 100%);
+}

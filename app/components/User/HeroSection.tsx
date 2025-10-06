@@ -18,20 +18,14 @@ export default function HeroSection() {
 
       {/* Left Decorative Element - desktop only */}
       <div
-        className="absolute left-0 top-1/2 -translate-y-1/2 w-16 h-24 bg-primary hidden lg:flex items-center justify-center z-[2]"
-        style={{
-          clipPath: "polygon(0 0, 100% 20%, 100% 80%, 0 100%)",
-        }}
+        className="absolute left-0 top-1/2 -translate-y-1/2 w-16 h-24 bg-primary hidden lg:flex items-center justify-center z-[2] clip-left-arrow"
       >
         <ArrowRight className="w-8 h-8 lg:w-10 lg:h-10 text-primary-foreground" />
       </div>
 
       {/* Right Decorative Element - desktop only */}
       <div
-        className="absolute right-0 top-1/2 -translate-y-1/2 w-16 h-24 bg-primary hidden lg:flex items-center justify-center z-[2]"
-        style={{
-          clipPath: "polygon(0 20%, 100% 0, 100% 100%, 0 80%)",
-        }}
+        className="absolute right-0 top-1/2 -translate-y-1/2 w-16 h-24 bg-primary hidden lg:flex items-center justify-center z-[2] clip-right-arrow"
       >
         <ArrowRight className="w-8 h-8 lg:w-10 lg:h-10 text-primary-foreground" />
       </div>
@@ -54,11 +48,7 @@ export default function HeroSection() {
           {/* CTA Buttons */}
           <div className="flex flex-wrap items-center gap-4 lg:gap-6">
             <div
-              className="bg-primary text-primary-foreground px-6 lg:px-8 py-3 lg:py-4 font-semibold cursor-pointer hover:opacity-90 transition-colors duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
-              style={{
-                clipPath:
-                  "polygon(0 0, calc(100% - 12px) 0, 100% 100%, 12px 100%)",
-              }}
+              className="bg-primary text-primary-foreground px-6 lg:px-8 py-3 lg:py-4 font-semibold cursor-pointer hover:opacity-90 transition-colors duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 clip-button"
             >
               GET STARTED
               <ArrowRight className="w-5 h-5" />
@@ -76,21 +66,15 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* 🔽 Mobile/Tablet Decorative Arrows */}
+        {/* Mobile/Tablet Decorative Arrows */}
         <div className="flex justify-center gap-6 mt-8 lg:hidden pb-16 z-[2]">
           <div
-            className="sm:w-16 sm:h-24 w-16 h-24 bg-primary flex items-center justify-center"
-            style={{
-              clipPath: "polygon(0 0, 100% 20%, 100% 80%, 0 100%)",
-            }}
+            className="sm:w-16 sm:h-24 w-16 h-24 bg-primary flex items-center justify-center clip-left-arrow"
           >
             <ArrowRight className="w-8 h-8 text-primary-foreground" />
           </div>
           <div
-            className="sm:w-16 sm:h-24 w-16 h-24 bg-primary flex items-center justify-center"
-            style={{
-              clipPath: "polygon(0 20%, 100% 0, 100% 100%, 0 80%)",
-            }}
+            className="sm:w-16 sm:h-24 w-16 h-24 bg-primary flex items-center justify-center clip-right-arrow"
           >
             <ArrowRight className="w-8 h-8 text-primary-foreground" />
           </div>

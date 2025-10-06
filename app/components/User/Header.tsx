@@ -1,18 +1,11 @@
 "use client";
 
-import {
-  ChevronDown,
-  Zap,
-  MapPin,
-  Mail,
-  Menu,
-  X,
-} from "lucide-react";
+import { ChevronDown, Zap, MapPin, Mail, Menu, X } from "lucide-react";
 import { GiHouse } from "react-icons/gi";
 import { useState, useEffect } from "react";
 
 export default function Header() {
-  const [activeDropdown, setActiveDropdown] = useState< number | null >(null);
+  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -104,13 +97,7 @@ export default function Header() {
         <div className="max-w-6xl mx-auto">
           <div className="relative">
             {/* Diagonal background element */}
-            <div
-              className="hidden lg:block absolute inset-0 bg-header-background"
-              style={{
-                clipPath: "polygon(2% 0, 98% 0, 100% 100%, 0 100%)",
-              }}
-            />
-
+            <div className="hidden lg:block absolute inset-0 bg-header-background clip-diagonal1" />
             {/* Main header content */}
             <div className="relative flex items-center justify-between py-4 lg:py-4 px-4 lg:px-8 bg-header-background lg:bg-transparent">
               {/* Logo */}
@@ -162,13 +149,7 @@ export default function Header() {
 
               {/* Desktop CTA Button */}
               <div className="hidden lg:block relative z-10">
-                <div
-                  className="bg-primary text-primary-foreground px-6 lg:px-8 py-3 font-semibold cursor-pointer hover:opacity-90 transition-colors duration-200 shadow-lg hover:shadow-xl"
-                  style={{
-                    clipPath:
-                      "polygon(0 0, calc(100% - 12px) 0, 100% 100%, 12px 100%)",
-                  }}
-                >
+                <div className="bg-primary text-primary-foreground px-6 lg:px-8 py-3 font-semibold cursor-pointer hover:opacity-90 transition-colors duration-200 shadow-lg hover:shadow-xl clip-slant">
                   GET A QUOTE
                 </div>
               </div>
@@ -269,12 +250,7 @@ export default function Header() {
                 </nav>
               </div>
 
-              <div
-                className="hidden lg:block absolute bottom-0 right-0 w-64 h-16 bg-primary opacity-20 pointer-events-none z-0"
-                style={{
-                  clipPath: "polygon(93% 0, 100% 100%, 0 100%)",
-                }}
-              ></div>
+              <div className="hidden lg:block absolute bottom-0 right-0 w-64 h-16 bg-primary opacity-20 pointer-events-none z-0 clip-footer"></div>
             </div>
           </div>
         </div>
