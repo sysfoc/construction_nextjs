@@ -179,7 +179,7 @@ function Footer() {
         {/* Bottom Section - Copyright */}
         <div className="border-t border-gray-800 pt-6">
           <p className="text-gray-400 text-sm">
-            © {new Date().getFullYear()} A product by{" "}
+            © {new Date().getFullYear()} Powered by{" "}
             <Link
               className="hover:underline hover:text-app-bg"
               href="https://sysfoc.com"
