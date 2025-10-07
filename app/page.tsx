@@ -8,7 +8,6 @@ import PricingCard from "./components/User/BillingAndDetails";
 import ConstructionSection from "./components/User/Servicesdetail";
 import ServicesGrid from "./components/User/ServicesGrid";
 import ProjectsSection from "./components/User/ProjectsSection";
-import QuoteSection from "./components/User/QuoteSection";
 export default function Home() {
   return (
     <div>
@@ -20,7 +19,6 @@ export default function Home() {
       <ConstructionSection/>
       <ServicesGrid/>
       <ProjectsSection/>
-      <QuoteSection/>
       <Footer/>
     </div>
   );
