@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className={`${exo.className} antialiased`}>
+      <body className={`${exo.className} antialiased max-w-[1920px] mx-auto`}>
         <Header />
         {children}
         <Footer />
