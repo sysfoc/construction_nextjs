@@ -70,175 +70,175 @@ export default function ConstructionSection(): React.JSX.Element {
 
   const currentContent: TabContentData = tabContent[activeTab];
 
-  return (
-    <div className="bg-black text-white min-h-screen relative overflow-hidden">
-      {/* Background geometric shapes */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-br from-gray-800 to-transparent transform rotate-12"></div>
-        <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-gray-800 to-transparent transform -rotate-12"></div>
+ return (
+  <div className="bg-[var(--color-foreground)] text-[var(--color-primary-foreground)] min-h-screen relative overflow-hidden">
+    {/* Background geometric shapes */}
+    <div className="absolute inset-0 opacity-20">
+      <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-br from-gray-800 to-transparent transform rotate-12"></div>
+      <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-gray-800 to-transparent transform -rotate-12"></div>
+    </div>
+
+    <div className="container mx-auto px-6 py-16 relative z-10">
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        {/* Left Column - Image and Financing Box */}
+        <div className="flex flex-row items-end justify-center gap-0">
+          {/* Construction Image */}
+          <div className="hidden sm:flex flex-1 min-w-0 h-44 relative">
+            <Image
+              src="/priceCard/priceCard_02.png"
+              alt="Construction Site"
+              fill
+              className="object-cover"
+            />
+          </div>
+
+          {/* Mortgage Financing Box */}
+          <div className="bg-[var(--color-primary)] p-8 flex flex-col justify-center items-center text-center flex-shrink-0 w-64 h-44">
+            <div className="text-[var(--color-primary-foreground)] text-lg font-medium mb-2">
+              Start From
+            </div>
+            <div className="text-[var(--color-primary-foreground)] text-xs mb-4">Mortgage Credit</div>
+            <div className="text-[var(--color-primary-foreground)] text-6xl font-bold mb-4">15.5</div>
+            <div className="text-[var(--color-primary-foreground)] text-sm flex items-center gap-1">
+              % interest →
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column - Tabs, Description and Stats */}
+        <div className="flex flex-col justify-between">
+          {/* Top Navigation Tabs */}
+          <div className="flex gap-6 mb-6">
+            <div className="relative">
+              <button
+                onClick={() => setActiveTab("architecture")}
+                className={`font-medium text-sm pb-2 transition ${
+                  activeTab === "architecture"
+                    ? "text-[var(--color-primary-foreground)]"
+                    : "text-gray-400 hover:text-[var(--color-primary-foreground)]"
+                }`}
+              >
+                Architecture Design
+              </button>
+              {activeTab === "architecture" && (
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[var(--color-primary)]"></div>
+              )}
+            </div>
+            <div className="relative">
+              <button
+                onClick={() => setActiveTab("renovation")}
+                className={`font-medium text-sm pb-2 transition ${
+                  activeTab === "renovation"
+                    ? "text-[var(--color-primary-foreground)]"
+                    : "text-gray-400 hover:text-[var(--color-primary-foreground)]"
+                }`}
+              >
+                Building Renovation
+              </button>
+              {activeTab === "renovation" && (
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[var(--color-primary)]"></div>
+              )}
+            </div>
+            <div className="relative">
+              <button
+                onClick={() => setActiveTab("material")}
+                className={`font-medium text-sm pb-2 transition ${
+                  activeTab === "material"
+                    ? "text-[var(--color-primary-foreground)]"
+                    : "text-gray-400 hover:text-[var(--color-primary-foreground)]"
+                }`}
+              >
+                Material Supply
+              </button>
+              {activeTab === "material" && (
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[var(--color-primary)]"></div>
+              )}
+            </div>
+          </div>
+
+          {/* Description Text */}
+          <div className="mb-8">
+            <p className="text-gray-300 text-sm leading-relaxed">
+              {currentContent.description}
+            </p>
+          </div>
+
+          {/* Statistics */}
+          <div className="grid grid-cols-2 gap-8 mb-8">
+            {/* Projects Completed Stat 1 */}
+            <div className="flex items-start gap-4">
+              <div className="md:p-3 rounded flex items-center justify-center">
+                <Image
+                  src="/serviceDetail/serviceDetail_02.png"
+                  alt="Service Detail"
+                  width={36}
+                  height={36}
+                  className="object-contain"
+                />
+              </div>
+              <div>
+                <div className="text-[var(--color-primary)] text-2xl sm:text-2xl md:text-4xl lg:text-5xl font-bold">
+                  {currentContent.stats[0].number}
+                </div>
+                <div className="text-gray-400 text-sm mt-1">
+                  {currentContent.stats[0].label}
+                </div>
+              </div>
+            </div>
+
+            {/* Projects Completed Stat 2 */}
+            <div className="flex items-start gap-4">
+              <div className="md:p-3 rounded">
+                <Image
+                  src="/serviceDetail/serviceDetail_01.png"
+                  alt="Service Detail"
+                  width={36}
+                  height={36}
+                  className="object-contain"
+                />
+              </div>
+              <div>
+                <div className="text-[var(--color-primary)] text-2xl sm:text-2xl md:text-4xl lg:text-5xl font-bold">
+                  {currentContent.stats[1].number}
+                </div>
+                <div className="text-gray-400 text-sm mt-1">
+                  {currentContent.stats[1].label}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Get Started Button */}
+          <div>
+            <button className="relative flex items-center font-semibold px-4 text-[var(--color-primary-foreground)] text-sm overflow-hidden clip-slant">
+              {/* Orange main area */}
+              <span className="bg-[var(--color-primary)] py-3 px-5 pr-12">
+                GET STARTED
+              </span>
+
+              {/* Black diagonal side */}
+              <span className="absolute right-0 top-0 h-full w-[50px] bg-[var(--color-foreground)] clip-button-side flex items-center justify-center">
+                <RiArrowRightDoubleLine className="w-5 h-5 text-[var(--color-primary-foreground)]" />
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div className="container mx-auto px-6 py-16 relative z-10">
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          {/* Left Column - Image and Financing Box */}
-          <div className="flex flex-row items-end justify-center gap-0">
-            {/* Construction Image */}
-            <div className="hidden sm:flex flex-1 min-w-0 h-44 relative">
-              <Image
-                src="/priceCard/priceCard_02.png"
-                alt="Construction Site"
-                fill
-                className="object-cover"
-              />
-            </div>
+      {/* Bottom Consulting Labels - Smaller and Closer */}
 
-            {/* Mortgage Financing Box */}
-            <div className="bg-orange-500 p-8 flex flex-col justify-center items-center text-center flex-shrink-0 w-64 h-44">
-              <div className="text-white text-lg font-medium mb-2">
-                Start From
-              </div>
-              <div className="text-white text-xs mb-4">Mortgage Credit</div>
-              <div className="text-white text-6xl font-bold mb-4">15.5</div>
-              <div className="text-white text-sm flex items-center gap-1">
-                % interest →
-              </div>
+      <div className="flex gap-6 mt-8">
+        {currentContent.consulting.map((label: string, index: number) => (
+          <div key={index} className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full border-[1.5px] border-[var(--color-primary)] flex items-center justify-center">
+              <Check className="w-3 h-3 text-[var(--color-primary)]" />
             </div>
+            <span className="text-[var(--color-primary-foreground)] text-xs font-medium">{label}</span>
           </div>
-
-          {/* Right Column - Tabs, Description and Stats */}
-          <div className="flex flex-col justify-between">
-            {/* Top Navigation Tabs */}
-            <div className="flex gap-6 mb-6">
-              <div className="relative">
-                <button
-                  onClick={() => setActiveTab("architecture")}
-                  className={`font-medium text-sm pb-2 transition ${
-                    activeTab === "architecture"
-                      ? "text-white"
-                      : "text-gray-400 hover:text-white"
-                  }`}
-                >
-                  Architecture Design
-                </button>
-                {activeTab === "architecture" && (
-                  <div className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500"></div>
-                )}
-              </div>
-              <div className="relative">
-                <button
-                  onClick={() => setActiveTab("renovation")}
-                  className={`font-medium text-sm pb-2 transition ${
-                    activeTab === "renovation"
-                      ? "text-white"
-                      : "text-gray-400 hover:text-white"
-                  }`}
-                >
-                  Building Renovation
-                </button>
-                {activeTab === "renovation" && (
-                  <div className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500"></div>
-                )}
-              </div>
-              <div className="relative">
-                <button
-                  onClick={() => setActiveTab("material")}
-                  className={`font-medium text-sm pb-2 transition ${
-                    activeTab === "material"
-                      ? "text-white"
-                      : "text-gray-400 hover:text-white"
-                  }`}
-                >
-                  Material Supply
-                </button>
-                {activeTab === "material" && (
-                  <div className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500"></div>
-                )}
-              </div>
-            </div>
-
-            {/* Description Text */}
-            <div className="mb-8">
-              <p className="text-gray-300 text-sm leading-relaxed">
-                {currentContent.description}
-              </p>
-            </div>
-
-            {/* Statistics */}
-            <div className="grid grid-cols-2 gap-8 mb-8">
-              {/* Projects Completed Stat 1 */}
-              <div className="flex items-start gap-4">
-                <div className="md:p-3 rounded flex items-center justify-center">
-                  <Image
-                    src="/serviceDetail/serviceDetail_02.png"
-                    alt="Service Detail"
-                    width={36}
-                    height={36}
-                    className="object-contain"
-                  />
-                </div>
-                <div>
-                  <div className="text-orange-500 text-2xl sm:text-2xl md:text-4xl lg:text-5xl font-bold">
-                    {currentContent.stats[0].number}
-                  </div>
-                  <div className="text-gray-400 text-sm mt-1">
-                    {currentContent.stats[0].label}
-                  </div>
-                </div>
-              </div>
-
-              {/* Projects Completed Stat 2 */}
-              <div className="flex items-start gap-4">
-                <div className="md:p-3 rounded">
-                  <Image
-                    src="/serviceDetail/serviceDetail_01.png"
-                    alt="Service Detail"
-                    width={36}
-                    height={36}
-                    className="object-contain"
-                  />
-                </div>
-                <div>
-                  <div className="text-orange-500 text-2xl sm:text-2xl md:text-4xl lg:text-5xl font-bold">
-                    {currentContent.stats[1].number}
-                  </div>
-                  <div className="text-gray-400 text-sm mt-1">
-                    {currentContent.stats[1].label}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Get Started Button */}
-            <div>
-              <button className="relative flex items-center font-semibold px-4 text-[var(--color-primary-foreground)] text-sm overflow-hidden clip-slant">
-                {/* Orange main area */}
-                <span className="bg-[var(--color-primary)] py-3 px-5 pr-12">
-                  GET STARTED
-                </span>
-
-                {/* Black diagonal side */}
-                <span className="absolute right-0 top-0 h-full w-[50px] bg-[var(--color-foreground)] clip-button-side flex items-center justify-center">
-                  <RiArrowRightDoubleLine className="w-5 h-5 text-[var(--color-primary-foreground)]" />
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Consulting Labels - Smaller and Closer */}
-
-        <div className="flex gap-6 mt-8">
-          {currentContent.consulting.map((label: string, index: number) => (
-            <div key={index} className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full border-[1.5px] border-orange-500 flex items-center justify-center">
-                <Check className="w-3 h-3 text-orange-500" />
-              </div>
-              <span className="text-white text-xs font-medium">{label}</span>
-            </div>
-          ))}
-        </div>
+        ))}
       </div>
     </div>
-  );
+  </div>
+);
 }
