@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Exo } from "next/font/google";
 import "./globals.css";
+import Header from "@/app/components/User/Header";
+import Footer from "./components/User/Footer";
 
 const exo = Exo({
   subsets: ["latin"],
@@ -9,7 +11,8 @@ const exo = Exo({
 
 export const metadata: Metadata = {
   title: "Construction Site",
-  description: "Explore our construction site project showcasing modern design, quality materials, and efficient building solutions.",
+  description:
+    "Explore our construction site project showcasing modern design, quality materials, and efficient building solutions.",
   icons: {
     icon: "/favicon-32x32.png",
   },
@@ -22,7 +25,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className={`${exo.className} antialiased`}>{children}</body>
+      <body className={`${exo.className} antialiased`}>
+        <Header />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }
