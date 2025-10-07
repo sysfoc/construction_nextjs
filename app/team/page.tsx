@@ -4,39 +4,39 @@ import Image from "next/image";
 export default function Team() {
   const teamData = [
     {
-      img: "/team/img_01.png",
+      img: "/Team/img_01.png",
       name: "Mark Chiasson",
       position: "Head Railway Construction",
     },
     {
-      img: "/team/img_02.png",
+      img: "/Team/img_02.png",
       name: "Mark Chiasson",
       position: "Head Railway Construction",
     },
     {
-      img: "/team/img_03.png",
+      img: "/Team/img_03.png",
       name: "Mark Chiasson",
       position: "Head Railway Construction",
     },
     {
-      img: "/team/img_04.png",
+      img: "/Team/img_04.png",
       name: "Mark Chiasson",
       position: "Head Railway Construction",
     },
     {
-      img: "/team/img_05.png",
+      img: "/Team/img_05.png",
       name: "Mark Chiasson",
       position: "Head Railway Construction",
     },
     {
-      img: "/team/img_06.png",
+      img: "/Team/img_06.png",
       name: "Mark Chiasson",
       position: "Head Railway Construction",
     },
   ];
   return (
     <>
-      <section className="relative bg-[url('/team/team.png')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center">
+      <section className="relative bg-[url('/Team/team.png')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center">
         <div className='absolute inset-0 bg-[#161D39]/80'></div>
         <div className='relative z-10 text-center text-white px-4'>
           <h1 className='text-5xl font-extrabold mb-4 tracking-wide drop-shadow-lg'>
