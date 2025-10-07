@@ -5,6 +5,10 @@ import PricingCard from "./components/User/BillingAndDetails";
 import ConstructionSection from "./components/User/Servicesdetail";
 import ServicesGrid from "./components/User/ServicesGrid";
 import ProjectsSection from "./components/User/ProjectsSection";
+import QuoteSection from "./components/User/QuoteSection";
+import ProductCarousel from "./components/User/ProductCarousel";
+import ConstructionTestimonial from "./components/User/ConstructionTestimonial";
+import AgencyFAQ from "./components/User/AgencyFAQ";
 export default function Home() {
   return (
     <div>
@@ -15,6 +19,10 @@ export default function Home() {
       <ConstructionSection/>
       <ServicesGrid/>
       <ProjectsSection/>
+      <QuoteSection/>
+      <ProductCarousel/>
+      <ConstructionTestimonial/>
+      <AgencyFAQ/>
     </div>
   );
 }

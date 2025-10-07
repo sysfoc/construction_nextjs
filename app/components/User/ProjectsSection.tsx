@@ -159,7 +159,7 @@ export default function ProjectsSection() {
               <p className="text-[var(--color-primary)] text-xs font-bold mb-1">
                 {project.category}
               </p>
-              <h3 className="text-[var(--color-hero-heading)] text-lg font-bold mb-1">
+              <h3 className="text-[var(--color-paragraph)] text-lg font-bold mb-1">
                 {project.title}
               </h3>
               <p className="text-[var(--color-paragraph)] text-xs mb-3">
