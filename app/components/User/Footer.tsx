@@ -37,7 +37,7 @@ function Footer() {
               <div className="w-10 h-10 bg-primary flex items-center justify-center transform rotate-45">
                 <GiHouse className="w-5 h-5 text-white transform -rotate-45" />
               </div>
-              <span className="text-xl font-bold text-white">Buildexo</span>
+              <span className="text-xl font-bold text-white">Construct</span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
               Lorem ipsum dolor sit amet, sectetur adipisicing elit, sed do

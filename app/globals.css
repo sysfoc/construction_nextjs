@@ -132,3 +132,6 @@ body {
 .clip-button-side {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 20% 100%);
 }
+.clip-bottom-side {
+  clip-path: polygon(0 100%, 100% 0, 100% 70%, 0% 100%);
+}

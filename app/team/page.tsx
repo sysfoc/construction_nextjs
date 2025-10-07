@@ -66,8 +66,8 @@ export default function Team() {
                 />
               </div>
               <div className='bg-gray-100 dark:bg-gray-800 p-4 rounded-bl-2xl'>
-                <h3>{team.name}</h3>
-                <p>{team.position}</p>
+                <h3 className="font-bold">{team.name}</h3>
+                <p className="text-sm">{team.position}</p>
               </div>
             </div>
           ))}
