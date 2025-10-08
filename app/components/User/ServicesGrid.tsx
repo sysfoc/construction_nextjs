@@ -2,6 +2,7 @@
 import React from "react";
 import { RiArrowRightDoubleLine } from "react-icons/ri";
 import Image from "next/image";
+import SlantedButton from "../General/buttons/SlantedButton";
 
 export default function ServicesGrid() {
   const services = [
@@ -47,10 +48,7 @@ export default function ServicesGrid() {
       <div className="container mx-auto px-5  sm:px-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {services.map((service, index) => (
-            <div
-              key={index}
-              className="bg-gray-50 p-5 relative group"
-            >
+            <div key={index} className="bg-gray-50 p-5 relative group">
               {/* Icon and Title Row */}
               <div className="flex items-start gap-4 mb-4">
                 <div className="flex-shrink-0">
@@ -82,19 +80,8 @@ export default function ServicesGrid() {
             </div>
           ))}
 
-          {/* Get Started Button Card */}
           <div className="bg-white p-6 flex items-center justify-center">
-            <button className="relative flex items-center font-semibold px-4 text-[var(--color-primary-foreground)] text-sm overflow-hidden clip-slant">
-              {/* Orange main area */}
-              <span className="bg-[var(--color-primary)] py-3 px-5 pr-12">
-                GET STARTED
-              </span>
-
-              {/* Black diagonal side */}
-              <span className="absolute right-0 top-0 h-full w-[50px] bg-[var(--color-foreground)] clip-button-side flex items-center justify-center">
-                <RiArrowRightDoubleLine className="w-5 h-5 text-[var(--color-primary-foreground)]" />
-              </span>
-            </button>
+            <SlantedButton text="GET STARTED" />
           </div>
         </div>
       </div>

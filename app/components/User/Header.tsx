@@ -3,6 +3,7 @@
 import { ChevronDown, Zap, MapPin, Mail, Menu, X } from "lucide-react";
 import { GiHouse } from "react-icons/gi";
 import { useState, useEffect } from "react";
+import SolidButton from "../General/buttons/SolidButton";
 
 export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
@@ -149,9 +150,7 @@ export default function Header() {
 
               {/* Desktop CTA Button */}
               <div className="hidden lg:block relative z-10">
-                <div className="bg-primary text-primary-foreground px-6 lg:px-8 py-3 font-semibold cursor-pointer hover:opacity-90 transition-colors duration-200 shadow-lg hover:shadow-xl clip-slant">
-                  GET A QUOTE
-                </div>
+                <SolidButton text="GET A QUOTE" />
               </div>
 
               {/* Mobile Header Right Section */}

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Check } from "lucide-react";
 import { RiArrowRightDoubleLine } from "react-icons/ri";
 import Image from "next/image";
+import SlantedButton from "../General/buttons/SlantedButton";
 
 interface Stat {
   number: string;
@@ -211,17 +212,7 @@ export default function ConstructionSection(): React.JSX.Element {
 
           {/* Get Started Button */}
           <div>
-            <button className="relative flex items-center font-semibold px-4 text-[var(--color-primary-foreground)] text-sm overflow-hidden clip-slant">
-              {/* Orange main area */}
-              <span className="bg-[var(--color-primary)] py-3 px-5 pr-12">
-                GET STARTED
-              </span>
-
-              {/* Black diagonal side */}
-              <span className="absolute right-0 top-0 h-full w-[50px] bg-[var(--color-foreground)] clip-button-side flex items-center justify-center">
-                <RiArrowRightDoubleLine className="w-5 h-5 text-[var(--color-primary-foreground)]" />
-              </span>
-            </button>
+          <SlantedButton text="GET STARTED"/>
           </div>
         </div>
       </div>

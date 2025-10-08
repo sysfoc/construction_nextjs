@@ -9,6 +9,8 @@ import QuoteSection from "./components/User/QuoteSection";
 import ProductCarousel from "./components/User/ProductCarousel";
 import ConstructionTestimonial from "./components/User/ConstructionTestimonial";
 import AgencyFAQ from "./components/User/AgencyFAQ";
+import ConstructionCTA from "./components/General/Banner";
+import BlogCards from "./components/User/BlogCards";
 export default function Home() {
   return (
     <div>
@@ -23,6 +25,8 @@ export default function Home() {
       <ProductCarousel/>
       <ConstructionTestimonial/>
       <AgencyFAQ/>
+      <ConstructionCTA/>
+      <BlogCards/>
     </div>
   );
 }

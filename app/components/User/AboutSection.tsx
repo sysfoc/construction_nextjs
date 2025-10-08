@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ChevronRight } from "lucide-react";
+import SolidButton from "../General/buttons/SolidButton";
 
 export default function AboutSection() {
   return (
@@ -118,10 +118,7 @@ export default function AboutSection() {
 
             {/* CTA Button */}
             <div className="mt-8">
-              <button className="bg-primary text-primary-foreground px-8 py-3 font-semibold hover:opacity-90 transition-opacity duration-200 shadow-lg hover:shadow-xl clip-slant flex items-center gap-2">
-                GET STARTED
-                <ChevronRight className="w-5 h-5" />
-              </button>
+              <SolidButton text="GET STARTED" />
             </div>
           </div>
         </div>

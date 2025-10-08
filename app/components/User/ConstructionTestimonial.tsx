@@ -10,7 +10,7 @@ interface TeamMember {
 const ConstructionTestimonial: React.FC = () => {
   const teamMembers: TeamMember[] = [
     { name: "John Smith", role: "CEO of Data group", image: "/teamMember_01.png" },
-    { name: "John Smith", role: "CEO of Data group", image: "/teamMember_01.png" },
+    { name: "Peter parker", role: "CEO of News group", image: "/teamMember_01.png" },
     { name: "Thamos Miller", role: "CEO Built Builder", image: "/teamMember_01.png" },
   ];
 

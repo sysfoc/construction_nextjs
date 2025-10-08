@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
-import { ArrowRight, Phone } from "lucide-react";
+import { Phone, ArrowRight } from "lucide-react";
+import SolidButton from "../General/buttons/SolidButton";
 
 export default function HeroSection() {
   return (
@@ -11,6 +12,7 @@ export default function HeroSection() {
         alt="Construction background"
         fill
         priority
+        fetchPriority="high"
         quality={100}
         className="object-cover object-center"
       />
@@ -47,12 +49,7 @@ export default function HeroSection() {
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap items-center gap-4 lg:gap-6">
-            <div
-              className="bg-primary text-primary-foreground px-6 lg:px-8 py-3 lg:py-4 font-semibold cursor-pointer hover:opacity-90 transition-colors duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 clip-button"
-            >
-              GET STARTED
-              <ArrowRight className="w-5 h-5" />
-            </div>
+             <SolidButton text="GET STARTED" />
 
             <div className="flex items-center gap-3 bg-background px-5 py-3 lg:py-2 rounded-full shadow-lg">
               <div className="w-10 h-10 rounded-full bg-background shadow-md flex items-center justify-center">
@@ -60,7 +57,7 @@ export default function HeroSection() {
               </div>
               <div>
                 <p className="text-xs text-paragraph font-medium">CALL NOW</p>
-                <p className="text-foreground font-bold">+268 2158 2158</p>
+                <p className="text-foreground font-bold">+268 2158 1234</p>
               </div>
             </div>
           </div>

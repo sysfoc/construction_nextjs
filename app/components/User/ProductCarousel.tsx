@@ -96,7 +96,7 @@ export default function ProductCarousel() {
                     />
                   ))}
                 </div>
-                <p className="text-xs xs:text-[13px] sm:text-sm md:text-[15px] font-bold text-[var(--color-heading)]">
+                <p className="text-xs xs:text-[13px] sm:text-sm md:text-[15px] font-bold text-[var(--hero-text)]">
                   {product.price}
                 </p>
               </div>
