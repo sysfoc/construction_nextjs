@@ -1,27 +1,27 @@
+"use client";
 import React from "react";
+import Image from "next/image";
 import { Phone } from "lucide-react";
 
 export default function ContractorHero() {
-  // ✅ Services Data
   const services = [
     {
-      img: "services_01.jpg",
+      img: "/services_01.jpg",
       title: "Best Repair &\nPainting",
       desc: "There are many variations of passages of Lorem...",
     },
     {
-      img: "services_02.jpg",
+      img: "/services_02.jpg",
       title: "Heavy\nEquipment",
       desc: "There are many variations of passages of Lorem...",
     },
     {
-      img: "services_03.jpg",
+      img: "/services_03.jpg",
       title: "Apartment\nDesign",
       desc: "There are many variations of passages of Lorem...",
     },
   ];
 
-  // ✅ Team Members Data
   const teamMembers = [
     {
       img: "/Team/teamMember_01.png",
@@ -89,9 +89,9 @@ export default function ContractorHero() {
             <div className="bg-white border-l-4 border-orange-500 p-3 sm:p-4 mb-3 max-w-xl">
               <p className="text-gray-600 text-xs sm:text-sm leading-snug">
                 An IT firm or MSP who keeps your IT running smoothly at all
-                times is like a plumber who fixes your pipes: that's what they
+                times is like a plumber who fixes your pipes: that&apos;s what they
                 are supposed to do. Many IT firms struggle to keep themselves
-                and their IT from falling apart. We've raised
+                and their IT from falling apart. We&apos;ve raised
               </p>
             </div>
 
@@ -105,7 +105,9 @@ export default function ContractorHero() {
                   <Phone className="w-4 h-4 text-orange-500" />
                 </div>
                 <div>
-                  <div className="text-xs text-gray-600 leading-tight">Want to Discuss:</div>
+                  <div className="text-xs text-gray-600 leading-tight">
+                    Want to Discuss:
+                  </div>
                   <div className="text-base sm:text-lg font-bold leading-tight">
                     +91(123)56789
                   </div>
@@ -116,16 +118,22 @@ export default function ContractorHero() {
 
           {/* Right Image */}
           <div className="relative flex-shrink-0 w-full lg:w-auto">
-            <img
-              src="team_01.jpg"
-              alt="Construction team"
-              className="w-full lg:w-80 xl:w-96 h-auto rounded-tl-3xl"
-            />
+            <div className="relative w-full lg:w-80 xl:w-96 aspect-[4/5] rounded-tl-3xl overflow-hidden">
+              <Image
+                src="/team_01.jpg"
+                alt="Construction team"
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
             <div className="absolute bottom-0 right-0 bg-orange-500 text-white px-4 sm:px-6 py-3 sm:py-4">
               <div className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-none">
                 25.
               </div>
-              <div className="text-xs uppercase mt-0.5 leading-none">works of</div>
+              <div className="text-xs uppercase mt-0.5 leading-none">
+                works of
+              </div>
               <div className="text-xl sm:text-2xl font-bold uppercase leading-none">
                 EXPERIENCE
               </div>
@@ -139,21 +147,30 @@ export default function ContractorHero() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-center">
           {/* Left Images Grid */}
           <div className="relative w-full h-[400px] sm:h-[450px] lg:h-[500px] order-2 lg:order-1">
-            <img
-              src="team_02.jpg"
-              alt="Construction team meeting"
-              className="absolute top-0 left-0 w-[70%] sm:w-[65%] h-[55%] object-cover rounded-tr-[40px] shadow-lg z-10"
-            />
-            <img
-              src="team_03.jpg"
-              alt="Construction workers"
-              className="absolute top-[35%] left-[5%] w-[50%] h-[40%] object-cover rounded-tl-[40px] shadow-lg z-20"
-            />
-            <img
-              src="team_04.jpg"
-              alt="Construction worker"
-              className="absolute bottom-0 right-0 w-[55%] h-[50%] object-cover rounded-tl-[40px] rounded-br-[40px] shadow-lg z-30"
-            />
+            <div className="absolute top-0 left-0 w-[70%] sm:w-[65%] h-[55%] rounded-tr-[40px] shadow-lg overflow-hidden z-10">
+              <Image
+                src="/team_02.jpg"
+                alt="Construction team meeting"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="absolute top-[35%] left-[5%] w-[50%] h-[40%] rounded-tl-[40px] shadow-lg overflow-hidden z-20">
+              <Image
+                src="/team_03.jpg"
+                alt="Construction workers"
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="absolute bottom-0 right-0 w-[55%] h-[50%] rounded-tl-[40px] rounded-br-[40px] shadow-lg overflow-hidden z-30">
+              <Image
+                src="/team_04.jpg"
+                alt="Construction worker"
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
 
           {/* Right Content */}
@@ -214,7 +231,7 @@ export default function ContractorHero() {
                 <li className="flex items-start gap-2">
                   <div className="w-2 h-2 rounded-full bg-orange-500 mt-1.5 flex-shrink-0"></div>
                   <span className="text-gray-700 text-sm sm:text-base leading-snug">
-                    Just Because You Work Hard You'll Be Successful.
+                    Just Because You Work Hard You&apos;ll Be Successful.
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
@@ -241,11 +258,12 @@ export default function ContractorHero() {
               key={index}
               className="bg-white border-2 border-dashed border-gray-300 rounded-3xl p-3 sm:p-4 text-center"
             >
-              <div className="mb-2 sm:mb-3">
-                <img
+              <div className="relative w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 mx-auto mb-2 sm:mb-3 rounded-tl-3xl overflow-hidden">
+                <Image
                   src={service.img}
                   alt={service.title}
-                  className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-cover rounded-tl-3xl mx-auto"
+                  fill
+                  className="object-cover"
                 />
               </div>
               <h3
@@ -268,7 +286,7 @@ export default function ContractorHero() {
         <div className="mt-5 sm:mt-6 lg:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-0">
           <div className="bg-white border border-gray-200 px-4 py-2.5 text-center sm:text-left sm:rounded-l-full">
             <span className="text-orange-500 font-medium text-sm sm:text-base leading-tight">
-              Offerromg High Quality Construction Solutions
+              Offering High Quality Construction Solutions
             </span>
           </div>
           <button className="bg-orange-500 text-white px-6 py-2.5 rounded-full sm:rounded-l-none font-medium text-sm sm:text-base hover:bg-orange-600 transition-colors w-full sm:w-auto">
@@ -283,16 +301,21 @@ export default function ContractorHero() {
           {teamMembers.map((member, index) => (
             <div key={index}>
               <div className="relative h-[250px] mb-2 flex justify-center">
-                <img
-                  src={member.img}
-                  alt={member.name}
-                  className="h-full w-auto object-contain"
-                />
+                <div className="relative h-full w-auto aspect-[3/4]">
+                  <Image
+                    src={member.img}
+                    alt={member.name}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-1 leading-tight">
                 {member.name}
               </h3>
-              <p className="text-gray-500 text-base leading-snug">{member.role}</p>
+              <p className="text-gray-500 text-base leading-snug">
+                {member.role}
+              </p>
             </div>
           ))}
         </div>
