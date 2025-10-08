@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import React from "react";
 import { RiArrowRightDoubleLine } from "react-icons/ri";
 import Image from "next/image";
@@ -44,11 +44,11 @@ export default function ServicesGrid() {
   ];
 
   return (
-    <div className=" py-12">
+    <div className=" py-12 dark:bg-gray-900">
       <div className="container mx-auto px-5  sm:px-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {services.map((service, index) => (
-            <div key={index} className="bg-gray-50 p-5 relative group">
+            <div key={index} className="bg-gray-50 dark:bg-gray-800 p-5 relative group">
               {/* Icon and Title Row */}
               <div className="flex items-start gap-4 mb-4">
                 <div className="flex-shrink-0">
@@ -61,17 +61,17 @@ export default function ServicesGrid() {
                   />
                 </div>
                 <div>
-                  <h3 className="text-black font-bold text-lg leading-tight">
+                  <h3 className="text-black dark:text-gray-200 font-bold text-lg leading-tight">
                     {service.title}
                   </h3>
-                  <h3 className="text-black font-bold text-lg leading-tight">
+                  <h3 className="text-black dark:text-gray-200 font-bold text-lg leading-tight">
                     {service.subtitle}
                   </h3>
                 </div>
               </div>
 
               {/* Description */}
-              <p className="text-gray-600 text-sm mb-4">
+              <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
                 {service.description}
               </p>
 
@@ -80,7 +80,7 @@ export default function ServicesGrid() {
             </div>
           ))}
 
-          <div className="bg-white p-6 flex items-center justify-center">
+          <div className="bg-white dark:bg-gray-800 p-6 flex items-center justify-center">
             <SlantedButton text="GET STARTED" />
           </div>
         </div>

@@ -3,7 +3,7 @@ import SolidButton from "../General/buttons/SolidButton";
 
 export default function AboutSection() {
   return (
-    <section className="w-full bg-background py-16 mt-10 px-8">
+    <section className="w-full bg-background dark:bg-gray-900 py-16 mt-10 px-8">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left Side - Images */}
@@ -66,7 +66,7 @@ export default function AboutSection() {
 
           {/* Right Side - Content */}
           <div className="space-y-6">
-            <p className="text-paragraph text-base leading-relaxed">
+            <p className="text-paragraph dark:text-gray-300 text-base leading-relaxed">
               For each project, we carefully establish strong relationships with
               trusted partners who can contribute genuine value to the success
               of your project. By bringing together expertise from both the
@@ -90,10 +90,10 @@ export default function AboutSection() {
                   />
                 </div>
                 <div>
-                  <h3 className="font-bold text-header-text text-lg">
+                  <h3 className="font-bold text-header-text dark:text-gray-200 text-lg">
                     Certified & Awards
                   </h3>
-                  <p className="font-semibold text-header-text">winner*</p>
+                  <p className="font-semibold text-header-text dark:text-gray-300">winner*</p>
                 </div>
               </div>
 
@@ -108,10 +108,10 @@ export default function AboutSection() {
                   />
                 </div>
                 <div>
-                  <h3 className="font-bold text-header-text text-lg">
+                  <h3 className="font-bold text-header-text dark:text-gray-200 text-lg">
                     Best Quality
                   </h3>
-                  <p className="font-semibold text-header-text">Services*</p>
+                  <p className="font-semibold text-header-text dark:text-gray-300">Services*</p>
                 </div>
               </div>
             </div>
@@ -130,17 +130,17 @@ export default function AboutSection() {
           {/* Stat 1 */}
           <div className="text-center">
             <div className="flex items-center justify-center gap-1 mb-2">
-              <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-header-text stroke-text">
+              <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-header-text dark:text-gray-200 stroke-text">
                 10
               </span>
-              <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-header-text">
+              <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-header-text dark:text-gray-200">
                 +
               </span>
-              <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-header-text">
+              <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-header-text dark:text-gray-200">
                 COUNTRY
               </h3>
             </div>
-            <p className="text-sm sm:text-base text-paragraph">
+            <p className="text-sm sm:text-base text-paragraph dark:text-gray-300">
               Construction Simulator
             </p>
           </div>
@@ -148,17 +148,17 @@ export default function AboutSection() {
           {/* Stat 2 */}
           <div className="text-center">
             <div className="flex items-center justify-center gap-1 mb-2">
-              <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-header-text stroke-text">
+              <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-header-text dark:text-gray-200 stroke-text">
                 15
               </span>
-              <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-header-text">
+              <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-header-text dark:text-gray-200">
                 +
               </span>
-              <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-header-text">
+              <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-header-text dark:text-gray-200">
                 PROJECT
               </h3>
             </div>
-            <p className="text-sm sm:text-base text-paragraph">
+            <p className="text-sm sm:text-base text-paragraph dark:text-gray-300">
               Construction Simulator
             </p>
           </div>
@@ -166,14 +166,14 @@ export default function AboutSection() {
           {/* Stat 3 */}
           <div className="text-center">
             <div className="flex items-center justify-center gap-1 mb-2">
-              <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-header-text stroke-text">
+              <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-header-text dark:text-gray-200 stroke-text">
                 50K
               </span>
-              <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-header-text">
+              <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-header-text dark:text-gray-200">
                 HAPPY
               </h3>
             </div>
-            <p className="text-sm sm:text-base text-paragraph">
+            <p className="text-sm sm:text-base text-paragraph dark:text-gray-300">
               Professional Experience
             </p>
           </div>
@@ -181,17 +181,17 @@ export default function AboutSection() {
           {/* Stat 4 */}
           <div className="text-center">
             <div className="flex items-center justify-center gap-1 mb-2">
-              <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-header-text stroke-text">
+              <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-header-text dark:text-gray-200 stroke-text">
                 10
               </span>
-              <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-header-text">
+              <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-header-text dark:text-gray-200">
                 +
               </span>
-              <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-header-text">
+              <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-header-text dark:text-gray-200">
                 YEARS
               </h3>
             </div>
-            <p className="text-sm sm:text-base text-paragraph">
+            <p className="text-sm sm:text-base text-paragraph dark:text-gray-300">
               Professional Experience
             </p>
           </div>

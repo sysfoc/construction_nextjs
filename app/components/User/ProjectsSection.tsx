@@ -108,13 +108,13 @@ export default function ProjectsSection() {
   const currentProjects: Project[] = projectData[activeTab];
 
  return (
-  <div className="relative py-24">
+  <div className="relative py-24 dark:bg-gray-900">
     {/* Background Image */}
     <div className="absolute inset-0 z-0">
       <img
         src="/services/service_09.png"
         alt="Background"
-        className="w-full h-full object-cover"
+        className="w-full h-full object-cover dark:opacity-30"
       />
     </div>
 
@@ -128,7 +128,7 @@ export default function ProjectsSection() {
             className={`px-4 py-2 text-xs font-medium transition-all ${
               activeTab === index
                 ? "bg-[var(--color-primary)] text-[var(--color-primary-foreground)]"
-                : "bg-[var(--color-header-background)] text-[var(--color-header-text)] border border-[var(--color-border)] hover:bg-gray-50"
+                : "bg-[var(--color-header-background)] text-[var(--color-header-text)] border border-[var(--color-border)] hover:bg-gray-50 dark:hover:bg-gray-700"
             }`}
           >
             {tab}
@@ -151,7 +151,7 @@ export default function ProjectsSection() {
 
             {/* Diagonal Content Box */}
             <div
-              className="bg-[var(--color-background)] p-4 relative -mt-16 left-10 w-[70%] mx-auto shadow-md"
+              className="bg-[var(--color-background)] dark:bg-gray-800 p-4 relative -mt-16 left-10 w-[70%] mx-auto shadow-md"
               style={{
                 clipPath: "polygon(0 0, 90% 0%, 100% 100%, 0 100%)",
               }}
@@ -159,10 +159,10 @@ export default function ProjectsSection() {
               <p className="text-[var(--color-primary)] text-xs font-bold mb-1">
                 {project.category}
               </p>
-              <h3 className="text-[var(--color-paragraph)] text-lg font-bold mb-1">
+              <h3 className="text-[var(--color-paragraph)] dark:text-gray-200 text-lg font-bold mb-1">
                 {project.title}
               </h3>
-              <p className="text-[var(--color-paragraph)] text-xs mb-3">
+              <p className="text-[var(--color-paragraph)] dark:text-gray-300 text-xs mb-3">
                 {project.description}
               </p>
 
@@ -170,14 +170,14 @@ export default function ProjectsSection() {
               <div className="flex flex-col gap-1 text-xs mt-3">
                 <div className="flex items-center gap-2">
                   <User className="w-3 h-3 text-[var(--color-primary)]" />
-                  <span className="text-[var(--color-header-text)] font-medium">
+                  <span className="text-[var(--color-header-text)] dark:text-gray-300 font-medium">
                     {project.author}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <Clock className="w-3 h-3 text-[var(--color-primary)]" />
-                  <span className="text-[var(--color-header-text)] font-medium">
+                  <span className="text-[var(--color-header-text)] dark:text-gray-300 font-medium">
                     {project.date}
                   </span>
                 </div>

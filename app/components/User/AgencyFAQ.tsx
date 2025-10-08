@@ -1,6 +1,7 @@
-'use client';
+"use client";
 import React, { useState } from "react";
 import Image from "next/image";
+import { Play } from "lucide-react";
 
 interface FAQItem {
   question: string;
@@ -53,14 +54,21 @@ const AgencyFAQ: React.FC = () => {
               className="object-contain"
               priority
             />
+
             {/* Badge */}
-            <div className="absolute top-40 left-16 w-20 h-20 bg-[var(--color-primary-foreground)] text-[var(--color-header-text)] rounded-full hidden md:flex items-center justify-center shadow-lg">
-              <div className="text-center">
-                <div className="text-xs font-semibold leading-tight">
-                  WATCH OUR
-                  <br />
-                  VIDEO
-                </div>
+            <div className="absolute top-40 left-16 hidden md:flex items-center justify-center w-20 h-20 bg-[var(--color-primary-foreground)] rounded-full shadow-lg">
+              {/* Wrapper is relative so children can be absolutely centered */}
+              <div className="relative w-full h-full flex items-center justify-center">
+                {/* Circular Text Image */}
+                <Image
+                  src="/text.png"
+                  alt="Watch Video Text"
+                  fill
+                  className="object-contain scale-90"
+                />
+
+                {/* Play Icon */}
+                <Play className="absolute w-5 h-5 text-[var(--color-primary)] " />
               </div>
             </div>
           </div>
@@ -68,7 +76,10 @@ const AgencyFAQ: React.FC = () => {
           {/* Right Side - FAQ */}
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <div key={index} className="border-b border-[var(--color-border)] pb-4">
+              <div
+                key={index}
+                className="border-b border-[var(--color-border)] pb-4"
+              >
                 <button
                   onClick={() => toggleFAQ(index)}
                   className="w-full flex items-start justify-between gap-4 text-left group"
