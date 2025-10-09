@@ -4,6 +4,7 @@ import { ChevronDown, Zap, MapPin, Mail, Menu, X } from "lucide-react";
 import { GiHouse } from "react-icons/gi";
 import { useState, useEffect } from "react";
 import SolidButton from "../General/buttons/SolidButton";
+import Link from "next/link";
 
 export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
@@ -13,21 +14,35 @@ export default function Header() {
   const navLinks = [
     {
       name: "Pages",
-      sublinks: ["About Us", "Our Team", "Careers"],
+      sublinks: [
+        { name: "About Us", href: "/about" },
+        { name: "Our Team", href: "/team" },
+        { name: "Careers", href: "/careers" },
+      ],
     },
     {
       name: "Services",
-      sublinks: ["Construction", "Renovation", "Consulting"],
+      sublinks: [
+        { name: "Construction", href: "/services/construction" },
+        { name: "Renovation", href: "/services/renovation" },
+        { name: "Consulting", href: "/services/consulting" },
+      ],
     },
     {
       name: "Projects",
-      sublinks: ["Ongoing", "Completed", "Gallery"],
+      sublinks: [
+        { name: "Ongoing", href: "/projects/ongoing" },
+        { name: "Completed", href: "/projects/completed" },
+        { name: "Gallery", href: "/projects/gallery" },
+      ],
     },
     {
       name: "News",
+      href: "/news",
     },
     {
       name: "Contact",
+      href: "/contact",
     },
   ];
 
@@ -134,13 +149,13 @@ export default function Header() {
                     {link.sublinks && activeDropdown === index && (
                       <div className="absolute top-full left-0 -mt-1 w-56 bg-background shadow-xl border border-border rounded-lg py-2 z-50">
                         {link.sublinks.map((sublink, subIndex) => (
-                          <a
+                          <Link
                             key={subIndex}
-                            href="#"
+                            href={sublink.href}
                             className="block px-4 py-3 text-header-text hover:bg-primary hover:text-primary-foreground transition-all duration-200 border-b border-border last:border-b-0"
                           >
-                            {sublink}
-                          </a>
+                            {sublink.name}
+                          </Link>
                         ))}
                       </div>
                     )}
@@ -223,26 +238,26 @@ export default function Header() {
                           {activeDropdown === index && (
                             <div className="mt-1 ml-4 space-y-1">
                               {link.sublinks.map((sublink, subIndex) => (
-                                <a
+                                <Link
                                   key={subIndex}
-                                  href="#"
+                                  href={sublink.href}
                                   className="block py-2 px-3 text-foreground hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50"
                                   onClick={closeMobileMenu}
                                 >
-                                  {sublink}
-                                </a>
+                                  {sublink.name}
+                                </Link>
                               ))}
                             </div>
                           )}
                         </div>
                       ) : (
-                        <a
-                          href="#"
+                        <Link
+                          href={link.href || "#"}
                           className="block text-header-text hover:text-primary font-medium py-3 text-base"
                           onClick={closeMobileMenu}
                         >
                           {link.name}
-                        </a>
+                        </Link>
                       )}
                     </div>
                   ))}

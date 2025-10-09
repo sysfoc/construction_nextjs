@@ -26,8 +26,11 @@
   --subheading-color: var(--hero-subheading);
   --paragraph-color: var(--header-text);
 
+  /* Page Headings */
+  --page-heading: #1a2b4c;     /* Darkish blue for page titles */
+
   /* Borders / Dividers */
-  --border-color: #e5e7eb;
+  --border-color: #c2c7d2;
 }
 
 @theme inline {
