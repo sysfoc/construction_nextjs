@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 import React from "react";
 import Image from "next/image";
 import { ChevronsRight, Phone } from "lucide-react";
@@ -6,17 +6,17 @@ import { ChevronsRight, Phone } from "lucide-react";
 export default function ContractorHero() {
   const services = [
     {
-      img: "/services_01.jpg",
+      img: "/services/services_01.jpg",
       title: "Best Repair &\nPainting",
       desc: "There are many variations of passages of Lorem...",
     },
     {
-      img: "/services_02.jpg",
+      img: "/services/services_02.jpg",
       title: "Heavy\nEquipment",
       desc: "There are many variations of passages of Lorem...",
     },
     {
-      img: "/services_03.jpg",
+      img: "/services/services_03.jpg",
       title: "Apartment\nDesign",
       desc: "There are many variations of passages of Lorem...",
     },
@@ -355,7 +355,7 @@ export default function ContractorHero() {
                 </div>
 
                 {/* Name + Role */}
-                <div className="bg-gray-200 text-gray-800 relative top-2 left-[-2%] px-3 py-3 -mt-6 rounded-bl-3xl w-[65%] text-left ">
+                <div className="bg-gray-200 text-gray-800 relative top-2 left-[-2%] px-3 py-3 -mt-6 rounded-bl-3xl w-[85%] text-left ">
                   <h3 className="text-sm font-bold leading-tight ">
                     {member.name}
                   </h3>
