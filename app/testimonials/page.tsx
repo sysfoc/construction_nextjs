@@ -211,7 +211,7 @@ const CustomerTestimonials: React.FC = () => {
               Trusted by Industry Leaders
             </h2>
             <p className="text-[var(--paragraph-color)] text-base max-w-2xl mx-auto">
-              Don't just take our word for it. Here's what our clients have to
+              Don&apos;t just take our word for it. Here&apos;s what our clients have to
               say about their experience working with us.
             </p>
           </div>
