@@ -145,3 +145,8 @@ body {
   background-position: right 1rem center;
   background-size: 1rem;
 }
+
+/* handles dynamic height via CSS variable */
+[aria-expanded] {
+  max-height: var(--max-h);
+}
