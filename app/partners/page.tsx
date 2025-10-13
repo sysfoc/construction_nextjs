@@ -31,12 +31,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       } gap-0 mb-8 lg:mb-4 overflow-hidden rounded-lg shadow-lg max-w-6xl mx-auto`}
     >
       {/* Image Section */}
-     <div className="w-full lg:w-2/5 relative h-48 lg:h-64 bg-white">
+      <div className="w-full lg:w-2/5 relative h-64 sm:h-72 lg:h-64 bg-white">
         <Image
           src={imageSrc}
           alt={title}
           fill
-          className="object-contain"
+          className="object-cover lg:object-contain"
         />
       </div>
 
