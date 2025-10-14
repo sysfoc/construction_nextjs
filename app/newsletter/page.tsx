@@ -1,0 +1,72 @@
+"use client";
+
+import { useState } from "react";
+
+export default function Newsletter() {
+  const [mode, setMode] = useState<"subscribe" | "unsubscribe">("subscribe");
+  const [email, setEmail] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    alert(
+      mode === "subscribe"
+        ? "A confirmation link has been sent to your email. Please verify to complete subscription."
+        : "You have been unsubscribed from our newsletter."
+    );
+    setEmail("");
+  };
+
+  return (
+    <main className='min-h-screen flex items-center justify-center px-6'>
+      <section className='max-w-md w-full border border-gray-100 rounded-2xl shadow-md p-8 text-center'>
+        <h1 className='text-3xl font-bold mb-3 text-[#ff6600]'>
+          {mode === "subscribe" ? "Subscribe to Newsletter" : "Unsubscribe"}
+        </h1>
+        <p className='mb-8'>
+          {mode === "subscribe"
+            ? "Enter your email to stay updated. A confirmation link will be sent to your inbox."
+            : "Enter your email to unsubscribe from our mailing list."}
+        </p>
+        <form onSubmit={handleSubmit} className='space-y-4'>
+          <input
+            type='email'
+            required
+            placeholder='Enter your email address'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className='w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ff6600]'
+          />
+          <button
+            type='submit'
+            className='w-full bg-[#ff6600] text-white font-semibold py-3 rounded-lg hover:opacity-90 transition-all'
+          >
+            {mode === "subscribe" ? "Subscribe" : "Unsubscribe"}
+          </button>
+        </form>
+        <div className='mt-6 text-sm'>
+          {mode === "subscribe" ? (
+            <>
+              Want to unsubscribe?{" "}
+              <button
+                onClick={() => setMode("unsubscribe")}
+                className='text-[#ff6600] font-medium hover:underline'
+              >
+                Click here
+              </button>
+            </>
+          ) : (
+            <>
+              Want to subscribe again?{" "}
+              <button
+                onClick={() => setMode("subscribe")}
+                className='text-[#ff6600] font-medium hover:underline'
+              >
+                Click here
+              </button>
+            </>
+          )}
+        </div>
+      </section>
+    </main>
+  );
+}
