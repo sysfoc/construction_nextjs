@@ -1,122 +1,112 @@
-import type { Metadata } from "next"
-import { GallerySection } from "../components/User/gallery-section"
-import { ChevronsRight } from "lucide-react"
+"use client";
 
-export const metadata: Metadata = {
-  title: "Our Work Gallery",
-  description: "Explore our construction excellence across Residential, Commercial, and Infrastructure projects.",
-}
+import { useState } from "react";
 
-type GalleryImage = {
-  src: string
-  alt: string
-}
-const residential: GalleryImage[] = [
-  { src: "/gallery/residential-1.jpg", alt: "Residential build – modern exterior 1" },
-  { src: "/gallery/residential-2.jpg", alt: "Residential build – modern exterior 2" },
-  { src: "/gallery/residential-3.jpg", alt: "Residential build – interior staircase" },
-  { src: "/gallery/residential-4.jpg", alt: "Residential build – living room finish" },
-  { src: "/gallery/residential-5.jpg", alt: "Residential build – facade details" },
-  { src: "/gallery/residential-6.jpg", alt: "Residential build – rooftop terrace" },
-  { src: "/gallery/residential-7.jpg", alt: "Residential build – structural framing" },
-  { src: "/gallery/residential-8.jpg", alt: "Residential build – concrete pour" },
-  { src: "/gallery/residential-9.jpg", alt: "Residential build – site overview" },
-]
+export default function Gallery() {
+  const [activeAlbum, setActiveAlbum] = useState("All");
 
-const commercial: GalleryImage[] = [
-  { src: "/gallery/commercial-1.jpg", alt: "Commercial project – office exterior 1" },
-  { src: "/gallery/commercial-2.jpg", alt: "Commercial project – office exterior 2" },
-  { src: "/gallery/commercial-3.jpg", alt: "Commercial project – lobby finish" },
-  { src: "/gallery/commercial-4.jpg", alt: "Commercial project – atrium glass" },
-  { src: "/gallery/commercial-5.jpg", alt: "Commercial project – steel framing" },
-  { src: "/gallery/commercial-6.jpg", alt: "Commercial project – curtain wall install" },
-  { src: "/gallery/commercial-7.jpg", alt: "Commercial project – site cranes" },
-  { src: "/gallery/commercial-8.jpg", alt: "Commercial project – interior fit-out" },
-  { src: "/gallery/commercial-9.jpg", alt: "Commercial project – mechanical systems" },
-]
+  const albums = [
+    "All",
+    "Residential",
+    "Commercial",
+    "Renovation",
+    "Machinery",
+  ];
 
-const infrastructure: GalleryImage[] = [
-  { src: "/gallery/infrastructure-1.jpg", alt: "Infrastructure – highway overpass" },
-  { src: "/gallery/infrastructure-2.jpg", alt: "Infrastructure – bridge construction" },
-  { src: "/gallery/infrastructure-3.jpg", alt: "Infrastructure – tunnel works" },
-  { src: "/gallery/infrastructure-4.jpg", alt: "Infrastructure – rail viaduct" },
-  { src: "/gallery/infrastructure-5.jpg", alt: "Infrastructure – heavy equipment on site" },
-  { src: "/gallery/infrastructure-6.jpg", alt: "Infrastructure – road paving" },
-  { src: "/gallery/infrastructure-7.jpg", alt: "Infrastructure – retaining walls" },
-  { src: "/gallery/infrastructure-8.jpg", alt: "Infrastructure – bridge deck pour" },
-  { src: "/gallery/infrastructure-9.jpg", alt: "Infrastructure – elevated roadway" },
-]
+  const galleryItems = [
+    {
+      id: 1,
+      type: "photo",
+      src: "/gallery/site_01.png",
+      category: "Residential",
+    },
+    {
+      id: 2,
+      type: "photo",
+      src: "/gallery/site_02.png",
+      category: "Commercial",
+    },
+    { id: 3, type: "video", src: "/gallery/drone_01.mp4", category: "Renovation" },
+    {
+      id: 4,
+      type: "photo",
+      src: "/gallery/site_03.png",
+      category: "Machinery",
+    },
+    {
+      id: 5,
+      type: "video",
+      src: "/gallery/drone_01.mp4",
+      category: "Residential",
+    },
+  ];
 
-export default function GalleryPage() {
+  const filteredItems =
+    activeAlbum === "All"
+      ? galleryItems
+      : galleryItems.filter((item) => item.category === activeAlbum);
+
   return (
-    <>
-      <section className="relative -mt-20 lg:-mt-10 bg-[url('/Team/team.png')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center">
-        <div className='absolute inset-0 bg-[#161D39]/80'></div>
-        <div className='relative z-10 text-center text-white px-4'>
-          <h1 className='text-5xl font-extrabold mb-4 tracking-wide drop-shadow-lg'>
-            Gallery
+    <main className='min-h-screen text-gray-900 dark:text-gray-100 px-6 py-16'>
+      <section className='max-w-6xl mx-auto'>
+        <div className='text-center mb-10'>
+          <h1 className='text-4xl font-extrabold text-[#ff6600] mb-3 uppercase tracking-tight'>
+            Project Gallery
           </h1>
-          <p className='text-lg font-light text-gray-200'>
-            Home <ChevronsRight className='inline-block w-4 h-4 text-primary' />{" "}
-            <span>Gallery</span>
+          <p className='dark:text-gray-300 max-w-2xl mx-auto'>
+            Explore our work through photos and videos. Browse by category to
+            see construction, renovation, and on-site progress.
           </p>
         </div>
+        <div className='flex flex-wrap justify-center gap-3 mb-10'>
+          {albums.map((album) => (
+            <button
+              key={album}
+              onClick={() => setActiveAlbum(album)}
+              className={`px-5 py-2 rounded-full border border-[#ff6600] text-sm font-medium transition-all ${
+                activeAlbum === album
+                  ? "bg-[#ff6600] text-white"
+                  : "text-[#ff6600] hover:bg-[#ff6600]/10"
+              }`}
+            >
+              {album}
+            </button>
+          ))}
+        </div>
+        <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-6'>
+          {filteredItems.map((item) => (
+            <div
+              key={item.id}
+              className='rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all'
+            >
+              {item.type === "photo" ? (
+                <img
+                  src={item.src}
+                  alt={item.category}
+                  className='w-full h-56 object-cover hover:scale-105 transition-transform duration-300'
+                />
+              ) : (
+                <video
+                  controls
+                  autoPlay
+                  src={item.src}
+                  className='w-full h-56 object-cover bg-black'
+                ></video>
+              )}
+              <div className='p-4 text-center'>
+                <p className='text-sm font-medium dark:text-gray-300'>
+                  {item.category}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+        {filteredItems.length === 0 && (
+          <div className='text-center mt-10 text-gray-500 dark:text-gray-400'>
+            No media found in this category.
+          </div>
+        )}
       </section>
-
-    <main className="w-full">
-      <header className="grid gap-2 px-4 md:px-6 py-4">
-        <h1
-          className="text-lg md:text-xl font-semibold tracking-tight text-balance"
-          style={{ color: "var(--page-heading, var(--color-foreground))" }}
-        >
-          Our Work Gallery – Explore Our Construction Excellence
-        </h1>
-        <p className="text-sm leading-relaxed text-pretty" style={{ color: "var(--color-muted-foreground)" }}>
-          A visual showcase of our projects across residential, commercial, and infrastructure—built with quality and
-          trust.
-        </p>
-       <nav aria-label="Gallery categories" className="text-xs font-medium">
-  <ul className="flex items-center gap-3" style={{ color: "var(--color-muted-foreground)" }}>
-    <li>
-      <a href="#residential" className="no-underline px-2 py-1 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)]">
-        {"Residential"}
-      </a>
-    </li>
-    <li>
-      <a href="#commercial" className="no-underline px-2 py-1 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)]">
-        {"Commercial"}
-      </a>
-    </li>
-    <li>
-      <a href="#infrastructure" className="no-underline px-2 py-1 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)]">
-        {"Infrastructure"}
-      </a>
-    </li>
-  </ul>
-</nav>
-      </header>
-
-      <div className="grid gap-2 px-4 md:px-6 pb-6">
-        <GallerySection
-          id="residential"
-          title="Residential"
-          subtitle="Single-family, multi‑unit, interiors & exteriors"
-          images={residential}
-        />
-        <GallerySection
-          id="commercial"
-          title="Commercial"
-          subtitle="Offices, lobbies, glazing, mechanical"
-          images={commercial}
-        />
-        <GallerySection
-          id="infrastructure"
-          title="Infrastructure"
-          subtitle="Bridges, roads, rail, tunnels"
-          images={infrastructure}
-        />
-      </div>
     </main>
-    </>
-  )
+  );
 }
