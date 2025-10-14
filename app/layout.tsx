@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Exo } from "next/font/google";
 import "./globals.css";
 import Header from "@/app/components/User/Header";
+import Cookie from "./components/User/Cookie";
 import Footer from "./components/User/Footer";
 
 const exo = Exo({
@@ -28,6 +29,7 @@ export default function RootLayout({
       <body className={`${exo.className} antialiased max-w-[1920px] mx-auto`}>
         <Header />
         {children}
+        <Cookie />
         <Footer />
       </body>
     </html>
