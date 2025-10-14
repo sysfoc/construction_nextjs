@@ -2,6 +2,12 @@ import React from "react";
 import Image from "next/image";
 import { ChevronsRight } from "lucide-react";
 
+
+export const metadata = {
+  title: "Testimonials | Client Feedback",
+  description: "Read feedback from our clients and partners who trust our construction services and project delivery.",
+}
+
 interface Testimonial {
   id: number;
   name: string;

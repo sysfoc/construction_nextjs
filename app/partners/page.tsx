@@ -3,6 +3,12 @@ import React from "react";
 import { Users, Award, Shield, Clock, TrendingUp, ChevronsRight } from "lucide-react";
 import Image from "next/image";
 
+export const metadata = {
+  title: "Partners | Construction Collaborations",
+  description: "Discover our trusted construction partners and strategic collaborations that drive quality and innovation across major projects.",
+}
+
+
 interface ProjectCardProps {
   imageSrc: string;
   title: string;
@@ -233,7 +239,7 @@ const CombinedPartnersPage: React.FC = () => {
                 transform: translateX(-50%);
               }
             }
-            .animate-marquee {
+            .animate-marquee { 
               animation: marquee 30s linear infinite;
             }
             .hover\\:pause:hover {

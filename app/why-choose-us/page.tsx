@@ -2,6 +2,12 @@ import React from 'react';
 import Image from 'next/image';
 import { MapPin, Hammer, Crown, ChevronsRight } from 'lucide-react';
 
+export const metadata = {
+  title: "Why Choose Us | Construction Expertise",
+  description: "Discover why clients trust our construction company for quality, reliability, and years of proven experience.",
+}
+
+
 // Step Component
 interface StepProps {
   number: string;
@@ -14,11 +20,7 @@ interface StepProps {
 const Step: React.FC<StepProps> = ({ number, title, description, iconSrc, isReversed = false }) => {
   return (
     <div className="relative flex flex-col items-center">
-      {/* Large background number */}
-      {/* <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-[140px] font-bold text-gray-100 leading-none pointer-events-none z-0 dark:text-[var(--background)]">
-        {number}
-      </div> */}
-      
+   
       <div className="relative z-10 flex flex-col items-center w-full px-4">
         {isReversed ? (
           <>

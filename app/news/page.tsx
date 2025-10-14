@@ -2,6 +2,12 @@ import { getNews } from "@/data/news"
 import NewsSearchList from "../components/General/news-search-list"
 import { ChevronsRight } from "lucide-react"
 
+
+export const metadata = {
+  title: "News | Construction Updates",
+  description: "Stay updated with the latest news, insights, and project announcements from our construction team.",
+}
+
 export default function NewsPage() {
   const items = getNews()
 
