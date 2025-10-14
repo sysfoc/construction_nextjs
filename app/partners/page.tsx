@@ -1,5 +1,3 @@
-"use client";
-import React from "react";
 import { Users, Award, Shield, Clock, TrendingUp, ChevronsRight } from "lucide-react";
 import Image from "next/image";
 
