@@ -2,9 +2,11 @@
 import Image from "next/image";
 import { Phone, ArrowRight } from "lucide-react";
 import SolidButton from "../General/buttons/SolidButton";
+import HeroBanner from "./HeroBanner";
 
 export default function HeroSection() {
   return (
+    <>
     <div className="relative w-full h-screen min-h-[650px] overflow-hidden -mt-20 lg:-mt-24">
       {/* Background Image */}
       <Image
@@ -78,5 +80,7 @@ export default function HeroSection() {
         </div>
       </div>
     </div>
+    <HeroBanner/>
+    </>
   );
 }
