@@ -56,7 +56,7 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
       label: 'Settings',
       subItems: [
         { label: 'General', path: '/admin/settings/general' },
-        { label: 'SEO', path: '/admin/settings/seo' },
+        { label: 'SEO', path: '/admin/settings/SEO' },
       ]
     },
     { icon: Menu, label: 'Menu Management', path: '/admin/menu' },
