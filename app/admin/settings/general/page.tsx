@@ -1,19 +1,28 @@
-'use client';
-import { Upload, Save, Facebook, Twitter, Instagram, Linkedin, Youtube } from 'lucide-react';
-import { useState } from 'react';
+"use client";
+import {
+  Upload,
+  Save,
+  Facebook,
+  Twitter,
+  Instagram,
+  Linkedin,
+  Youtube,
+} from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
 
 export default function GeneralSettingsPage() {
   const [formData, setFormData] = useState({
-    companyName: 'Construct',
-    address: '123 Construction Ave, Building District, City 12345',
-    phone: '+1 (555) 123-4567',
-    email: 'info@sysfoc.com',
-    officeHours: 'Mon-Fri: 8:00 AM - 6:00 PM, Sat-Sun: Closed',
-    facebook: 'https://facebook.com/Construct',
-    twitter: 'https://twitter.com/Construct',
-    instagram: 'https://instagram.com/Construct',
-    linkedin: 'https://linkedin.com/company/Construct',
-    youtube: 'https://youtube.com/Construct'
+    companyName: "Construct",
+    address: "123 Construction Ave, Building District, City 12345",
+    phone: "+1 (555) 123-4567",
+    email: "info@sysfoc.com",
+    officeHours: "Mon-Fri: 8:00 AM - 6:00 PM, Sat-Sun: Closed",
+    facebook: "https://facebook.com/Construct",
+    twitter: "https://twitter.com/Construct",
+    instagram: "https://instagram.com/Construct",
+    linkedin: "https://linkedin.com/company/Construct",
+    youtube: "https://youtube.com/Construct",
   });
 
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -22,7 +31,7 @@ export default function GeneralSettingsPage() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,7 +46,7 @@ export default function GeneralSettingsPage() {
   };
 
   const handleSubmit = () => {
-    console.log('Form submitted:', formData);
+    console.log("Form submitted:", formData);
   };
 
   return (
@@ -53,17 +62,21 @@ export default function GeneralSettingsPage() {
             Company Logo
           </h2>
           <div className="flex flex-col sm:flex-row items-start gap-6">
-            <div className="w-32 h-32 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50">
+            <div className="relative w-32 h-32 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50">
               {logoPreview ? (
-                <img
-                  src={logoPreview}
-                  alt="Logo preview"
-                  className="w-full h-full object-contain p-2"
-                />
+                <div className="relative w-full h-full p-2">
+                  <Image
+                    src={logoPreview}
+                    alt="Logo preview"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
               ) : (
                 <Upload className="w-8 h-8 text-gray-400" />
               )}
             </div>
+
             <div className="flex-1">
               <label className="block">
                 <span className="text-sm text-[var(--header-text)] mb-2 block">

@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import { RiArrowRightDoubleLine } from "react-icons/ri";
 import SlantedButton from "../General/buttons/SlantedButton";
 
 const ConstructionCTA: React.FC = () => {

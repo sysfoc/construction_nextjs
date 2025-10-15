@@ -1,6 +1,5 @@
 // "use client";
 import React from "react";
-import { RiArrowRightDoubleLine } from "react-icons/ri";
 import Image from "next/image";
 import SlantedButton from "../General/buttons/SlantedButton";
 

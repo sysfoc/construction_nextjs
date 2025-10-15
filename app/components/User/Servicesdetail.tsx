@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { Check } from "lucide-react";
-import { RiArrowRightDoubleLine } from "react-icons/ri";
 import Image from "next/image";
 import SlantedButton from "../General/buttons/SlantedButton";
 

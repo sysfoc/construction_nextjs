@@ -33,7 +33,7 @@ interface AdminSidebarProps {
 }
 
 interface MenuItem {
-  icon: any;
+  icon: React.ElementType;
   label: string;
   path?: string;
   subItems?: { label: string; path: string }[];
