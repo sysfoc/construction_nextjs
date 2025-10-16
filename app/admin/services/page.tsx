@@ -209,7 +209,7 @@ export default function ServicesManagementPage() {
                       type="file"
                       accept="image/*"
                       onChange={(e) => handleImageChange(e, "photo")}
-                      className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-[var(--primary)] file:text-[var(--primary-foreground)] cursor-pointer"
+                      className="block text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-[var(--primary)] file:text-[var(--primary-foreground)] cursor-pointer"
                     />
                     <p className="text-xs text-gray-500 mt-1">
                       Recommended: 600x400px
@@ -235,7 +235,7 @@ export default function ServicesManagementPage() {
                       type="file"
                       accept="image/*"
                       onChange={(e) => handleImageChange(e, "banner")}
-                      className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-[var(--primary)] file:text-[var(--primary-foreground)] cursor-pointer"
+                      className="block text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-[var(--primary)] file:text-[var(--primary-foreground)] cursor-pointer"
                     />
                     <p className="text-xs text-gray-500 mt-1">
                       Recommended: 1920x400px
