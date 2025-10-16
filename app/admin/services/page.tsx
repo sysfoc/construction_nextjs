@@ -1,5 +1,6 @@
 "use client";
 import { Save, Plus, Trash2, Upload, Edit2, X } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 
 interface Service {
@@ -194,12 +195,13 @@ export default function ServicesManagementPage() {
                     <label className="block text-sm text-[var(--header-text)] mb-2">
                       Service Photo
                     </label>
-                    <div className="w-full h-32 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 mb-2 overflow-hidden">
+                    <div className="relative w-full h-32 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 mb-2 overflow-hidden">
                       {formData.photoPreview ? (
-                        <img
+                        <Image
                           src={formData.photoPreview}
                           alt="Photo preview"
-                          className="w-full h-full object-cover rounded"
+                          fill
+                          className="object-cover rounded"
                         />
                       ) : (
                         <Upload className="w-6 h-6 text-gray-400" />
@@ -220,17 +222,19 @@ export default function ServicesManagementPage() {
                     <label className="block text-sm text-[var(--header-text)] mb-2">
                       Service Banner
                     </label>
-                    <div className="w-full h-32 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 mb-2 overflow-hidden">
+                    <div className="relative w-full h-32 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 mb-2 overflow-hidden">
                       {formData.bannerPreview ? (
-                        <img
+                        <Image
                           src={formData.bannerPreview}
                           alt="Banner preview"
-                          className="w-full h-full object-cover rounded"
+                          fill
+                          className="object-cover rounded"
                         />
                       ) : (
                         <Upload className="w-6 h-6 text-gray-400" />
                       )}
                     </div>
+
                     <input
                       type="file"
                       accept="image/*"
@@ -316,12 +320,13 @@ export default function ServicesManagementPage() {
             ) : (
               <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-0">
                 <div className="flex items-start gap-3 sm:gap-4 flex-1 w-full min-w-0">
-                  <div className="w-20 sm:w-24 h-20 sm:h-24 bg-gray-100 border border-[var(--border-color)] rounded flex items-center justify-center shrink-0 overflow-hidden">
+                  <div className="relative w-20 sm:w-24 h-20 sm:h-24 bg-gray-100 border border-[var(--border-color)] rounded flex items-center justify-center shrink-0 overflow-hidden">
                     {service.photo ? (
-                      <img
+                      <Image
                         src={service.photo}
                         alt="Service"
-                        className="w-full h-full object-cover rounded"
+                        fill
+                        className="object-cover rounded"
                       />
                     ) : (
                       <span className="text-xs text-gray-400">No Photo</span>

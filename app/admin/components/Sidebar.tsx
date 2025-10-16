@@ -65,7 +65,7 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
     { icon: HelpCircle, label: 'FAQs', path: '/admin/faqs' },
     { icon: FolderOpen, label: 'Portfolio', path: '/admin/portfolio' },
     { icon: Users, label: 'Team', path: '/admin/team' },
-    { icon: Share2, label: 'Social Media', path: '/admin/social-media' },
+    // { icon: Share2, label: 'Social Media', path: '/admin/social-media' },
     { icon: MessageSquare, label: 'Testimonials', path: '/admin/testimonials' },
     { icon: Handshake, label: 'Partners', path: '/admin/partners' },
     { icon: Award, label: 'Why Choose Us', path: '/admin/why-choose-us' },
