@@ -72,7 +72,7 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
     // { icon: FileText, label: 'Pages Management', path: '/admin/pages' },
     { icon: Newspaper, label: 'News Management', path: '/admin/news' },
     { icon: UserCheck, label: 'Careers', path: '/admin/careers' },
-    { icon: GitBranch, label: 'Process', path: '/admin/process' },
+    { icon: GitBranch, label: 'How we work', path: '/admin/how-we-work' },
     { icon: Shield, label: 'Certifications', path: '/admin/certifications' },
     { icon: FileSignature, label: 'Quote Requests', path: '/admin/quote' },
     { icon: Images, label: 'Gallery', path: '/admin/gallery' },
