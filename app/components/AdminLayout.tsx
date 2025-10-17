@@ -27,7 +27,7 @@ export default function AdminLayout({ children }: Props) {
         <Sidebar isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen} />
         <div className="flex-1 flex flex-col">
           <AdminHeader onMenuClick={() => setIsDrawerOpen(true)} />
-          <main className="flex-1 p-4 mt-16 lg:ml-64">
+          <main className="flex-1 mt-16 lg:ml-64">
             {children}
           </main>
         </div>

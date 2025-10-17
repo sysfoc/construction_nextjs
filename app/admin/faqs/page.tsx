@@ -179,7 +179,7 @@ export default function FAQManagementPage() {
 
                 <div>
                   <label className="block text-sm text-[var(--header-text)] mb-3">Display Options</label>
-                  <div className="space-y-3">
+                  <div className="space-y-3 w-fit">
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         type="checkbox"
