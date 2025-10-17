@@ -78,7 +78,7 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
     { icon: Images, label: 'Gallery', path: '/admin/gallery' },
     { icon: Mail, label: 'Newsletter', path: '/admin/newsletter' },
     { icon: MessageCircle, label: 'Contact Form', path: '/admin/contact' },
-    { icon: UserCog, label: 'User Management', path: '/admin/users' },
+    { icon: UserCog, label: 'User Management', path: '/admin/user-management' },
   ];
 
   const SidebarContent = () => (
