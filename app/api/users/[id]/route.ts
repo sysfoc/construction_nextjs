@@ -6,7 +6,7 @@ import User from '@/lib/models/User';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -24,6 +24,7 @@ export async function PUT(
     }
 
     const data = await request.json();
+    const { id } = await context.params;
     
     // If password is empty, don't update it
     if (!data.password) {
@@ -31,7 +32,7 @@ export async function PUT(
     }
 
     const updated = await User.findByIdAndUpdate(
-      params.id,
+      id,
       data,
       { new: true }
     ).select('-password');
@@ -60,7 +61,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
@@ -77,7 +78,8 @@ export async function DELETE(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    await User.findByIdAndDelete(params.id);
+    const { id } = await context.params;
+    await User.findByIdAndDelete(id);
     
     return NextResponse.json({ success: true });
   } catch (error) {
