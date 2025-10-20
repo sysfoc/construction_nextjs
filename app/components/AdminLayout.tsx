@@ -20,7 +20,10 @@ export default function AdminLayout({ children }: Props) {
   const pathname = usePathname();
   const isAdminRoute = pathname.startsWith("/admin");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const isLoginRoute = pathname === "/login";
 
+
+  // Admin layout
   if (isAdminRoute) {
     return (
       <div className="flex min-h-screen bg-slate-100">
@@ -33,6 +36,11 @@ export default function AdminLayout({ children }: Props) {
         </div>
       </div>
     );
+  }
+ 
+  // Login page layout
+  if (isLoginRoute) {
+    return <main>{children}</main>;
   }
 
   // User layout

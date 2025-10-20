@@ -104,14 +104,11 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
 
                 {/* Submenu with smooth slide and fade */}
                 <div
-                  className={`transition-all duration-300 ease-out ${
+                  className={`transition-all duration-300 ease-out overflow-hidden ${
                     openMenus[item.label] 
                       ? 'max-h-96 opacity-100 mt-1' 
                       : 'max-h-0 opacity-0 mt-0'
                   }`}
-                  style={{
-                    overflow: 'hidden'
-                  }}
                 >
                   <div className="ml-5 space-y-1 py-1">
                     {item.subItems.map((subItem, subIndex) => (

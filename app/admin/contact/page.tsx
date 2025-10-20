@@ -1,7 +1,7 @@
 "use client";
 import { Save, Plus, Trash2, Edit2, X, Mail, Phone, MapPin, Clock, MessageSquare } from "lucide-react";
 import { useState, ChangeEvent } from "react";
-import ContactMessageModal from "../components/ContactMessageModal";
+import ContactMessageModal from "../components/modals/ContactMessageModal";
 
 interface ContactInfo {
   address: string;

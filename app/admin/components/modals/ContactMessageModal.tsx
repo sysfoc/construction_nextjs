@@ -1,13 +1,6 @@
 "use client";
-import { Save, Plus, Trash2, Edit2, X, Mail, Phone, MapPin, Clock, MessageSquare } from "lucide-react";
-import { useState, ChangeEvent } from "react";
-
-interface ContactInfo {
-  address: string;
-  phone: string;
-  email: string;
-  workingHours: string;
-}
+import { X, Mail, Clock } from "lucide-react";
+import { useState } from "react";
 
 interface ContactMessage {
   id: number;

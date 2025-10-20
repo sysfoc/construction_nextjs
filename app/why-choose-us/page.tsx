@@ -97,7 +97,7 @@ const ProcessSteps: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Dotted connecting lines */}
         <div className="relative hidden lg:block">
-          <svg className="absolute top-40 left-0 w-full h-24 pointer-events-none" style={{ zIndex: 1 }}>
+          <svg className="absolute top-40 left-0 w-full h-24 pointer-events-none z-[1]">
             <path
               d="M 200 50 Q 350 10, 500 50 Q 650 90, 800 50"
               stroke="var(--border-color)"

@@ -1,7 +1,7 @@
 'use client';
 import { Save, Eye, Trash2, ChevronLeft, ChevronRight, Mail, Phone, Calendar } from 'lucide-react';
 import { useState } from 'react';
-import QuoteModal from '../components/QuoteModal';
+import QuoteModal from '../components/modals/QuoteModal';
 
 interface Quote {
   id: number;

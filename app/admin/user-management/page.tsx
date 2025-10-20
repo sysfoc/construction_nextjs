@@ -1,6 +1,7 @@
 "use client";
 import { Save, Plus, Trash2, Edit2, X, Shield, User } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import ConfirmationModal from "../components/modals/confirmationModal";
 
 interface UserRole {
   id: string;
@@ -12,17 +13,14 @@ interface User {
   name: string;
   email: string;
   role: string;
-  status: "active" | "inactive";
   joinDate: string;
-  permissions: string[];
 }
 
 interface FormData {
   name: string;
   email: string;
   role: string;
-  status: "active" | "inactive";
-  permissions: string[];
+  password: string;
 }
 
 const roles: UserRole[] = [
@@ -30,67 +28,29 @@ const roles: UserRole[] = [
   { id: "user", name: "User" },
 ];
 
-const allPermissions = [
-  "manage_users",
-];
-
 export default function UserManagementPage() {
-  const [users, setUsers] = useState<User[]>([
-    {
-      id: 1,
-      name: "John Admin",
-      email: "john@example.com",
-      role: "admin",
-      status: "active",
-      joinDate: "2024-01-15",
-      permissions: allPermissions,
-    },
-    {
-      id: 2,
-      name: "Sarah Johnson",
-      email: "sarah@example.com",
-      role: "admin",
-      status: "active",
-      joinDate: "2024-02-20",
-      permissions: ["manage_users"],
-    },
-    {
-      id: 3,
-      name: "Mike Wilson",
-      email: "mike@example.com",
-      role: "user",
-      status: "active",
-      joinDate: "2024-03-10",
-      permissions: [],
-    },
-    {
-      id: 4,
-      name: "Emma Davis",
-      email: "emma@example.com",
-      role: "user",
-      status: "inactive",
-      joinDate: "2024-04-05",
-      permissions: [],
-    },
-    {
-      id: 5,
-      name: "David Smith",
-      email: "david@example.com",
-      role: "admin",
-      status: "active",
-      joinDate: "2024-05-12",
-      permissions: ["manage_users"],
-    },
-  ]);
-
+  const [users, setUsers] = useState<User[]>([]);
   const [editingUser, setEditingUser] = useState<number | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<number | null>(null);
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     role: "",
-    status: "active",
-    permissions: [],
+    password: "",
   });
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    const res = await fetch("/api/users");
+    if (res.ok) {
+      const data = await res.json();
+      setUsers(data.users);
+    }
+  };
 
   const handleEdit = (user: User) => {
     setEditingUser(user.id);
@@ -98,8 +58,7 @@ export default function UserManagementPage() {
       name: user.name,
       email: user.email,
       role: user.role,
-      status: user.status,
-      permissions: user.permissions,
+      password: "",
     });
   };
 
@@ -109,8 +68,7 @@ export default function UserManagementPage() {
       name: "",
       email: "",
       role: "",
-      status: "active",
-      permissions: [],
+      password: "",
     });
   };
 
@@ -121,66 +79,72 @@ export default function UserManagementPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlePermissionChange = (permission: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      permissions: prev.permissions.includes(permission)
-        ? prev.permissions.filter((p) => p !== permission)
-        : [...prev.permissions, permission],
-    }));
-  };
-
-  const handleSaveUser = () => {
+  const handleSaveUser = async () => {
     if (editingUser) {
-      setUsers((prev) =>
-        prev.map((u) =>
-          u.id === editingUser
-            ? {
-                ...u,
-                name: formData.name,
-                email: formData.email,
-                role: formData.role,
-                status: formData.status,
-                permissions: formData.permissions,
-              }
-            : u
-        )
-      );
-      handleCancel();
+      const res = await fetch(`/api/users/${editingUser}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        await fetchUsers();
+        handleCancel();
+      }
     }
   };
 
   const handleAddUser = () => {
-    const newUser: User = {
-      id: Date.now(),
+    setEditingUser(-1);
+    setFormData({
       name: "New User",
       email: "newuser@example.com",
       role: "user",
-      status: "active",
-      joinDate: new Date().toISOString().split("T")[0],
-      permissions: [],
-    };
-    setUsers((prev) => [newUser, ...prev]);
-    handleEdit(newUser);
+      password: "",
+    });
   };
 
-  const handleDeleteUser = (id: number) => {
-    setUsers((prev) => prev.filter((u) => u.id !== id));
+  const handleCreateUser = async () => {
+    const res = await fetch("/api/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: Date.now(),
+        name: formData.name,
+        email: formData.email,
+        role: formData.role,
+        password: formData.password,
+        joinDate: new Date().toISOString().split("T")[0],
+      }),
+    });
+
+    if (res.ok) {
+      await fetchUsers();
+      handleCancel();
+    }
   };
 
-  const handleSubmit = () => {
-    console.log("Users saved:", users);
+  const handleDeleteUser = async (id: number) => {
+    setUserToDelete(id);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteUser = async () => {
+    if (userToDelete === null) return;
+
+    const res = await fetch(`/api/users/${userToDelete}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      await fetchUsers();
+    }
+
+    setUserToDelete(null);
   };
 
   const getRoleLabel = (roleId: string) => {
     return roles.find((r) => r.id === roleId)?.name || roleId;
-  };
-
-  const getPermissionLabel = (permission: string) => {
-    return permission
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
   };
 
   return (
@@ -200,6 +164,101 @@ export default function UserManagementPage() {
         </div>
 
         <div className="space-y-3 sm:space-y-4">
+          {editingUser === -1 && (
+            <div className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4 w-full overflow-hidden">
+              <div className="space-y-3 sm:space-y-4">
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <h3 className="text-base sm:text-lg font-semibold text-[var(--header-text)]">
+                    Create New User
+                  </h3>
+                  <button
+                    onClick={handleCancel}
+                    className="text-gray-500 flex-shrink-0"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="w-full">
+                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                    />
+                  </div>
+
+                  <div className="w-full">
+                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="w-full">
+                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                      Role
+                    </label>
+                    <select
+                      name="role"
+                      value={formData.role}
+                      onChange={handleInputChange}
+                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-white text-sm sm:text-base"
+                    >
+                      {roles.map((r) => (
+                        <option key={r.id} value={r.id}>
+                          {r.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="w-full">
+                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2 w-full">
+                  <button
+                    onClick={handleCancel}
+                    className="w-full sm:w-auto px-4 py-2 border border-[var(--border-color)] rounded text-[var(--header-text)] text-sm sm:text-base"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleCreateUser}
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base"
+                  >
+                    <Save className="w-4 h-4 flex-shrink-0" />
+                    <span>Create User</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {users.map((user) => (
             <div
               key={user.id}
@@ -268,41 +327,16 @@ export default function UserManagementPage() {
 
                     <div className="w-full">
                       <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                        Status
+                        Password (leave unchanged to keep current)
                       </label>
-                      <select
-                        name="status"
-                        value={formData.status}
+                      <input
+                        type="password"
+                        name="password"
+                        value={formData.password}
                         onChange={handleInputChange}
-                        className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-white text-sm sm:text-base"
-                      >
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="w-full">
-                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-2 sm:mb-3">
-                      Permissions
-                    </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-gray-50 p-3 sm:p-4 rounded border border-[var(--border-color)]">
-                      {allPermissions.map((permission) => (
-                        <label
-                          key={permission}
-                          className="flex items-center gap-2 cursor-pointer"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={formData.permissions.includes(permission)}
-                            onChange={() => handlePermissionChange(permission)}
-                            className="w-4 h-4 accent-[var(--primary)]"
-                          />
-                          <span className="text-xs sm:text-sm text-[var(--header-text)]">
-                            {getPermissionLabel(permission)}
-                          </span>
-                        </label>
-                      ))}
+                        className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                        placeholder="Enter new password"
+                      />
                     </div>
                   </div>
 
@@ -333,15 +367,6 @@ export default function UserManagementPage() {
                         <h3 className="font-semibold text-[var(--header-text)] text-sm sm:text-base break-words">
                           {user.name}
                         </h3>
-                        <span
-                          className={`text-xs px-2 py-1 rounded whitespace-nowrap flex-shrink-0 font-medium ${
-                            user.status === "active"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-gray-100 text-gray-600"
-                          }`}
-                        >
-                          {user.status === "active" ? "Active" : "Inactive"}
-                        </span>
                       </div>
                       <p className="text-xs text-gray-500 mb-1 break-all">
                         {user.email}
@@ -349,21 +374,6 @@ export default function UserManagementPage() {
                       <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 mb-1.5">
                         <Shield className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
                         <span>{getRoleLabel(user.role)}</span>
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {user.permissions.slice(0, 2).map((perm) => (
-                          <span
-                            key={perm}
-                            className="text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded"
-                          >
-                            {getPermissionLabel(perm)}
-                          </span>
-                        ))}
-                        {user.permissions.length > 2 && (
-                          <span className="text-xs text-gray-500 px-1.5 py-0.5">
-                            +{user.permissions.length - 2} more
-                          </span>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -386,17 +396,17 @@ export default function UserManagementPage() {
             </div>
           ))}
         </div>
-
-        <div className="flex justify-end mt-4 sm:mt-6 w-full">
-          <button
-            onClick={handleSubmit}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base"
-          >
-            <Save className="w-4 h-4 flex-shrink-0" />
-            <span>Save All Changes</span>
-          </button>
-        </div>
       </div>
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={confirmDeleteUser}
+        title="Delete User"
+        message="Are you sure you want to delete this user? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+      />
     </div>
   );
 }

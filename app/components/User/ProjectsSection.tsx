@@ -162,10 +162,7 @@ export default function ProjectsSection() {
               </div>
               {/* Diagonal Content Box */}
               <div
-                className="bg-[var(--color-background)] dark:bg-gray-800 p-4 relative -mt-16 left-10 w-[70%] mx-auto shadow-md"
-                style={{
-                  clipPath: "polygon(0 0, 90% 0%, 100% 100%, 0 100%)",
-                }}
+                className="bg-[var(--color-background)] dark:bg-gray-800 p-4 relative -mt-16 left-10 w-[70%] mx-auto shadow-md clip-project-section"
               >
                 <p className="text-[var(--color-primary)] text-xs font-bold mb-1">
                   {project.category}
