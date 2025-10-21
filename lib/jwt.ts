@@ -1,3 +1,4 @@
+// lib/jwt.ts
 import { SignJWT, jwtVerify } from 'jose';
 
 const SECRET = new TextEncoder().encode(

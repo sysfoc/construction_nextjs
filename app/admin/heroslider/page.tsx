@@ -1,55 +1,53 @@
+// app/admin/heroslider/page.tsx
 'use client';
 import { Save, Plus, Trash2, Upload, Edit2, X } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface Slide {
-  id: number;
-  image: string | null;
+  id: string;
+  image: string;
   heading: string;
   buttonText: string;
   buttonUrl: string;
+  order: number;
 }
 
 interface FormData {
   heading: string;
   buttonText: string;
   buttonUrl: string;
-  imagePreview: string | null;
+  imagePreview: string;
 }
 
 export default function HeroSliderPage() {
-  const [slides, setSlides] = useState<Slide[]>([
-    {
-      id: 1,
-      image: null,
-      heading: "Building Your Dreams Into Reality",
-      buttonText: "Get Started",
-      buttonUrl: "/book-service",
-    },
-    {
-      id: 2,
-      image: null,
-      heading: "Quality Construction Services",
-      buttonText: "View Projects",
-      buttonUrl: "/portfolio",
-    },
-    {
-      id: 3,
-      image: null,
-      heading: "Expert Team, Exceptional Results",
-      buttonText: "Contact Us",
-      buttonUrl: "/contact",
-    },
-  ]);
-
-  const [editingSlide, setEditingSlide] = useState<number | null>(null);
+  const [slides, setSlides] = useState<Slide[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editingSlide, setEditingSlide] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
     heading: "",
     buttonText: "",
     buttonUrl: "",
-    imagePreview: null,
+    imagePreview: "",
   });
+
+  useEffect(() => {
+    fetchSlides();
+  }, []);
+
+  const fetchSlides = async () => {
+    try {
+      const response = await fetch('/api/hero-slides');
+      const data = await response.json();
+      if (response.ok) {
+        setSlides(data.slides);
+      }
+    } catch (error) {
+      console.error('Error fetching slides:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleEdit = (slide: Slide) => {
     setEditingSlide(slide.id);
@@ -67,7 +65,7 @@ export default function HeroSliderPage() {
       heading: "",
       buttonText: "",
       buttonUrl: "",
-      imagePreview: null,
+      imagePreview: "",
     });
   };
 
@@ -90,41 +88,74 @@ export default function HeroSliderPage() {
     }
   };
 
-  const handleSaveSlide = () => {
-    setSlides((prev) =>
-      prev.map((slide) =>
-        slide.id === editingSlide
-          ? {
-              ...slide,
-              heading: formData.heading,
-              buttonText: formData.buttonText,
-              buttonUrl: formData.buttonUrl,
-              image: formData.imagePreview,
-            }
-          : slide
-      )
+  const handleSaveSlide = async () => {
+    try {
+      const response = await fetch(`/api/hero-slides/${editingSlide}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          image: formData.imagePreview,
+          heading: formData.heading,
+          buttonText: formData.buttonText,
+          buttonUrl: formData.buttonUrl,
+        }),
+      });
+
+      if (response.ok) {
+        await fetchSlides();
+        handleCancel();
+      }
+    } catch (error) {
+      console.error('Error updating slide:', error);
+    }
+  };
+
+  const handleAddSlide = async () => {
+    try {
+      const response = await fetch('/api/hero-slides', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          image: '/Herosection/constructionImage_01.png',
+          heading: 'New Slide Heading',
+          buttonText: 'Learn More',
+          buttonUrl: '/about',
+        }),
+      });
+
+      if (response.ok) {
+        await fetchSlides();
+      }
+    } catch (error) {
+      console.error('Error adding slide:', error);
+    }
+  };
+
+  const handleDeleteSlide = async (id: string) => {
+    try {
+      const response = await fetch(`/api/hero-slides/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        await fetchSlides();
+      }
+    } catch (error) {
+      console.error('Error deleting slide:', error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-6 max-w-5xl mx-auto bg-gray-50 min-h-screen flex items-center justify-center">
+        <p className="text-gray-600">Loading...</p>
+      </div>
     );
-    handleCancel();
-  };
-
-  const handleAddSlide = () => {
-    const newSlide: Slide = {
-      id: Date.now(),
-      image: null,
-      heading: "New Slide Heading",
-      buttonText: "Learn More",
-      buttonUrl: "/about",
-    };
-    setSlides((prev) => [...prev, newSlide]);
-  };
-
-  const handleDeleteSlide = (id: number) => {
-    setSlides((prev) => prev.filter((slide) => slide.id !== id));
-  };
-
-  const handleSubmit = () => {
-    console.log("Slides saved:", slides);
-  };
+  }
 
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto bg-gray-50 min-h-screen">
@@ -201,6 +232,7 @@ export default function HeroSliderPage() {
                     name="heading"
                     value={formData.heading}
                     onChange={handleInputChange}
+                    maxLength={120}
                     className="w-full px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                   />
                 </div>
@@ -296,16 +328,6 @@ export default function HeroSliderPage() {
             )}
           </div>
         ))}
-      </div>
-
-      <div className="flex justify-end mt-6">
-        <button
-          onClick={handleSubmit}
-          className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium"
-        >
-          <Save className="w-4 h-4" />
-          Save All Changes
-        </button>
       </div>
     </div>
   );

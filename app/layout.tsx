@@ -1,8 +1,10 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Exo } from "next/font/google";
 import "./globals.css";
 
 import AdminLayout from "./components/AdminLayout";
+import { UserProvider } from "./context/UserContext";
 
 const exo = Exo({
   subsets: ["latin"],
@@ -19,7 +21,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${exo.className} antialiased max-w-[1920px] mx-auto`}>
-        <AdminLayout>{children}</AdminLayout>
+        <UserProvider>
+          <AdminLayout>{children}</AdminLayout>
+        </UserProvider>
       </body>
     </html>
   );

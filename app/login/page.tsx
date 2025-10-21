@@ -1,7 +1,9 @@
+// app/login/page.tsx
 "use client";
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { useUser } from "../context/UserContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -9,6 +11,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { setUser } = useUser();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -24,6 +27,7 @@ export default function LoginPage() {
     const data = await res.json();
 
     if (res.ok) {
+      setUser(data.user);
       router.push("/admin/dashboard");
     } else {
       setError(data.error || "Login failed");
@@ -158,3 +162,36 @@ export default function LoginPage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+/*
+"use client";
+
+import { useUser } from "../context/UserContext";
+
+export default function UserProfile() {
+  const { user, loading, logout } = useUser();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <div>Please log in</div>;
+  }
+
+  return (
+    <div>
+      <h2>Welcome, {user.name}</h2>
+      <p>Email: {user.email}</p>
+      <p>Role: {user.role}</p>
+      <button onClick={logout}>Logout</button>
+    </div>
+  );
+}
+*/
