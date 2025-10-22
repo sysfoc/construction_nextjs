@@ -6,14 +6,47 @@ export default function Newsletter() {
   const [mode, setMode] = useState<"subscribe" | "unsubscribe">("subscribe");
   const [email, setEmail] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert(
-      mode === "subscribe"
-        ? "A confirmation link has been sent to your email. Please verify to complete subscription."
-        : "You have been unsubscribed from our newsletter."
-    );
-    setEmail("");
+    if (mode === "subscribe") {
+      try {
+        const response = await fetch("/api/newsletter/subscribe", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: email.trim() }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+          setEmail("");
+          alert(data.message);
+        } else {
+          alert(data.error);
+        }
+      } catch (error) {
+        console.error("Error subscribing to newsletter:", error);
+      }
+    } else {
+      try {
+        const response = await fetch("/api/newsletter/unsubscribe", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: email.trim() }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+          setEmail("");
+          alert(data.message);
+        } else {
+          alert(data.error);
+        }
+      } catch (error) {
+        console.error("Error subscribing to newsletter:", error);
+      }
+    }
   };
 
   return (
