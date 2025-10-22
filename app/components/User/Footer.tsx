@@ -1,8 +1,34 @@
+"use client";
 import { GiHouse } from "react-icons/gi";
 import { Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 function Footer() {
+  const [email, setEmail] = useState("");
+
+  const handleForm = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("/api/newsletter/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setEmail("");
+        alert(data.message);
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error("Error subscribing to newsletter:", error);
+    }
+  };
   return (
     <footer className='bg-black text-white'>
       <div className='bg-gray-900 py-6'>
@@ -11,16 +37,25 @@ function Footer() {
             <h2 className='text-2xl md:text-3xl font-bold text-white text-center md:text-left'>
               Join Newsletter
             </h2>
-            <div className='flex flex-wrap md:flex-nowrap w-auto md:w-auto'>
+            <form
+              className='flex flex-wrap md:flex-nowrap w-auto md:w-auto'
+              onSubmit={handleForm}
+            >
               <input
                 type='email'
                 placeholder='Your email'
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className='w-[180px] sm:w-80 px-4 py-3 bg-gray-800 text-white placeholder-gray-500 rounded-l-full focus:outline-none focus:ring-0'
               />
-              <button className='bg-primary hover:bg-primary/90 text-white px-4 md:px-6 py-3 rounded-r-full font-semibold transition-colors duration-200'>
+              <button
+                type='submit'
+                className='bg-primary hover:bg-primary/90 text-white px-4 md:px-6 py-3 rounded-r-full font-semibold transition-colors duration-200'
+              >
                 Submit
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
