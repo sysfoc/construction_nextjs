@@ -1,14 +1,13 @@
-// app/api/testimonials/[id]/route.ts
 import { type NextRequest, NextResponse } from "next/server"
 import { connectDB } from "@/lib/mongodb"
 import Testimonial from "@/lib/models/Testimonial"
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await context.params 
     await connectDB()
-    const { id } = await params
-    const testimonialData = await request.json()
 
+    const testimonialData = await request.json()
     const updatedTestimonial = await Testimonial.findByIdAndUpdate(id, testimonialData, { new: true })
 
     if (!updatedTestimonial) {
@@ -34,10 +33,10 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await context.params 
     await connectDB()
-    const { id } = await params
 
     const deletedTestimonial = await Testimonial.findByIdAndDelete(id)
 
