@@ -1,4 +1,45 @@
+"use client";
+import { useState } from "react";
+
 export default function ContactUs() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value.trim(),
+    });
+  };
+
+  const handleFormData = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("/api/contact/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert(data.message);
+        setFormData({
+          name: "",
+          email: "",
+          message: "",
+        });
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error("Error submitting form data:", error);
+    }
+  };
   return (
     <main className='min-h-screen'>
       <section className='max-w-6xl mx-auto px-6 py-16'>
@@ -48,7 +89,10 @@ export default function ContactUs() {
               ></iframe>
             </div>
           </div>
-          <form className='p-8 rounded-2xl shadow-md border border-gray-100 space-y-6'>
+          <form
+            className='p-8 rounded-2xl shadow-md border border-gray-100 space-y-6'
+            onSubmit={handleFormData}
+          >
             <h2 className='text-2xl font-semibold text-[#ff6600] mb-4'>
               Send Us a Message
             </h2>
@@ -61,6 +105,8 @@ export default function ContactUs() {
                 id='name'
                 type='text'
                 required
+                value={formData.name}
+                onChange={handleChange}
                 className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#ff6600]'
                 placeholder='Enter your full name'
               />
@@ -74,6 +120,8 @@ export default function ContactUs() {
                 id='email'
                 type='email'
                 required
+                value={formData.email}
+                onChange={handleChange}
                 className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#ff6600]'
                 placeholder='Enter your email'
               />
@@ -89,6 +137,10 @@ export default function ContactUs() {
               <textarea
                 id='message'
                 required
+                value={formData.message}
+                onChange={(e) =>
+                  setFormData({ ...formData, message: e.target.value })
+                }
                 rows={5}
                 className='w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#ff6600]'
                 placeholder='Write your message...'
