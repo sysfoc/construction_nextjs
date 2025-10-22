@@ -1,35 +1,42 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Search, ChevronsDown, ChevronsUp } from "lucide-react";
-import type { NewsArticle } from "../../../data/news";
+import type { NewsArticle } from "@/lib/models/News";
 
-export default function NewsSearchList({ items }: { items: NewsArticle[] }) {
-  const [q, setQ] = useState("");
+interface NewsSearchListProps {
+  items: NewsArticle[];
+}
+
+export default function NewsSearchList({ items }: NewsSearchListProps) {
+  const [searchQuery, setSearchQuery] = useState("");
   const [visible, setVisible] = useState(6);
 
-  const filtered = useMemo(() => {
-    const needle = q.trim().toLowerCase();
-    if (!needle) return items;
-    return items.filter((a) => {
-      return (
-        a.title.toLowerCase().includes(needle) ||
-        a.excerpt.toLowerCase().includes(needle) ||
-        a.author.toLowerCase().includes(needle)
-      );
-    });
-  }, [items, q]);
+  const filteredItems = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return items;
+    return items.filter(
+      (item) =>
+        item.title.toLowerCase().includes(query) ||
+        item.excerpt.toLowerCase().includes(query) ||
+        item.author.toLowerCase().includes(query)
+    );
+  }, [items, searchQuery]);
 
   useEffect(() => {
     setVisible(6);
-  }, [q]);
+  }, [searchQuery]);
 
-  const shown = useMemo(() => filtered.slice(0, visible), [filtered, visible]);
+  const shownItems = useMemo(
+    () => filteredItems.slice(0, visible),
+    [filteredItems, visible]
+  );
 
   return (
     <div className="w-full">
+      {/* Search Bar */}
       <div className="relative">
         <label htmlFor="news-search" className="sr-only">
           Search news
@@ -37,9 +44,9 @@ export default function NewsSearchList({ items }: { items: NewsArticle[] }) {
         <input
           id="news-search"
           type="search"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search construction news..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search news by title, excerpt, or author..."
           className="w-full rounded-md border border-border bg-background text-foreground text-sm px-8 py-2 outline-none"
           role="searchbox"
           aria-label="Search news"
@@ -51,57 +58,63 @@ export default function NewsSearchList({ items }: { items: NewsArticle[] }) {
         />
       </div>
 
+      {/* News Grid */}
       <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {shown.map((a) => (
+        {shownItems.map((item) => (
           <article
-            key={a.id}
-            className="border border-border rounded-md overflow-hidden bg-background"
+            key={item.slug}
+            className="border border-border rounded-md overflow-hidden bg-background hover:border-[var(--primary)] transition-colors"
           >
-            <Link href={`/news/${a.slug}`} className="block">
+            <Link href={`/news/${item.slug}`} className="block">
+              {/* Image */}
               <div className="relative h-40 w-full">
                 <Image
                   src={
-                    a.image ||
+                    item.image ||
                     "/placeholder.svg?height=160&width=320&query=construction%20thumbnail"
                   }
-                  alt={a.title}
+                  alt={item.title}
                   fill
                   sizes="(min-width: 1024px) 320px, (min-width: 768px) 50vw, 100vw"
-                  className="object-cover"
+                  className="object-cover group-hover:scale-105 transition-transform"
                   priority={false}
                 />
               </div>
+
+              {/* Content */}
               <div className="p-3">
-                <h2 className="text-base font-medium text-foreground">
-                  {a.title}
+                <h2 className="text-base font-medium text-foreground line-clamp-2 group-hover:text-[var(--primary)] transition-colors">
+                  {item.title}
                 </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {a.excerpt}
+                <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
+                  {item.excerpt}
                 </p>
                 <p className="mt-2 text-xs text-muted-foreground">
-                  {a.date} •{" "}
-                  <span
-                   className="inline-flex items-center rounded-sm px-2 py-0.5 bg-[var(--primary)] text-[var(--primary-foreground)]"
-                  >
-                    {a.author}
+                  {item.date} •{" "}
+                  <span className="inline-flex items-center rounded-sm px-2 py-0.5 bg-[var(--primary)] text-[var(--primary-foreground)]">
+                    {item.author}
                   </span>
                 </p>
               </div>
             </Link>
           </article>
         ))}
-        {filtered.length === 0 && (
-          <p className="text-sm text-muted-foreground">No results found.</p>
+
+        {filteredItems.length === 0 && (
+          <p className="text-sm text-muted-foreground">
+            No news articles found matching your search.
+          </p>
         )}
       </div>
 
-      {filtered.length > 6 && (
-        <div className="mt-4 flex items-center justify-center gap-2">
-          {visible < filtered.length && (
+      {/* Show More / Show Less */}
+      {filteredItems.length > 6 && (
+        <div className="mt-6 flex items-center justify-center gap-2">
+          {visible < filteredItems.length && (
             <button
               type="button"
               onClick={() =>
-                setVisible((v) => Math.min(v + 6, filtered.length))
+                setVisible((v) => Math.min(v + 6, filteredItems.length))
               }
               className="inline-flex items-center gap-1 rounded-md border border-border bg-background text-foreground text-sm px-3 py-2"
               aria-label="Show more articles"

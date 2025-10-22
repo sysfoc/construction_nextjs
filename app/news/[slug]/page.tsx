@@ -1,13 +1,52 @@
+"use client"
+
+import { useEffect, useState } from "react"
 import { notFound } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import ArticleContent from "../../components/General/article-content"
-import { getArticleBySlug, getNews } from "@/data/news"
+import type { NewsArticle } from "@/lib/models/News"
 
 export default function ArticlePage({ params }: { params: { slug: string } }) {
-  const article = getArticleBySlug(params.slug)
-  if (!article) return notFound()
+  const [article, setArticle] = useState<NewsArticle | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [notFoundError, setNotFoundError] = useState(false)
+
+  useEffect(() => {
+    const fetchArticle = async () => {
+      try {
+        const response = await fetch(`/api/news/${params.slug}`)
+        if (!response.ok) {
+          setNotFoundError(true)
+          return
+        }
+        const data = await response.json()
+        setArticle(data)
+      } catch (error) {
+        console.error("Failed to fetch article:", error)
+        setNotFoundError(true)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchArticle()
+  }, [params.slug])
+
+  if (loading) {
+    return (
+      <main className="bg-background text-foreground">
+        <section className="mx-auto max-w-5xl p-4">
+          <p className="text-muted-foreground">Loading article...</p>
+        </section>
+      </main>
+    )
+  }
+
+  if (notFoundError || !article) {
+    return notFound()
+  }
 
   return (
     <main className="bg-background text-foreground">
@@ -15,7 +54,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
         <nav className="text-sm">
           <Link
             href="/news"
-           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-[var(--primary)] text-[var(--primary-foreground)]"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-[var(--primary)] text-[var(--primary-foreground)]"
             aria-label="Back to News"
           >
             <ArrowLeft size={16} aria-hidden="true" />
@@ -41,7 +80,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
             <h1 className="text-balance text-2xl font-semibold text-foreground">{article.title}</h1>
             <p className="mt-1 text-xs text-muted-foreground">
               {article.date} •{" "}
-             <span className="inline-flex items-center rounded-sm px-2 py-0.5 bg-[var(--primary)] text-[var(--primary-foreground)]">
+              <span className="inline-flex items-center rounded-sm px-2 py-0.5 bg-[var(--primary)] text-[var(--primary-foreground)]">
                 {article.author}
               </span>
             </p>
@@ -55,8 +94,4 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
       </section>
     </main>
   )
-}
-
-export function generateStaticParams() {
-  return getNews().map((a) => ({ slug: a.slug }))
 }
