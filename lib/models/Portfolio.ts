@@ -1,3 +1,4 @@
+// lib/models/Portfolio.ts
 import mongoose from "mongoose"
 
 const portfolioSchema = new mongoose.Schema(

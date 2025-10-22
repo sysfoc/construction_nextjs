@@ -1,10 +1,11 @@
+// app/admin/team/page.tsx
 "use client";
 import { Save, Plus, Trash2, Edit2, X, User } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface TeamMember {
-  id: number;
+  id: string;
   name: string;
   designation: string;
   photo: string | null;
@@ -17,39 +18,30 @@ interface FormData {
 }
 
 export default function TeamManagementPage() {
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
-    {
-      id: 1,
-      name: "John Anderson",
-      designation: "Chief Executive Officer",
-      photo: null,
-    },
-    {
-      id: 2,
-      name: "Sarah Mitchell",
-      designation: "Project Manager",
-      photo: null,
-    },
-    {
-      id: 3,
-      name: "Michael Chen",
-      designation: "Senior Engineer",
-      photo: null,
-    },
-    {
-      id: 4,
-      name: "Emily Rodriguez",
-      designation: "Site Supervisor",
-      photo: null,
-    },
-  ]);
-
-  const [editingMember, setEditingMember] = useState<number | null>(null);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editingMember, setEditingMember] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
     name: "",
     designation: "",
     photoPreview: null,
   });
+
+  useEffect(() => {
+    const fetchTeamMembers = async () => {
+      try {
+        const response = await fetch("/api/team");
+        const data = await response.json();
+        setTeamMembers(data.teamMembers || []);
+      } catch (error) {
+        console.error("Error fetching team members:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTeamMembers();
+  }, []);
 
   const handleEdit = (member: TeamMember) => {
     setEditingMember(member.id);
@@ -88,39 +80,72 @@ export default function TeamManagementPage() {
     }
   };
 
-  const handleSaveMember = () => {
-    setTeamMembers((prev) =>
-      prev.map((member) =>
-        member.id === editingMember
-          ? {
-              ...member,
-              name: formData.name,
-              designation: formData.designation,
-              photo: formData.photoPreview,
-            }
-          : member
-      )
+  const handleSaveMember = async () => {
+    try {
+      const response = await fetch(`/api/team/${editingMember}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          designation: formData.designation,
+          photo: formData.photoPreview,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const updated = data.teamMember;
+        setTeamMembers((prev) => prev.map((item) => (item.id === editingMember ? updated : item)));
+        handleCancel();
+      }
+    } catch (error) {
+      console.error("Error saving team member:", error);
+    }
+  };
+
+  const handleAddMember = async () => {
+    try {
+      const response = await fetch("/api/team", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: "New Team Member",
+          designation: "Position Title",
+          photo: null,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const newMember = data.teamMember;
+        setTeamMembers((prev) => [newMember, ...prev]);
+      }
+    } catch (error) {
+      console.error("Error adding team member:", error);
+    }
+  };
+
+  const handleDeleteMember = async (id: string) => {
+    try {
+      const response = await fetch(`/api/team/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setTeamMembers((prev) => prev.filter((item) => item.id !== id));
+      }
+    } catch (error) {
+      console.error("Error deleting team member:", error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-600">Loading team members...</p>
+      </div>
     );
-    handleCancel();
-  };
-
-  const handleAddMember = () => {
-    const newMember: TeamMember = {
-      id: Date.now(),
-      name: "New Team Member",
-      designation: "Position Title",
-      photo: null,
-    };
-    setTeamMembers((prev) => [newMember, ...prev]);
-  };
-
-  const handleDeleteMember = (id: number) => {
-    setTeamMembers((prev) => prev.filter((member) => member.id !== id));
-  };
-
-  const handleSubmit = () => {
-    console.log("Team members saved:", teamMembers);
-  };
+  }
 
   return (
     <div className="w-full min-h-screen bg-gray-50 overflow-x-hidden">
@@ -163,7 +188,7 @@ export default function TeamManagementPage() {
                       Member Photo
                     </label>
                     <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
-                      <div className="relative w-24 h-24 sm:w-28 sm:h-28 border-2 border-dashed border-[var(--border-color)] rounded-full flex items-center justify-center bg-gray-50 overflow-hidden flex-shrink-0 mx-auto sm:mx-0">
+                      <div className="relative w-32 h-52 sm:w-40 sm:h-64 border-2 border-dashed border-[var(--border-color)] rounded-lg flex items-center justify-center bg-gray-50 overflow-hidden flex-shrink-0 mx-auto sm:mx-0">
                         {formData.photoPreview ? (
                           <Image
                             src={formData.photoPreview}
@@ -172,7 +197,7 @@ export default function TeamManagementPage() {
                             className="object-cover"
                           />
                         ) : (
-                          <User className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" />
+                          <User className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400" />
                         )}
                       </div>
                       <div className="flex-1 w-full">
@@ -183,7 +208,7 @@ export default function TeamManagementPage() {
                           className="block text-xs sm:text-sm text-gray-600 file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4 file:rounded file:border-0 file:text-xs sm:file:text-sm file:font-medium file:bg-[var(--primary)] file:text-[var(--primary-foreground)] cursor-pointer"
                         />
                         <p className="text-xs text-gray-500 mt-2">
-                          Recommended: 300x200px image
+                          Recommended: 340x530px portrait image
                         </p>
                       </div>
                     </div>
@@ -236,7 +261,7 @@ export default function TeamManagementPage() {
               ) : (
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 w-full">
                   <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0 w-full">
-                    <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gray-100 border border-[var(--border-color)] flex items-center justify-center overflow-hidden flex-shrink-0">
+                    <div className="relative w-16 h-24 sm:w-20 sm:h-32 rounded-lg bg-gray-100 border border-[var(--border-color)] flex items-center justify-center overflow-hidden flex-shrink-0">
                       {member.photo ? (
                         <Image
                           src={member.photo}
@@ -245,7 +270,7 @@ export default function TeamManagementPage() {
                           className="object-cover"
                         />
                       ) : (
-                        <User className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
+                        <User className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" />
                       )}
                     </div>
 
@@ -276,16 +301,6 @@ export default function TeamManagementPage() {
               )}
             </div>
           ))}
-        </div>
-
-        <div className="flex justify-end mt-4 sm:mt-6 w-full">
-          <button
-            onClick={handleSubmit}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base"
-          >
-            <Save className="w-4 h-4 flex-shrink-0" />
-            <span>Save All Changes</span>
-          </button>
         </div>
       </div>
     </div>
