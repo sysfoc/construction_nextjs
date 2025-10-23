@@ -1,297 +1,313 @@
-"use client";
-import { Save, Plus, Trash2, Edit2, X, Upload } from "lucide-react";
-import Image from "next/image";
-import { useState, ChangeEvent } from "react";
+"use client"
 
-interface Reason {
-  id: number;
-  heading: string;
-  content: string;
-  icon: string | null;
+import type React from "react"
+
+import { useEffect, useState } from "react"
+import { Trash2, Edit2, Plus, Upload, X, Save } from "lucide-react"
+
+interface Step {
+  _id: string
+  title: string
+  description: string
+  iconSrc: string
+  isReversed: boolean
+  order: number
 }
 
 interface FormData {
-  heading: string;
-  content: string;
-  iconPreview: string | null;
+  title: string
+  description: string
+  iconSrc: string
+  isReversed: boolean
+  order: number
+  iconPreview: string | null
 }
 
-export default function WhyChooseUsManagementPage() {
-  const [reasons, setReasons] = useState<Reason[]>([
-    {
-      id: 1,
-      heading: "Expert Team",
-      content:
-        "Our highly skilled professionals bring years of experience and expertise to every project, ensuring top-quality results.",
-      icon: null,
-    },
-    {
-      id: 2,
-      heading: "Quality Materials",
-      content:
-        "We use only premium, certified materials from trusted suppliers to guarantee durability and excellence in construction.",
-      icon: null,
-    },
-    {
-      id: 3,
-      heading: "On-Time Delivery",
-      content:
-        "We respect your time and budget. Our efficient project management ensures timely completion without compromising quality.",
-      icon: null,
-    },
-    {
-      id: 4,
-      heading: "Safety First",
-      content:
-        "Safety is our top priority. We follow strict safety protocols and industry standards to protect our team and clients.",
-      icon: null,
-    },
-  ]);
-
-  const [editingReason, setEditingReason] = useState<number | null>(null);
+export default function StepsAdmin() {
+  const [steps, setSteps] = useState<Step[]>([])
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [isAdding, setIsAdding] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState<FormData>({
-    heading: "",
-    content: "",
+    title: "",
+    description: "",
+    iconSrc: "",
+    isReversed: false,
+    order: 0,
     iconPreview: null,
-  });
+  })
 
-  const handleEdit = (reason: Reason) => {
-    setEditingReason(reason.id);
+  useEffect(() => {
+    fetchSteps()
+  }, [])
+
+  const fetchSteps = async () => {
+    try {
+      const response = await fetch("/api/why-choose-us")
+      const data = await response.json()
+      setSteps(data)
+    } catch (error) {
+      console.error("Failed to fetch steps:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleEdit = (step: Step) => {
+    setEditingId(step._id)
     setFormData({
-      heading: reason.heading,
-      content: reason.content,
-      iconPreview: reason.icon,
-    });
-  };
+      title: step.title,
+      description: step.description,
+      iconSrc: step.iconSrc,
+      isReversed: step.isReversed,
+      order: step.order,
+      iconPreview: step.iconSrc,
+    })
+  }
 
   const handleCancel = () => {
-    setEditingReason(null);
+    setEditingId(null)
+    setIsAdding(false)
     setFormData({
-      heading: "",
-      content: "",
+      title: "",
+      description: "",
+      iconSrc: "",
+      isReversed: false,
+      order: 0,
       iconPreview: null,
-    });
-  };
+    })
+  }
 
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleIconChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onloadend = () => {
         setFormData((prev) => ({
           ...prev,
           iconPreview: reader.result as string,
-        }));
-      };
-      reader.readAsDataURL(file);
+          iconSrc: reader.result as string,
+        }))
+      }
+      reader.readAsDataURL(file)
     }
-  };
+  }
 
-  const handleSaveReason = () => {
-    setReasons((prev) =>
-      prev.map((reason) =>
-        reason.id === editingReason
-          ? {
-              ...reason,
-              heading: formData.heading,
-              content: formData.content,
-              icon: formData.iconPreview,
-            }
-          : reason
-      )
-    );
-    handleCancel();
-  };
+  const handleSave = async () => {
+    try {
+      const method = editingId ? "PUT" : "POST"
+      const url = editingId ? `/api/why-choose-us/${editingId}` : "/api/why-choose-us"
 
-  const handleAddReason = () => {
-    const newReason: Reason = {
-      id: Date.now(),
-      heading: "New Reason",
-      content: "Description of why customers should choose us.",
-      icon: null,
-    };
-    setReasons((prev) => [newReason, ...prev]);
-  };
+      const response = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: formData.title,
+          description: formData.description,
+          iconSrc: formData.iconSrc,
+          isReversed: formData.isReversed,
+          order: formData.order,
+        }),
+      })
 
-  const handleDeleteReason = (id: number) => {
-    setReasons((prev) => prev.filter((reason) => reason.id !== id));
-  };
+      if (response.ok) {
+        setEditingId(null)
+        setIsAdding(false)
+        setFormData({
+          title: "",
+          description: "",
+          iconSrc: "",
+          isReversed: false,
+          order: 0,
+          iconPreview: null,
+        })
+        fetchSteps()
+      }
+    } catch (error) {
+      console.error("Failed to save step:", error)
+    }
+  }
 
-  const handleSubmit = () => {
-    console.log("Why Choose Us reasons saved:", reasons);
-  };
+  const handleDelete = async (id: string) => {
+    if (confirm("Are you sure?")) {
+      try {
+        await fetch(`/api/why-choose-us/${id}`, { method: "DELETE" })
+        fetchSteps()
+      } catch (error) {
+        console.error("Failed to delete step:", error)
+      }
+    }
+  }
 
-  return (
-    <div className="w-full min-h-screen bg-gray-50 overflow-x-hidden">
-      <div className="p-4 sm:p-6 mx-auto">
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-stretch sm:items-center justify-between mb-4 sm:mb-6">
-          <h1 className="text-xl sm:text-2xl font-semibold text-[var(--header-text)] break-words">
-            Why Choose Us Management
-          </h1>
+  const renderEditForm = () => (
+    <div className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4 mb-4">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-base sm:text-lg font-semibold text-[var(--header-text)]">
+          {editingId ? "Edit Step" : "Add New Step"}
+        </h3>
+        <button onClick={handleCancel} className="text-gray-500">
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm text-[var(--header-text)] mb-2">Step Icon Image</label>
+          <div className="relative w-40 h-32 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 mb-2 overflow-hidden">
+            {formData.iconPreview ? (
+              <img
+                src={formData.iconPreview || "/placeholder.svg"}
+                alt="Icon preview"
+                className="w-full h-full object-contain rounded"
+              />
+            ) : (
+              <Upload className="w-6 h-6 text-gray-400" />
+            )}
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="block text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-[var(--primary)] file:text-[var(--primary-foreground)] cursor-pointer"
+          />
+          <p className="text-xs text-gray-500 mt-1">Recommended: 100x100px</p>
+        </div>
+
+        <div>
+          <label className="block text-sm text-[var(--header-text)] mb-2">Title</label>
+          <input
+            type="text"
+            placeholder="Step title"
+            value={formData.title}
+            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            className="w-full px-4 py-2 border border-[var(--border-color)] rounded bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm text-[var(--header-text)] mb-2">Description</label>
+          <textarea
+            placeholder="Step description"
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            className="w-full px-4 py-2 border border-[var(--border-color)] rounded bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+            rows={3}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm text-[var(--header-text)] mb-2">Order</label>
+          <input
+            type="number"
+            placeholder="Order"
+            value={formData.order}
+            onChange={(e) => setFormData({ ...formData, order: Number.parseInt(e.target.value) })}
+            className="w-full px-4 py-2 border border-[var(--border-color)] rounded bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+          />
+        </div>
+
+        <label className="flex items-center gap-2 text-[var(--foreground)]">
+          <input
+            type="checkbox"
+            checked={formData.isReversed}
+            onChange={(e) => setFormData({ ...formData, isReversed: e.target.checked })}
+          />
+          <span className="text-sm">Reversed Layout (Icon at top)</span>
+        </label>
+
+        <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2">
           <button
-            onClick={handleAddReason}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base whitespace-nowrap"
+            onClick={handleCancel}
+            className="w-full sm:w-auto px-4 py-2 border border-[var(--border-color)] rounded text-[var(--header-text)]"
           >
-            <Plus className="w-4 h-4 flex-shrink-0" />
-            <span>Add Reason</span>
+            Cancel
           </button>
-        </div>
-
-        <div className="space-y-3 sm:space-y-4">
-          {reasons.map((reason) => (
-            <div
-              key={reason.id}
-              className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4 w-full overflow-hidden"
-            >
-              {editingReason === reason.id ? (
-                <div className="space-y-3 sm:space-y-4">
-                  <div className="flex items-center justify-between mb-3 sm:mb-4">
-                    <h3 className="text-base sm:text-lg font-semibold text-[var(--header-text)]">
-                      Edit Reason
-                    </h3>
-                    <button
-                      onClick={handleCancel}
-                      className="text-gray-500 flex-shrink-0"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
-                  </div>
-
-                  <div className="w-full">
-                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-2">
-                      Icon/Photo
-                    </label>
-                    <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 flex-shrink-0 mx-auto sm:mx-0 relative">
-                        {formData.iconPreview ? (
-                          <Image
-                            src={formData.iconPreview}
-                            alt="Icon preview"
-                            fill
-                            className="object-contain p-2"
-                          />
-                        ) : (
-                          <Upload className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
-                        )}
-                      </div>
-
-                      <div className="flex-1 w-full">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleIconChange}
-                          className="block text-xs sm:text-sm text-gray-600 file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4 file:rounded file:border-0 file:text-xs sm:file:text-sm file:font-medium file:bg-[var(--primary)] file:text-[var(--primary-foreground)] cursor-pointer"
-                        />
-                        <p className="text-xs text-gray-500 mt-2">
-                          Recommended: 50x50px icon or photo
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="w-full">
-                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                      Heading
-                    </label>
-                    <input
-                      type="text"
-                      name="heading"
-                      value={formData.heading}
-                      onChange={handleInputChange}
-                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
-                    />
-                  </div>
-
-                  <div className="w-full">
-                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                      Content
-                    </label>
-                    <textarea
-                      name="content"
-                      value={formData.content}
-                      onChange={handleInputChange}
-                      rows={3}
-                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base resize-none"
-                    />
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2 w-full">
-                    <button
-                      onClick={handleCancel}
-                      className="w-full sm:w-auto px-4 py-2 border border-[var(--border-color)] rounded text-[var(--header-text)] text-sm sm:text-base"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleSaveReason}
-                      className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base"
-                    >
-                      <Save className="w-4 h-4 flex-shrink-0" />
-                      <span>Save Reason</span>
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-0 w-full">
-                  <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0 w-full">
-                    <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gray-100 border border-[var(--border-color)] rounded flex items-center justify-center flex-shrink-0 relative">
-                      {reason.icon ? (
-                        <Image
-                          src={reason.icon}
-                          alt={reason.heading}
-                          fill
-                          className="object-contain p-2"
-                        />
-                      ) : (
-                        <span className="text-xs text-gray-400">No Icon</span>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-[var(--header-text)] mb-1 sm:mb-2 text-sm sm:text-base break-words">
-                        {reason.heading}
-                      </h3>
-                      <p className="text-xs sm:text-sm text-gray-600 break-words">
-                        {reason.content}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 w-full sm:w-auto justify-end sm:ml-4 flex-shrink-0">
-                    <button
-                      onClick={() => handleEdit(reason)}
-                      className="p-2 text-[var(--primary)] rounded"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteReason(reason.id)}
-                      className="p-2 text-red-600 rounded"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        <div className="flex justify-end mt-4 sm:mt-6 w-full">
           <button
-            onClick={handleSubmit}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base"
+            onClick={handleSave}
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium"
           >
-            <Save className="w-4 h-4 flex-shrink-0" />
-            <span>Save All Changes</span>
+            <Save className="w-4 h-4" />
+            Save Step
           </button>
         </div>
       </div>
     </div>
-  );
+  )
+
+  if (loading) return <div className="p-8">Loading...</div>
+
+  return (
+    <div className="p-4 sm:p-6 mx-auto bg-gray-50 min-h-screen">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-6">
+        <h1 className="text-lg sm:text-2xl font-semibold text-[var(--header-text)]">Steps Management</h1>
+        <button
+          onClick={() => {
+            setIsAdding(true)
+            setEditingId(null)
+            setFormData({
+              title: "",
+              description: "",
+              iconSrc: "",
+              isReversed: false,
+              order: 0,
+              iconPreview: null,
+            })
+          }}
+          className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium whitespace-nowrap"
+        >
+          <Plus className="w-4 h-4" /> Add Step
+        </button>
+      </div>
+
+      {isAdding && renderEditForm()}
+
+      <div className="space-y-3 sm:space-y-4">
+        {steps.map((step) => (
+          <div key={step._id}>
+            <div className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4 hover:shadow-md transition-shadow">
+              <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-0">
+                <div className="flex items-start gap-3 sm:gap-4 flex-1 w-full min-w-0">
+                  <div className="w-20 h-20 bg-gray-100 border border-[var(--border-color)] rounded flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {step.iconSrc ? (
+                      <img
+                        src={step.iconSrc || "/placeholder.svg"}
+                        alt="Step icon"
+                        className="w-full h-full object-contain rounded"
+                      />
+                    ) : (
+                      <span className="text-xs text-gray-400">No Icon</span>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-[var(--header-text)] mb-1 text-sm sm:text-base break-words">
+                      {step.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-600 break-words mb-2">{step.description}</p>
+                    <div className="flex gap-4 text-xs text-gray-500">
+                      <span>Order: {step.order}</span>
+                      <span>{step.isReversed ? "Reversed" : "Normal"}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 self-end sm:self-auto">
+                  <button onClick={() => handleEdit(step)} className="p-2 text-[var(--primary)] rounded">
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => handleDelete(step._id)} className="p-2 text-red-600 rounded">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            {editingId === step._id && (
+              <div className="mt-3 sm:mt-4">
+                {renderEditForm()}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 }

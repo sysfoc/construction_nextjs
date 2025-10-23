@@ -69,7 +69,7 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
     { icon: MessageSquare, label: 'Testimonials', path: '/admin/testimonials' },
     { icon: Handshake, label: 'Partners', path: '/admin/partners' },
     { icon: Award, label: 'Why Choose Us', path: '/admin/why-choose-us' },
-    // { icon: FileText, label: 'Pages Management', path: '/admin/pages' },
+    { icon: FileText, label: 'Projects', path: '/admin/projects' },
     { icon: Newspaper, label: 'News Management', path: '/admin/news' },
     { icon: UserCheck, label: 'Careers', path: '/admin/careers' },
     { icon: GitBranch, label: 'How we work', path: '/admin/how-we-work' },

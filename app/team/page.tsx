@@ -9,12 +9,10 @@ interface TeamMember {
   photo: string | null;
 }
 
+
 async function getTeamMembers(): Promise<TeamMember[]> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/team`, {
-      cache: "no-store",
-    });
+    const res = await fetch("/api/team", { cache: "no-store" });
     if (!res.ok) return [];
     const data = await res.json();
     return data.teamMembers || [];
@@ -23,6 +21,7 @@ async function getTeamMembers(): Promise<TeamMember[]> {
     return [];
   }
 }
+
 
 export default async function Team() {
   const teamData = await getTeamMembers();

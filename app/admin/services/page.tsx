@@ -1,3 +1,4 @@
+// app/admin/services/page.tsx
 "use client";
 import { Save, Plus, Trash2, Upload, Edit2, X } from "lucide-react";
 import Image from "next/image";

@@ -1,85 +1,96 @@
-// app/admin/news/page.tsx
+// app/admin/projects/page.tsx
 "use client"
 
 import type React from "react"
 
 import { Save, Plus, Trash2, Edit2, X, Upload } from "lucide-react"
 import { useState, useEffect } from "react"
-import type { NewsArticle } from "@/lib/models/News"
+import type { ProjectData } from "@/lib/models/Project"
 
 interface FormData {
   title: string
-  slug: string
-  excerpt: string
-  date: string
-  author: string
+  description: string
+  location: string
+  status: "ongoing" | "completed" | "upcoming"
+  startDate: string
+  endDate: string
   image: string
-  content: string[]
+  team: number
+  progress: number
   photoPreview: string | null
 }
 
-export default function NewsManagementPage() {
-  const [news, setNews] = useState<NewsArticle[]>([])
+export default function ProjectsManagementPage() {
+  const [projects, setProjects] = useState<ProjectData[]>([])
   const [loading, setLoading] = useState(true)
-  const [editingSlug, setEditingSlug] = useState<string | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [formData, setFormData] = useState<FormData>({
     title: "",
-    slug: "",
-    excerpt: "",
-    date: "",
-    author: "",
+    description: "",
+    location: "",
+    status: "ongoing",
+    startDate: "",
+    endDate: "",
     image: "",
-    content: [],
+    team: 0,
+    progress: 0,
     photoPreview: null,
   })
 
   useEffect(() => {
-    const fetchNews = async () => {
+    const fetchProjects = async () => {
       try {
-        const response = await fetch("/api/news")
+        const response = await fetch("/api/projects")
         const data = await response.json()
-        setNews(data)
+        setProjects(data)
       } catch (error) {
-        console.error("Failed to fetch news:", error)
+        console.error("Failed to fetch projects:", error)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchNews()
+    fetchProjects()
   }, [])
 
-  const handleEdit = (newsItem: NewsArticle) => {
-    setEditingSlug(newsItem.slug)
+  const handleEdit = (project: ProjectData) => {
+    setEditingId(project._id)
     setFormData({
-      title: newsItem.title,
-      slug: newsItem.slug,
-      excerpt: newsItem.excerpt,
-      date: newsItem.date,
-      author: newsItem.author,
-      image: newsItem.image,
-      content: newsItem.content,
-      photoPreview: newsItem.image,
+      title: project.title,
+      description: project.description,
+      location: project.location,
+      status: project.status,
+      startDate: project.startDate,
+      endDate: project.endDate || "",
+      image: project.image,
+      team: project.team,
+      progress: project.progress || 0,
+      photoPreview: project.image,
     })
   }
 
   const handleCancel = () => {
-    setEditingSlug(null)
+    setEditingId(null)
     setFormData({
       title: "",
-      slug: "",
-      excerpt: "",
-      date: "",
-      author: "",
+      description: "",
+      location: "",
+      status: "ongoing",
+      startDate: "",
+      endDate: "",
       image: "",
-      content: [],
+      team: 0,
+      progress: 0,
       photoPreview: null,
     })
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "team" || name === "progress" ? Number(value) : value,
+    }))
   }
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,73 +108,74 @@ export default function NewsManagementPage() {
     }
   }
 
-  const handleSaveNews = async () => {
+  const handleSaveProject = async () => {
     try {
-      const contentArray = formData.content.length > 0 ? formData.content : [""]
-
-      if (editingSlug) {
-        // Update existing
-        const response = await fetch(`/api/news/${editingSlug}`, {
+      if (editingId) {
+        const response = await fetch(`/api/projects/${editingId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             title: formData.title,
-            slug: formData.slug,
-            excerpt: formData.excerpt,
-            date: formData.date,
-            author: formData.author,
+            description: formData.description,
+            location: formData.location,
+            status: formData.status,
+            startDate: formData.startDate,
+            endDate: formData.endDate || null,
             image: formData.image,
-            content: contentArray,
+            team: formData.team,
+            progress: formData.progress,
           }),
         })
 
         if (response.ok) {
           const updated = await response.json()
-          setNews((prev) => prev.map((item) => (item.slug === editingSlug ? updated : item)))
+          setProjects((prev) => prev.map((item) => (item._id === editingId ? updated : item)))
           handleCancel()
         }
       }
     } catch (error) {
-      console.error("Failed to save news:", error)
+      console.error("Failed to save project:", error)
     }
   }
 
-  const handleAddNews = async () => {
+  const handleAddProject = async () => {
     try {
-      const response = await fetch("/api/news", {
+      const response = await fetch("/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: "New Article",
-          slug: `new-article-${Date.now()}`,
-          excerpt: "Brief description of the news article",
-          date: new Date().toLocaleDateString("en-GB"),
-          author: "Author Name",
-          image: "/construction-thumbnail.jpg",
-          content: ["Full content of the news article goes here with more details"],
+          title: "New Project",
+          description: "Project description goes here",
+          location: "Project Location",
+          status: "upcoming",
+          startDate: new Date().toLocaleDateString("en-GB"),
+          endDate: null,
+          image: "/projects/projectsPic.png",
+          team: 10,
+          progress: 0,
         }),
       })
 
       if (response.ok) {
-        const newArticle = await response.json()
-        setNews((prev) => [newArticle, ...prev])
+        const newProject = await response.json()
+        setProjects((prev) => [newProject, ...prev])
       }
     } catch (error) {
-      console.error("Failed to add news:", error)
+      console.error("Failed to add project:", error)
     }
   }
 
-  const handleDeleteNews = async (slug: string) => {
+  const handleDeleteProject = async (id: string) => {
     try {
-      const response = await fetch(`/api/news/${slug}`, {
+      const response = await fetch(`/api/projects/${id}`, {
         method: "DELETE",
       })
 
       if (response.ok) {
-        setNews((prev) => prev.filter((item) => item.slug !== slug))
+        setProjects((prev) => prev.filter((item) => item._id !== id))
       }
     } catch (error) {
-      console.error("Failed to delete news:", error)
+      console.error("Failed to delete project:", error)
     }
   }
 
@@ -179,33 +191,35 @@ export default function NewsManagementPage() {
     <div className="w-full min-h-screen bg-gray-50 overflow-x-hidden">
       <div className="p-4 sm:p-6 max-w-5xl mx-auto">
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-stretch sm:items-center justify-between mb-4 sm:mb-6">
-          <h1 className="text-xl sm:text-2xl font-semibold text-[var(--header-text)] break-words">News Management</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold text-[var(--header-text)] break-words">
+            Projects Management
+          </h1>
           <button
-            onClick={handleAddNews}
+            onClick={handleAddProject}
             className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base whitespace-nowrap"
           >
             <Plus className="w-4 h-4 flex-shrink-0" />
-            <span>Add News</span>
+            <span>Add Project</span>
           </button>
         </div>
 
         <div className="space-y-3 sm:space-y-4">
-          {news.map((newsItem) => (
+          {projects.map((project) => (
             <div
-              key={newsItem.slug}
+              key={project._id}
               className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4 w-full overflow-hidden"
             >
-              {editingSlug === newsItem.slug ? (
+              {editingId === project._id ? (
                 <div className="space-y-3 sm:space-y-4">
                   <div className="flex items-center justify-between mb-3 sm:mb-4">
-                    <h3 className="text-base sm:text-lg font-semibold text-[var(--header-text)]">Edit News</h3>
+                    <h3 className="text-base sm:text-lg font-semibold text-[var(--header-text)]">Edit Project</h3>
                     <button onClick={handleCancel} className="text-gray-500 flex-shrink-0">
                       <X className="w-5 h-5" />
                     </button>
                   </div>
 
                   <div className="w-full">
-                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-2">Featured Photo</label>
+                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-2">Project Image</label>
                     <div className="flex items-start gap-3 sm:gap-4">
                       <div className="w-32 h-32 sm:w-40 sm:h-28 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 flex-shrink-0 relative">
                         {formData.photoPreview ? (
@@ -226,7 +240,7 @@ export default function NewsManagementPage() {
                           onChange={handlePhotoChange}
                           className="block w-full text-xs sm:text-sm text-gray-600 file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4 file:rounded file:border-0 file:text-xs sm:file:text-sm file:font-medium file:bg-[var(--primary)] file:text-[var(--primary-foreground)] cursor-pointer"
                         />
-                        <p className="text-xs text-gray-500 mt-2">Recommended: 800x500px</p>
+                        <p className="text-xs text-gray-500 mt-2">Recommended: 600x400px</p>
                       </div>
                     </div>
                   </div>
@@ -244,11 +258,13 @@ export default function NewsManagementPage() {
                     </div>
 
                     <div className="w-full">
-                      <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">Slug</label>
+                      <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                        Location
+                      </label>
                       <input
                         type="text"
-                        name="slug"
-                        value={formData.slug}
+                        name="location"
+                        value={formData.location}
                         onChange={handleInputChange}
                         className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
                       />
@@ -257,56 +273,91 @@ export default function NewsManagementPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div className="w-full">
-                      <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">Date</label>
+                      <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                        Status
+                      </label>
+                      <select
+                        name="status"
+                        value={formData.status}
+                        onChange={handleInputChange}
+                        className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                      >
+                        <option value="ongoing">Ongoing</option>
+                        <option value="completed">Completed</option>
+                        <option value="upcoming">Upcoming</option>
+                      </select>
+                    </div>
+
+                    <div className="w-full">
+                      <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                        Team Members
+                      </label>
+                      <input
+                        type="number"
+                        name="team"
+                        value={formData.team}
+                        onChange={handleInputChange}
+                        className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="w-full">
+                      <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                        Start Date
+                      </label>
                       <input
                         type="text"
-                        name="date"
-                        value={formData.date}
+                        name="startDate"
+                        value={formData.startDate}
                         onChange={handleInputChange}
-                        placeholder="DD-MM-YYYY"
+                        placeholder="Jan 2024"
                         className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
                       />
                     </div>
 
                     <div className="w-full">
                       <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                        Author Name
+                        End Date
                       </label>
                       <input
                         type="text"
-                        name="author"
-                        value={formData.author}
+                        name="endDate"
+                        value={formData.endDate}
                         onChange={handleInputChange}
+                        placeholder="Dec 2025"
                         className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
                       />
                     </div>
                   </div>
 
-                  <div className="w-full">
-                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">Excerpt</label>
-                    <textarea
-                      name="excerpt"
-                      value={formData.excerpt}
-                      onChange={handleInputChange}
-                      rows={2}
-                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base resize-none"
-                    />
-                  </div>
+                  {formData.status === "ongoing" && (
+                    <div className="w-full">
+                      <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                        Progress (%)
+                      </label>
+                      <input
+                        type="number"
+                        name="progress"
+                        value={formData.progress}
+                        onChange={handleInputChange}
+                        min="0"
+                        max="100"
+                        className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                      />
+                    </div>
+                  )}
 
                   <div className="w-full">
                     <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                      Full Content (one paragraph per line)
+                      Description
                     </label>
                     <textarea
-                      name="content"
-                      value={formData.content.join("\n")}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          content: e.target.value.split("\n").filter((p) => p.trim()),
-                        }))
-                      }
-                      rows={8}
+                      name="description"
+                      value={formData.description}
+                      onChange={handleInputChange}
+                      rows={4}
                       className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base resize-none"
                     />
                   </div>
@@ -319,11 +370,11 @@ export default function NewsManagementPage() {
                       Cancel
                     </button>
                     <button
-                      onClick={handleSaveNews}
+                      onClick={handleSaveProject}
                       className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base"
                     >
                       <Save className="w-4 h-4 flex-shrink-0" />
-                      <span>Save News</span>
+                      <span>Save Project</span>
                     </button>
                   </div>
                 </div>
@@ -331,10 +382,10 @@ export default function NewsManagementPage() {
                 <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-0 w-full">
                   <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0 w-full">
                     <div className="w-24 h-24 sm:w-28 sm:h-20 bg-gray-100 border border-[var(--border-color)] rounded flex items-center justify-center flex-shrink-0 relative">
-                      {newsItem.image ? (
+                      {project.image ? (
                         <img
-                          src={newsItem.image || "/placeholder.svg"}
-                          alt={newsItem.title}
+                          src={project.image || "/placeholder.svg"}
+                          alt={project.title}
                           className="w-full h-full object-cover rounded"
                         />
                       ) : (
@@ -344,21 +395,28 @@ export default function NewsManagementPage() {
                     <div className="flex-1 min-w-0 w-full">
                       <div className="flex flex-wrap items-center gap-2 mb-1">
                         <h3 className="font-semibold text-[var(--header-text)] text-sm sm:text-base break-words">
-                          {newsItem.title}
+                          {project.title}
                         </h3>
-                        <span className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded whitespace-nowrap flex-shrink-0">
-                          {newsItem.author}
+                        <span
+                          className={`text-xs px-2 py-1 rounded whitespace-nowrap flex-shrink-0 ${
+                            project.status === "ongoing"
+                              ? "bg-blue-100 text-blue-800"
+                              : project.status === "completed"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-amber-100 text-amber-800"
+                          }`}
+                        >
+                          {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
                         </span>
                       </div>
-                      <p className="text-xs text-gray-500 mb-2 break-all">/{newsItem.slug}</p>
-                      <p className="text-xs sm:text-sm text-gray-600 break-words">{newsItem.excerpt}</p>
+                      <p className="text-xs sm:text-sm text-gray-600 break-words">{project.description}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 w-full sm:w-auto justify-end sm:ml-4 flex-shrink-0">
-                    <button onClick={() => handleEdit(newsItem)} className="p-2 text-[var(--primary)] rounded">
+                    <button onClick={() => handleEdit(project)} className="p-2 text-[var(--primary)] rounded">
                       <Edit2 className="w-4 h-4" />
                     </button>
-                    <button onClick={() => handleDeleteNews(newsItem.slug)} className="p-2 text-red-600 rounded">
+                    <button onClick={() => handleDeleteProject(project._id)} className="p-2 text-red-600 rounded">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
