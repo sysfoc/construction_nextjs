@@ -1,231 +1,429 @@
-"use client";
-import { Save, Plus, Trash2, Edit2, X, Upload } from "lucide-react";
-import Image from "next/image";
-import { useState, useEffect } from "react";
+"use client"
+import { Save, Trash2, Edit2, X, Upload } from "lucide-react"
+import { useState, type ChangeEvent, useEffect } from "react"
 
 interface Partner {
-  id: number;
-  name: string;
-  logo: string | null;
+  id: string
+  type: "partner" | "stat"
+  name?: string
+  logo?: string
+  statKey?: string
+  value?: string
+  label?: string
 }
 
-export default function PartnersManagementPage() {
-  const [partners, setPartners] = useState<Partner[]>([
-    { id: 1, name: "Steel Solutions Inc.", logo: null },
-    { id: 2, name: "BuildTech Equipment", logo: null },
-    { id: 3, name: "Concrete Masters Ltd.", logo: null },
-    { id: 4, name: "Premier Tools & Hardware", logo: null },
-    { id: 5, name: "Elite Construction Materials", logo: null },
-    { id: 6, name: "Quality Cement Corporation", logo: null },
-  ]);
+interface FormData {
+  type: "partner" | "stat"
+  name: string
+  logo: string
+  statKey: string
+  value: string
+  logoPreview: string | null
+}
 
-  const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
-  const [formData, setFormData] = useState({
+const STAT_OPTIONS = [
+  { key: "activePartnerships", label: "Active Partnerships" },
+  { key: "projectValue", label: "Combined Project Value" },
+  { key: "safetyCompliance", label: "Safety Compliance Rate" },
+]
+
+export default function PartnersManagementPage() {
+  const [partners, setPartners] = useState<Partner[]>([])
+  const [stats, setStats] = useState<Partner[]>([])
+  const [loading, setLoading] = useState(true)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editingType, setEditingType] = useState<"partner" | "stat" | null>(null)
+  const [activeTab, setActiveTab] = useState<"stats" | "partners">("stats")
+  const [formData, setFormData] = useState<FormData>({
+    type: "partner",
     name: "",
-    logoPreview: null as string | null,
-  });
+    logo: "",
+    statKey: "",
+    value: "",
+    logoPreview: null,
+  })
 
   useEffect(() => {
-    if (editingPartner) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [editingPartner]);
+    fetchData()
+  }, [])
 
-  const handleEdit = (partner: Partner) => {
-    setEditingPartner(partner);
-    setFormData({ name: partner.name, logoPreview: partner.logo });
-  };
+  const fetchData = async () => {
+    try {
+      const response = await fetch("/api/partners")
+      const data = await response.json()
+      setPartners(data.partners || [])
+      setStats(data.stats || [])
+    } catch (error) {
+      console.error("Error fetching data:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleEditPartner = (partner: Partner) => {
+    setEditingId(partner.id)
+    setEditingType("partner")
+    setFormData({
+      type: "partner",
+      name: partner.name || "",
+      logo: partner.logo || "",
+      statKey: "",
+      value: "",
+      logoPreview: partner.logo || null,
+    })
+  }
+
+  const handleEditStat = (stat: Partner) => {
+    setEditingId(stat.id)
+    setEditingType("stat")
+    setFormData({
+      type: "stat",
+      name: "",
+      logo: "",
+      statKey: stat.statKey || "",
+      value: stat.value || "",
+      logoPreview: null,
+    })
+  }
 
   const handleCancel = () => {
-    setEditingPartner(null);
-    setFormData({ name: "", logoPreview: null });
-  };
+    setEditingId(null)
+    setEditingType(null)
+    setFormData({
+      type: "partner",
+      name: "",
+      logo: "",
+      statKey: "",
+      value: "",
+      logoPreview: null,
+    })
+  }
 
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleLogoChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () =>
+      const reader = new FileReader()
+      reader.onloadend = () => {
         setFormData((prev) => ({
           ...prev,
           logoPreview: reader.result as string,
-        }));
-      reader.readAsDataURL(file);
+          logo: reader.result as string,
+        }))
+      }
+      reader.readAsDataURL(file)
     }
-  };
+  }
 
-  const handleSavePartner = () => {
-    if (editingPartner) {
-      setPartners((prev) =>
-        prev.map((p) =>
-          p.id === editingPartner.id
-            ? { ...p, name: formData.name, logo: formData.logoPreview }
-            : p
-        )
-      );
-      handleCancel();
+  const handleSave = async () => {
+    try {
+      if (editingType === "partner") {
+        const response = await fetch(`/api/partners/${editingId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "partner",
+            name: formData.name,
+            logo: formData.logo,
+          }),
+        })
+
+        if (response.ok) {
+          await fetchData()
+          handleCancel()
+        }
+      } else if (editingType === "stat") {
+        const response = await fetch(`/api/partners/${editingId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "stat",
+            statKey: formData.statKey,
+            value: formData.value,
+            label: STAT_OPTIONS.find((s) => s.key === formData.statKey)?.label || "",
+          }),
+        })
+
+        if (response.ok) {
+          await fetchData()
+          handleCancel()
+        }
+      }
+    } catch (error) {
+      console.error("Error saving:", error)
     }
-  };
+  }
 
-  const handleAddPartner = () => {
-    const newPartner = { id: Date.now(), name: "New Partner", logo: null };
-    setPartners((prev) => [...prev, newPartner]);
-    handleEdit(newPartner);
-  };
+  const handleAddPartner = async () => {
+    try {
+      await fetch("/api/partners", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "partner",
+          name: "New Partner",
+          logo: "",
+        }),
+      })
+      await fetchData()
+    } catch (error) {
+      console.error("Error adding partner:", error)
+    }
+  }
 
-  const handleDeletePartner = (id: number) => {
-    setPartners((prev) => prev.filter((p) => p.id !== id));
-  };
+  const handleDeletePartner = async (id: string) => {
+    try {
+      await fetch(`/api/partners/${id}`, { method: "DELETE" })
+      await fetchData()
+    } catch (error) {
+      console.error("Error deleting:", error)
+    }
+  }
 
-  const handleSubmit = () => {
-    console.log("Partners saved:", partners);
-  };
+  const getStatByKey = (key: string) => {
+    return stats.find((s) => s.statKey === key)
+  }
+
+  if (loading) {
+    return (
+      <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-600">Loading...</p>
+      </div>
+    )
+  }
 
   return (
     <div className="w-full min-h-screen bg-gray-50 overflow-x-hidden">
-      <div className="p-4 sm:p-6 mx-auto">
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-stretch sm:items-center justify-between mb-4 sm:mb-6">
-          <h1 className="text-xl sm:text-2xl font-semibold text-[var(--header-text)] break-words">
-            Partners Management
-          </h1>
+      <div className="p-4 sm:p-6 max-w-6xl mx-auto">
+        <div className="flex gap-2 mb-8 border-b border-[var(--border-color)]">
           <button
-            onClick={handleAddPartner}
-            className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base whitespace-nowrap"
+            onClick={() => setActiveTab("stats")}
+            className={`px-4 py-2 font-medium text-sm sm:text-base transition-colors ${
+              activeTab === "stats"
+                ? "text-[var(--primary)] border-b-2 border-[var(--primary)]"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
           >
-            <Plus className="w-4 h-4 flex-shrink-0" />
-            <span>Add Partner</span>
+            Partnership Stats
+          </button>
+          <button
+            onClick={() => setActiveTab("partners")}
+            className={`px-4 py-2 font-medium text-sm sm:text-base transition-colors ${
+              activeTab === "partners"
+                ? "text-[var(--primary)] border-b-2 border-[var(--primary)]"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            Partners
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-          {partners.map((partner) => (
-            <div
-              key={partner.id}
-              className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4 w-full overflow-hidden"
-            >
-              <div className="w-full h-28 sm:h-32 bg-gray-50 border border-[var(--border-color)] rounded flex items-center justify-center mb-2 sm:mb-3 relative">
-                {partner.logo ? (
-                  <Image
-                    src={partner.logo}
-                    alt={partner.name}
-                    fill
-                    className="object-contain p-3 sm:p-4"
-                  />
-                ) : (
-                  <span className="text-xs text-gray-400">No Logo</span>
-                )}
-              </div>
+        {/* Stats Section */}
+        {activeTab === "stats" && (
+          <div className="mb-8">
+            <h1 className="text-xl sm:text-2xl font-semibold text-[var(--header-text)] mb-6">Partnership Stats</h1>
 
-              <h3 className="font-semibold text-[var(--header-text)] text-xs sm:text-sm mb-2 sm:mb-3 text-center break-words px-1">
-                {partner.name}
-              </h3>
-              <div className="flex justify-center gap-2">
-                <button
-                  onClick={() => handleEdit(partner)}
-                  className="p-2 text-[var(--primary)] rounded"
-                >
-                  <Edit2 className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleDeletePartner(partner.id)}
-                  className="p-2 text-red-600 rounded"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {STAT_OPTIONS.map((statOption) => {
+                const stat = getStatByKey(statOption.key)
+                const isEditing = editingId === stat?.id && editingType === "stat"
 
-        <div className="flex justify-end mt-4 sm:mt-6 w-full">
-          <button
-            onClick={handleSubmit}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base"
-          >
-            <Save className="w-4 h-4 flex-shrink-0" />
-            <span>Save All Changes</span>
-          </button>
-        </div>
-      </div>
+                return (
+                  <div
+                    key={statOption.key}
+                    className="bg-[var(--background)] border border-[var(--border-color)] rounded p-4"
+                  >
+                    {isEditing ? (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between mb-3">
+                          <h3 className="text-sm font-semibold text-[var(--header-text)]">Edit</h3>
+                          <button onClick={handleCancel} className="text-gray-500">
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
 
-      {editingPartner && (
-        <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
-          <div className="bg-[var(--background)] rounded shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-4 border-b border-[var(--border-color)]">
-              <h2 className="text-lg font-semibold text-[var(--header-text)]">
-                Edit Partner
-              </h2>
-              <button onClick={handleCancel} className="text-gray-500">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+                        <div>
+                          <label className="block text-xs text-[var(--header-text)] mb-1.5">Value</label>
+                          <input
+                            type="text"
+                            name="value"
+                            value={formData.value}
+                            onChange={handleInputChange}
+                            placeholder="e.g., 50+, $2.5B, 98%"
+                            className="w-full px-3 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm"
+                          />
+                        </div>
 
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm text-[var(--header-text)] mb-2">
-                  Partner Logo
-                </label>
-                <div className="w-full h-32 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 mb-3 relative">
-                  {formData.logoPreview ? (
-                    <Image
-                      src={formData.logoPreview}
-                      alt="Logo preview"
-                      fill
-                      className="object-contain p-4"
-                    />
-                  ) : (
-                    <Upload className="w-8 h-8 text-gray-400" />
-                  )}
-                </div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoChange}
-                  className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-[var(--primary)] file:text-[var(--primary-foreground)] cursor-pointer"
-                />
-                <p className="text-xs text-gray-500 mt-2">
-                  Recommended: 300x150px
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm text-[var(--header-text)] mb-2">
-                  Partner Name
-                </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, name: e.target.value }))
-                  }
-                  className="w-full px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-3 p-4 border-t border-[var(--border-color)]">
-              <button
-                onClick={handleCancel}
-                className="flex-1 px-4 py-2 border border-[var(--border-color)] rounded text-[var(--header-text)]"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSavePartner}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium"
-              >
-                <Save className="w-4 h-4" />
-                Save
-              </button>
+                        <div className="flex gap-2 pt-2">
+                          <button
+                            onClick={handleCancel}
+                            className="flex-1 px-3 py-2 border border-[var(--border-color)] rounded text-[var(--header-text)] text-xs"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={handleSave}
+                            className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-xs"
+                          >
+                            <Save className="w-3 h-3" />
+                            Save
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <h3 className="font-semibold text-[var(--header-text)] text-sm mb-2">{statOption.label}</h3>
+                        <p className="text-2xl font-bold text-[var(--primary)] mb-4">{stat?.value || "—"}</p>
+                        <div className="flex gap-2">
+                          {stat && (
+                            <>
+                              <button
+                                onClick={() => handleEditStat(stat)}
+                                className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-[var(--primary)] border border-[var(--border-color)] rounded text-xs hover:bg-gray-50"
+                              >
+                                <Edit2 className="w-3 h-3" />
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDeletePartner(stat.id)}
+                                className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-red-600 border border-[var(--border-color)] rounded text-xs hover:bg-red-50"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                                Delete
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Partners Section */}
+        {activeTab === "partners" && (
+          <div>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-stretch sm:items-center justify-between mb-6">
+              <h1 className="text-xl sm:text-2xl font-semibold text-[var(--header-text)]">Partners</h1>
+              <button
+                onClick={handleAddPartner}
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base whitespace-nowrap"
+              >
+                <span>+ Add Partner</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {partners.map((partner) => (
+                <div
+                  key={partner.id}
+                  className="bg-[var(--background)] border border-[var(--border-color)] rounded p-4"
+                >
+                  {editingId === partner.id && editingType === "partner" ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-semibold text-[var(--header-text)]">Edit Partner</h3>
+                        <button onClick={handleCancel} className="text-gray-500">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs text-[var(--header-text)] mb-2">Partner Logo</label>
+                        <div className="w-full h-24 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 mb-3 relative">
+                          {formData.logoPreview ? (
+                            <img
+                              src={formData.logoPreview || "/placeholder.svg"}
+                              alt="Logo preview"
+                              className="w-full h-full object-contain rounded p-2"
+                            />
+                          ) : (
+                            <Upload className="w-6 h-6 text-gray-400" />
+                          )}
+                        </div>
+
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleLogoChange}
+                          className="block w-full text-xs text-gray-600 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-[var(--primary)] file:text-[var(--primary-foreground)] cursor-pointer mb-3"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs text-[var(--header-text)] mb-1.5">Partner Name</label>
+                        <input
+                          type="text"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm"
+                        />
+                      </div>
+
+                      <div className="flex gap-2 pt-2">
+                        <button
+                          onClick={handleCancel}
+                          className="flex-1 px-3 py-2 border border-[var(--border-color)] rounded text-[var(--header-text)] text-xs"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={handleSave}
+                          className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-xs"
+                        >
+                          <Save className="w-3 h-3" />
+                          Save
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="w-full h-24 bg-gray-100 border border-[var(--border-color)] rounded flex items-center justify-center mb-3">
+                        {partner.logo ? (
+                          <img
+                            src={partner.logo || "/placeholder.svg"}
+                            alt={partner.name}
+                            className="w-full h-full object-contain rounded p-2"
+                          />
+                        ) : (
+                          <span className="text-xs text-gray-400">No Logo</span>
+                        )}
+                      </div>
+                      <h3 className="font-semibold text-[var(--header-text)] text-sm mb-3 line-clamp-2">
+                        {partner.name}
+                      </h3>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleEditPartner(partner)}
+                          className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-[var(--primary)] border border-[var(--border-color)] rounded text-xs hover:bg-gray-50"
+                        >
+                          <Edit2 className="w-3 h-3" />
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeletePartner(partner.id)}
+                          className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-red-600 border border-[var(--border-color)] rounded text-xs hover:bg-red-50"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
-  );
+  )
 }
