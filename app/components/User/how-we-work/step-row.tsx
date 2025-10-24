@@ -1,14 +1,13 @@
-import Image from 'next/image'
+import Image from "next/image"
 
 type StepRowProps = {
   index: number
   title: string
   description: string
   imageSrc: string
-  imageAlt: string
 }
 
-export function StepRow({ index, title, description, imageSrc, imageAlt }: StepRowProps) {
+export function StepRow({ index, title, description, imageSrc }: StepRowProps) {
   const isEven = index % 2 === 1
   const displayNum = String(index + 1).padStart(2, "0")
 
@@ -31,12 +30,7 @@ export function StepRow({ index, title, description, imageSrc, imageAlt }: StepR
             {/* Image */}
             <div className="w-full md:w-1/2 flex-shrink-0">
               <div className="relative w-full aspect-[4/3] border border-[var(--border-color,_var(--border))] rounded-lg overflow-hidden bg-gray-50">
-                <Image
-                  src={imageSrc || "/placeholder.svg"}
-                  alt={imageAlt}
-                  fill
-                  className="object-contain"
-                />
+                <Image src={imageSrc || "/placeholder.svg"} alt="" fill className="object-contain" />
               </div>
             </div>
 
@@ -58,12 +52,7 @@ export function StepRow({ index, title, description, imageSrc, imageAlt }: StepR
             {/* Image */}
             <div className="w-full md:w-1/2 flex-shrink-0">
               <div className="relative w-full aspect-[4/3] border border-[var(--border-color,_var(--border))] rounded-lg overflow-hidden bg-gray-50">
-                <Image
-                  src={imageSrc || "/placeholder.svg"}
-                  alt={imageAlt}
-                  fill
-                  className="object-contain"
-                />
+                <Image src={imageSrc || "/placeholder.svg"} alt="" fill className="object-contain" />
               </div>
             </div>
 

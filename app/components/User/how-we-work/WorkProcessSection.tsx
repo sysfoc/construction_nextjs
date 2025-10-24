@@ -1,3 +1,4 @@
+// app/components/User/how-we-work/WorkProcessSection.tsx
 import Image from 'next/image'
 
 export function WorkProcessSection() {

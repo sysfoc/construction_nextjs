@@ -1,57 +1,39 @@
+"use client";
+
 import { ChevronsRight } from "lucide-react";
-import { StepRow } from "../components/User/how-we-work/step-row";
-import { WorkProcessSection } from "../components/User/how-we-work/WorkProcessSection";
-
-
-export const metadata = {
-  title: "How We Work | Construction Process",
-  description: "Learn about our step-by-step construction process from consultation to final handover.",
-}
-
+import { StepRow } from "@/app/components/User/how-we-work/step-row";
+import { WorkProcessSection } from "@/app/components/User/how-we-work/WorkProcessSection";
+import type { HowWeWorkData } from "@/lib/models/HowWeWork";
+import { useEffect, useState } from "react";
 
 export default function HowWeWorkPage() {
-  const steps = [
-    {
-      step: 1,
-      title: "Consultation & Site Review",
-      description:
-        "We clarify objectives, budget, and constraints, then conduct a focused site assessment to inform early decisions.",
-      imgSrc: "/how-we-work/construction-site-meeting.jpg",
-      imgAlt: "Team conducting site consultation",
-    },
-    {
-      step: 2,
-      title: "Design & Planning",
-      description:
-        "Our team finalizes drawings, materials, and milestones with a precise schedule for efficient execution.",
-      imgSrc: "/how-we-work/blueprints-and-planning.jpg",
-      imgAlt: "Blueprints and planning documents",
-    },
-    {
-      step: 3,
-      title: "Permits & Procurement",
-      description:
-        "We handle approvals and source materials on time, minimizing delays and ensuring compliance.",
-      imgSrc: "/how-we-work/permits-and-materials.jpg",
-      imgAlt: "Permits and materials procurement",
-    },
-    {
-      step: 4,
-      title: "Construction",
-      description:
-        "Strict site coordination and quality control keep the build on schedule with consistent progress updates.",
-      imgSrc: "/how-we-work/on-site-construction.jpg",
-      imgAlt: "Active construction site",
-    },
-    {
-      step: 5,
-      title: "Inspection & Handover",
-      description:
-        "We complete inspections, address punch lists, and hand over a finished build ready for operation.",
-      imgSrc: "/how-we-work/final-inspection-handover.jpg",
-      imgAlt: "Final inspection and handover",
-    },
-  ];
+  const [steps, setSteps] = useState<HowWeWorkData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchSteps() {
+      try {
+        const response = await fetch("/api/how-we-work", {
+          cache: "no-store",
+        });
+        const data = await response.json();
+        setSteps(data.steps || []);
+      } catch (error) {
+        console.error("Failed to fetch steps:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchSteps();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-600">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -84,12 +66,11 @@ export default function HowWeWorkPage() {
         <div className="mt-3 flex flex-col gap-2">
           {steps.map((s, i) => (
             <StepRow
-              key={s.step}
+              key={s._id}
               index={i}
               title={s.title}
               description={s.description}
               imageSrc={s.imgSrc}
-              imageAlt={s.imgAlt}
             />
           ))}
         </div>
