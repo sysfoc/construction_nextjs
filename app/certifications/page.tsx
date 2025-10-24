@@ -1,94 +1,10 @@
-"use client"
+import CertificationsClient from "./CertificationsClient"
 
-import Image from "next/image"
-import { useEffect, useState } from "react"
-
-interface Certification {
-  _id: string
-  title: string
-  description: string
-  image: string | null
-  order: number
+export const metadata = {
+  title: "Certifications",
+  description: "Explore the certifications and licenses we have achieved.",
 }
 
-export default function Certifications() {
-  const [certifications, setCertifications] = useState<Certification[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchCertifications = async () => {
-      try {
-        const response = await fetch("/api/certifications")
-        const data = await response.json()
-        setCertifications(data)
-      } catch (error) {
-        console.error("Error fetching certifications:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchCertifications()
-  }, [])
-
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 px-6 py-16">
-        <section className="max-w-6xl mx-auto">
-          <div className="text-center">
-            <p className="text-gray-500">Loading certifications...</p>
-          </div>
-        </section>
-      </main>
-    )
-  }
-
-  return (
-    <main className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 px-6 py-16">
-      <section className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-extrabold text-[#ff6600] uppercase tracking-tight mb-4">
-            Certifications & Licenses
-          </h1>
-          <p className="text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
-            Our certifications reflect our dedication to safety, quality, and sustainability in every construction
-            project.
-          </p>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {certifications.map((cert) => (
-            <div
-              key={cert._id}
-              className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all"
-            >
-              <div className="relative h-56 w-full overflow-hidden">
-                {cert.image ? (
-                  <Image
-                    src={cert.image || "/placeholder.svg"}
-                    alt={cert.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover hover:scale-105 transition-transform duration-300"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                    <span className="text-gray-400">No image</span>
-                  </div>
-                )}
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-[#ff6600] mb-2">{cert.title}</h3>
-                <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">{cert.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        {certifications.length === 0 && (
-          <div className="text-center mt-10 text-gray-500 dark:text-gray-400">
-            No certifications available at this moment.
-          </div>
-        )}
-      </section>
-    </main>
-  )
+export default function CertificationsPage() {
+  return <CertificationsClient />
 }
