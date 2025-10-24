@@ -1,59 +1,70 @@
-// "use client";
-import React from "react";
-import Image from "next/image";
-import SlantedButton from "../General/buttons/SlantedButton";
+"use client"
+import { useEffect, useState } from "react"
+import Image from "next/image"
+import SlantedButton from "../General/buttons/SlantedButton"
+import Link from "next/link"
+
+interface Service {
+  id: string
+  type: "service" | "button"
+  icon?: string
+  title?: string
+  subtitle?: string
+  description?: string
+  buttonText?: string
+  buttonUrl?: string
+}
 
 export default function ServicesGrid() {
-  const services = [
-    {
-      icon: "/services/service_01.png",
-      title: "General",
-      subtitle: "Construction",
-      description:
-        "There are many variations of passages of Lorem Ipsum available",
-    },
-    {
-      icon: "/services/service_02.png",
-      title: "Repair &",
-      subtitle: "Painting",
-      description:
-        "The building opened in 2020 and includes more than 120+ flats",
-    },
-    {
-      icon: "/services/service_03.png",
-      title: "Apartment",
-      subtitle: "Design",
-      description:
-        "There are many variations of passages of Lorem Ipsum available",
-    },
-    {
-      icon: "/services/service_04.png",
-      title: "Expert",
-      subtitle: "Mechanical",
-      description:
-        "There are many variations of passages of Lorem Ipsum available",
-    },
-    {
-      icon: "/services/service_05.png",
-      title: "Architecture &",
-      subtitle: "Building",
-      description:
-        "There are many variations of passages of Lorem Ipsum available",
-    },
-  ];
+  const [services, setServices] = useState<Service[]>([])
+  const [button, setButton] = useState<Service | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  const fetchData = async () => {
+    try {
+      setLoading(true)
+      const res = await fetch("/api/services")
+      const data = await res.json()
+
+      const allServices = data.services || []
+      const buttonService = allServices.find((s: Service) => s.type === "button")
+      const regularServices = allServices.filter((s: Service) => s.type === "service")
+
+      setServices(regularServices)
+      setButton(buttonService || null)
+    } catch (error) {
+      console.error("Error fetching data:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="py-12 dark:bg-gray-900">
+        <div className="container mx-auto px-5 sm:px-16 flex items-center justify-center min-h-96">
+          <p className="text-gray-600 dark:text-gray-400">Loading services...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className=" py-12 dark:bg-gray-900">
       <div className="container mx-auto px-5  sm:px-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {services.map((service, index) => (
-            <div key={index} className="bg-gray-50 dark:bg-gray-800 p-5 relative group">
+          {services.map((service) => (
+            <div key={service.id} className="bg-gray-50 dark:bg-gray-800 p-5 relative group">
               {/* Icon and Title Row */}
               <div className="flex items-start gap-4 mb-4">
                 <div className="flex-shrink-0">
                   <Image
-                    src={service.icon}
-                    alt={service.title}
+                    src={service.icon || "/placeholder.svg"}
+                    alt={service.title || "Service"}
                     width={40}
                     height={40}
                     className="object-contain"
@@ -61,17 +72,17 @@ export default function ServicesGrid() {
                 </div>
                 <div>
                   <h3 className="text-black dark:text-gray-200 font-bold text-lg leading-tight">
-                    {service.title}
+                    {service.title || "Service"}
                   </h3>
-                  <h3 className="text-black dark:text-gray-200 font-bold text-lg leading-tight">
-                    {service.subtitle}
+                  <h3 className="text-black dark:text-gray-200 font-semibold text-sm leading-tight">
+                    {service.subtitle || "Subtitle"}
                   </h3>
                 </div>
               </div>
 
               {/* Description */}
               <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
-                {service.description}
+                {service.description || "No description available"}
               </p>
 
               {/* Diagonal Orange Line */}
@@ -80,10 +91,14 @@ export default function ServicesGrid() {
           ))}
 
           <div className="bg-white dark:bg-gray-800 p-6 flex items-center justify-center">
-            <SlantedButton text="GET STARTED" />
+            {button && (
+              <Link href={button.buttonUrl || "#"}>
+                <SlantedButton text={button.buttonText || "GET STARTED"} />
+              </Link>
+            )}
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

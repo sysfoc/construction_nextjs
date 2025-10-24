@@ -1,3 +1,4 @@
+// app/components/General/buttons/SlantedButton.tsx
 import { RiArrowRightDoubleLine } from "react-icons/ri";
 import React from "react";
 
