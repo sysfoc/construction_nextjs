@@ -1,36 +1,38 @@
-"use client"
-import type React from "react"
-import { useEffect, useState } from "react"
-import { Users, Award, Shield, Clock, ChevronsRight } from "lucide-react"
-import Image from "next/image"
+"use client";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { Users, Award, Shield, Clock, ChevronsRight } from "lucide-react";
+import Image from "next/image";
+import { isPageVisible } from "@/lib/api/pageVisibility";
+import { useRouter } from "next/navigation";
 
 interface ProjectCardProps {
-  imageSrc: string
-  title: string
-  description: string
-  budget: string
-  duration: string
-  certifications: string[]
-  imagePosition: "left" | "right"
+  imageSrc: string;
+  title: string;
+  description: string;
+  budget: string;
+  duration: string;
+  certifications: string[];
+  imagePosition: "left" | "right";
 }
 
 interface Stat {
-  id: string
-  statKey: string
-  value: string
+  id: string;
+  statKey: string;
+  value: string;
 }
 
 interface Partner {
-  id: string
-  name: string
-  logo: string
+  id: string;
+  name: string;
+  logo: string;
 }
 
 const STAT_LABELS: Record<string, string> = {
   activePartnerships: "Active Partnerships",
   projectValue: "Combined Project Value",
   safetyCompliance: "Safety Compliance Rate",
-}
+};
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
   imageSrc,
@@ -44,33 +46,52 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   return (
     <div
       className={`flex ${
-        imagePosition === "left" ? "flex-col lg:flex-row" : "flex-col lg:flex-row-reverse"
+        imagePosition === "left"
+          ? "flex-col lg:flex-row"
+          : "flex-col lg:flex-row-reverse"
       } gap-0 mb-8 lg:mb-4 overflow-hidden rounded-lg shadow-lg max-w-6xl mx-auto`}
     >
       {/* Image Section */}
       <div className="w-full lg:w-2/5 relative h-64 sm:h-72 lg:h-64 bg-white">
-        <Image src={imageSrc || "/placeholder.svg"} alt={title} fill className="object-cover lg:object-contain" />
+        <Image
+          src={imageSrc || "/placeholder.svg"}
+          alt={title}
+          fill
+          className="object-cover lg:object-contain"
+        />
       </div>
 
       {/* Text Section */}
       <div className="w-full lg:w-3/5 bg-gray-50 px-4 lg:px-6 py-4 lg:py-6 flex flex-col justify-center">
-        <h3 className="text-lg md:text-xl font-bold text-[var(--page-heading)] mb-2">{title}</h3>
-        <p className="text-sm md:text-base text-[var(--paragraph-color)] leading-relaxed mb-3">{description}</p>
+        <h3 className="text-lg md:text-xl font-bold text-[var(--page-heading)] mb-2">
+          {title}
+        </h3>
+        <p className="text-sm md:text-base text-[var(--paragraph-color)] leading-relaxed mb-3">
+          {description}
+        </p>
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
           <div className="flex items-start gap-2">
             <Clock className="w-4 h-4 text-[var(--primary)] mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase">Duration</p>
-              <p className="text-xs md:text-sm font-medium text-[var(--paragraph-color)]">{duration}</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase">
+                Duration
+              </p>
+              <p className="text-xs md:text-sm font-medium text-[var(--paragraph-color)]">
+                {duration}
+              </p>
             </div>
           </div>
           <div className="flex items-start gap-2">
             <Shield className="w-4 h-4 text-[var(--primary)] mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase">Safety Rating</p>
-              <p className="text-xs md:text-sm font-medium text-[var(--paragraph-color)]">ISO 45001 Certified</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase">
+                Safety Rating
+              </p>
+              <p className="text-xs md:text-sm font-medium text-[var(--paragraph-color)]">
+                ISO 45001 Certified
+              </p>
             </div>
           </div>
         </div>
@@ -88,62 +109,71 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const PartnersClient: React.FC = () => {
-  const [stats, setStats] = useState<Stat[]>([])
-  const [partners, setPartners] = useState<Partner[]>([])
-  const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState<Stat[]>([]);
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const [isVisible, setIsVisible] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/api/partners")
-        const data = await response.json()
-        setStats(data.stats || [])
-        setPartners(data.partners || [])
-      } catch (error) {
-        console.error("Error fetching partners data:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
+    fetchData();
+    checkVisibility();
+  }, [router]);
 
-    fetchData()
-  }, [])
+  const fetchData = async () => {
+    try {
+      const response = await fetch("/api/partners");
+      const data = await response.json();
+      setStats(data.stats || []);
+      setPartners(data.partners || []);
+    } catch (error) {
+      console.error("Error fetching partners data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const checkVisibility = async () => {
+    const visible = await isPageVisible("partners");
+    setIsVisible(visible);
+    if (!visible) {
+      router.push("/not-found");
+    }
+  };
 
   if (loading) {
     return (
       <div className="w-full min-h-screen flex items-center justify-center">
         <p className="text-gray-600">Loading...</p>
       </div>
-    )
+    );
+  }
+
+  if (!isVisible) {
+    return null;
   }
 
   return (
     <div>
-      <section className="relative -mt-20 lg:-mt-10 bg-[url('/Team/team.png')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center">
-        <div className="absolute inset-0 bg-[#161D39]/80"></div>
-        <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl font-extrabold mb-4 tracking-wide drop-shadow-lg">Partners</h1>
-          <p className="text-lg font-light text-gray-200">
-            Home <ChevronsRight className="inline-block w-4 h-4 text-primary" /> <span>Partners</span>
-          </p>
-        </div>
-      </section>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Header Section */}
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-2">
             <Users className="w-6 h-6 md:w-7 md:h-7 text-[var(--primary)]" />
-            <h2 className="text-2xl md:text-3xl font-bold text-[var(--page-heading)]">Strategic Partnerships</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--page-heading)]">
+              Strategic Partnerships
+            </h2>
           </div>
           <p className="text-sm md:text-base text-[var(--paragraph-color)] max-w-3xl mb-6">
-            We forge strategic alliances with industry-leading construction firms, engineering consultancies, and
-            infrastructure developers. Our partnership framework emphasizes collaborative project delivery, risk
-            mitigation, and value engineering to achieve superior outcomes.
+            We forge strategic alliances with industry-leading construction
+            firms, engineering consultancies, and infrastructure developers. Our
+            partnership framework emphasizes collaborative project delivery,
+            risk mitigation, and value engineering to achieve superior outcomes.
           </p>
 
           {/* Partnership Stats */}
@@ -152,8 +182,12 @@ const PartnersClient: React.FC = () => {
               <div key={stat.id} className="flex items-start gap-2">
                 <Award className="w-5 h-5 text-[var(--primary)] mt-0.5" />
                 <div>
-                  <p className="text-xl md:text-2xl font-bold text-[var(--page-heading)]">{stat.value}</p>
-                  <p className="text-xs md:text-sm text-[var(--paragraph-color)]">{STAT_LABELS[stat.statKey]}</p>
+                  <p className="text-xl md:text-2xl font-bold text-[var(--page-heading)]">
+                    {stat.value}
+                  </p>
+                  <p className="text-xs md:text-sm text-[var(--paragraph-color)]">
+                    {STAT_LABELS[stat.statKey]}
+                  </p>
                 </div>
               </div>
             ))}
@@ -171,20 +205,40 @@ const PartnersClient: React.FC = () => {
           <div className="relative overflow-hidden">
             <div className="flex animate-marquee whitespace-nowrap">
               {partners.map((p) => (
-                <div key={p.id} className="flex-shrink-0 flex flex-col items-center mx-8 lg:mx-10">
+                <div
+                  key={p.id}
+                  className="flex-shrink-0 flex flex-col items-center mx-8 lg:mx-10"
+                >
                   <div className="w-20 h-14 lg:w-28 lg:h-18 bg-white rounded-lg shadow-sm flex items-center justify-center hover:shadow-md transition p-2 relative">
-                    <Image src={p.logo || "/placeholder.svg"} alt={p.name} fill className="object-contain" />
+                    <Image
+                      src={p.logo || "/placeholder.svg"}
+                      alt={p.name}
+                      fill
+                      className="object-contain"
+                    />
                   </div>
-                  <span className="mt-2 text-xs text-[var(--paragraph-color)] font-medium text-center">{p.name}</span>
+                  <span className="mt-2 text-xs text-[var(--paragraph-color)] font-medium text-center">
+                    {p.name}
+                  </span>
                 </div>
               ))}
               {/* Duplicate for seamless loop */}
               {partners.map((p) => (
-                <div key={`${p.id}-duplicate`} className="flex-shrink-0 flex flex-col items-center mx-8 lg:mx-10">
+                <div
+                  key={`${p.id}-duplicate`}
+                  className="flex-shrink-0 flex flex-col items-center mx-8 lg:mx-10"
+                >
                   <div className="w-20 h-14 lg:w-28 lg:h-18 bg-white rounded-lg shadow-sm flex items-center justify-center hover:shadow-md transition p-2 relative">
-                    <Image src={p.logo || "/placeholder.svg"} alt={p.name} fill className="object-contain" />
+                    <Image
+                      src={p.logo || "/placeholder.svg"}
+                      alt={p.name}
+                      fill
+                      className="object-contain"
+                    />
                   </div>
-                  <span className="mt-2 text-xs text-[var(--paragraph-color)] font-medium text-center">{p.name}</span>
+                  <span className="mt-2 text-xs text-[var(--paragraph-color)] font-medium text-center">
+                    {p.name}
+                  </span>
                 </div>
               ))}
             </div>
@@ -199,7 +253,7 @@ const PartnersClient: React.FC = () => {
                 transform: translateX(-50%);
               }
             }
-            .animate-marquee { 
+            .animate-marquee {
               animation: marquee 30s linear infinite;
             }
             .hover\\:pause:hover {
@@ -227,12 +281,16 @@ const PartnersClient: React.FC = () => {
           description="Partnering with renowned architectural firms and structural engineers, we deliver landmark commercial buildings and high-rise developments."
           budget="$12 million"
           duration="18 Months"
-          certifications={["OSHA Compliant", "Green Building", "Quality Assured"]}
+          certifications={[
+            "OSHA Compliant",
+            "Green Building",
+            "Quality Assured",
+          ]}
           imagePosition="left"
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default PartnersClient
+export default PartnersClient;

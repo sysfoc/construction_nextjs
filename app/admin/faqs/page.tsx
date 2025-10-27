@@ -1,134 +1,131 @@
-'use client';
-import { Save, Plus, Trash2, Edit2, X, Home, FileText } from 'lucide-react';
-import { useState } from 'react';
+"use client"
+import { Save, Plus, Trash2, Edit2, X } from "lucide-react"
+import type React from "react"
+
+import { useState, useEffect } from "react"
 
 interface FAQ {
-  id: number;
-  question: string;
-  answer: string;
-  showOnHomePage: boolean;
-  showOnFAQPage: boolean;
+  _id: string
+  question: string
+  answer: string
+  showOnFAQPage: boolean
 }
 
 interface FormData {
-  question: string;
-  answer: string;
-  showOnHomePage: boolean;
-  showOnFAQPage: boolean;
+  question: string
+  answer: string
+  showOnFAQPage: boolean
 }
 
 export default function FAQManagementPage() {
-  const [faqs, setFaqs] = useState<FAQ[]>([
-    {
-      id: 1,
-      question: 'What types of construction services do you offer?',
-      answer: 'We offer a comprehensive range of construction services including residential construction, commercial projects, renovations, remodeling, and emergency repair services.',
-      showOnHomePage: true,
-      showOnFAQPage: true
-    },
-    {
-      id: 2,
-      question: 'How long does a typical construction project take?',
-      answer: 'Project timelines vary based on scope and complexity. Residential projects typically take 3-6 months, while commercial projects may take 6-12 months. We provide detailed timelines during consultation.',
-      showOnHomePage: true,
-      showOnFAQPage: false
-    },
-    {
-      id: 3,
-      question: 'Do you provide free estimates?',
-      answer: 'Yes, we offer free, no-obligation estimates for all projects. Contact us to schedule a consultation and site visit.',
-      showOnHomePage: false,
-      showOnFAQPage: true
-    },
-    {
-      id: 4,
-      question: 'Are you licensed and insured?',
-      answer: 'Yes, we are fully licensed, bonded, and insured. We maintain all necessary certifications and comply with local building codes and regulations.',
-      showOnHomePage: true,
-      showOnFAQPage: true
-    },
-    {
-      id: 5,
-      question: 'What is your payment structure?',
-      answer: 'We typically work with a deposit and milestone-based payment structure. Specific terms are outlined in the project contract after initial consultation.',
-      showOnHomePage: false,
-      showOnFAQPage: false
-    }
-  ]);
-
-  const [editingFAQ, setEditingFAQ] = useState<number | null>(null);
+  const [faqs, setFaqs] = useState<FAQ[]>([])
+  const [loading, setLoading] = useState(true)
+  const [editingFAQ, setEditingFAQ] = useState<string | null>(null)
   const [formData, setFormData] = useState<FormData>({
-    question: '',
-    answer: '',
-    showOnHomePage: false,
-    showOnFAQPage: false
-  });
+    question: "",
+    answer: "",
+    showOnFAQPage: false,
+  })
+
+  useEffect(() => {
+    fetchFAQs()
+  }, [])
+
+  const fetchFAQs = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch("/api/faqs")
+      const data = await response.json()
+      setFaqs(data.reverse())
+    } catch (error) {
+      console.error("Error fetching FAQs:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleEdit = (faq: FAQ) => {
-    setEditingFAQ(faq.id);
+    setEditingFAQ(faq._id)
     setFormData({
       question: faq.question,
       answer: faq.answer,
-      showOnHomePage: faq.showOnHomePage,
-      showOnFAQPage: faq.showOnFAQPage
-    });
-  };
+      showOnFAQPage: faq.showOnFAQPage,
+    })
+  }
 
   const handleCancel = () => {
-    setEditingFAQ(null);
+    setEditingFAQ(null)
     setFormData({
-      question: '',
-      answer: '',
-      showOnHomePage: false,
-      showOnFAQPage: false
-    });
-  };
+      question: "",
+      answer: "",
+      showOnFAQPage: false,
+    })
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    setFormData(prev => ({ ...prev, [name]: checked }));
-  };
+    const { name, checked } = e.target
+    setFormData((prev) => ({ ...prev, [name]: checked }))
+  }
 
-  const handleSaveFAQ = () => {
-    setFaqs(prev =>
-      prev.map(faq =>
-        faq.id === editingFAQ
-          ? {
-              ...faq,
-              question: formData.question,
-              answer: formData.answer,
-              showOnHomePage: formData.showOnHomePage,
-              showOnFAQPage: formData.showOnFAQPage
-            }
-          : faq
-      )
-    );
-    handleCancel();
-  };
+  const handleSaveFAQ = async () => {
+    try {
+      const response = await fetch(`/api/faqs/${editingFAQ}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
 
-  const handleAddFAQ = () => {
-    const newFAQ: FAQ = {
-      id: Date.now(),
-      question: 'New Question?',
-      answer: 'Answer to the question.',
-      showOnHomePage: false,
-      showOnFAQPage: true
-    };
-    setFaqs(prev => [...prev, newFAQ]);
-  };
+      if (response.ok) {
+        await fetchFAQs()
+        handleCancel()
+      }
+    } catch (error) {
+      console.error("Error saving FAQ:", error)
+    }
+  }
 
-  const handleDeleteFAQ = (id: number) => {
-    setFaqs(prev => prev.filter(faq => faq.id !== id));
-  };
+  const handleAddFAQ = async () => {
+    try {
+      const response = await fetch("/api/faqs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question: "New Question?",
+          answer: "Answer to the question.",
+          showOnFAQPage: true,
+        }),
+      })
 
-  const handleSubmit = () => {
-    console.log('FAQs saved:', faqs);
-  };
+      if (response.ok) {
+        await fetchFAQs()
+      }
+    } catch (error) {
+      console.error("Error adding FAQ:", error)
+    }
+  }
+
+  const handleDeleteFAQ = async (id: string) => {
+    try {
+      const response = await fetch(`/api/faqs/${id}`, {
+        method: "DELETE",
+      })
+
+      if (response.ok) {
+        await fetchFAQs()
+      }
+    } catch (error) {
+      console.error("Error deleting FAQ:", error)
+    }
+  }
+
+  if (loading) {
+    return <div className="p-4 text-center">Loading FAQs...</div>
+  }
 
   return (
     <div className="p-4 mx-auto bg-gray-50 min-h-screen">
@@ -145,8 +142,8 @@ export default function FAQManagementPage() {
 
       <div className="space-y-4">
         {faqs.map((faq) => (
-          <div key={faq.id} className="bg-[var(--background)] border border-[var(--border-color)] rounded p-4">
-            {editingFAQ === faq.id ? (
+          <div key={faq._id} className="bg-[var(--background)] border border-[var(--border-color)] rounded p-4">
+            {editingFAQ === faq._id ? (
               <div className="space-y-4">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-[var(--header-text)]">Edit FAQ</h3>
@@ -178,36 +175,16 @@ export default function FAQManagementPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm text-[var(--header-text)] mb-3">Display Options</label>
-                  <div className="space-y-3 w-fit">
-                    <label className="flex items-center gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        name="showOnHomePage"
-                        checked={formData.showOnHomePage}
-                        onChange={handleCheckboxChange}
-                        className="w-4 h-4 text-[var(--primary)] border-[var(--border-color)] rounded focus:ring-2 focus:ring-[var(--primary)]"
-                      />
-                      <div className="flex items-center gap-2">
-                        <Home className="w-4 h-4 text-gray-500" />
-                        <span className="text-sm text-[var(--header-text)]">Show on Home Page Component</span>
-                      </div>
-                    </label>
-
-                    <label className="flex items-center gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        name="showOnFAQPage"
-                        checked={formData.showOnFAQPage}
-                        onChange={handleCheckboxChange}
-                        className="w-4 h-4 text-[var(--primary)] border-[var(--border-color)] rounded focus:ring-2 focus:ring-[var(--primary)]"
-                      />
-                      <div className="flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-gray-500" />
-                        <span className="text-sm text-[var(--header-text)]">Show on FAQ Page</span>
-                      </div>
-                    </label>
-                  </div>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="showOnFAQPage"
+                      checked={formData.showOnFAQPage}
+                      onChange={handleCheckboxChange}
+                      className="w-4 h-4 border-[var(--border-color)] rounded focus:ring-2 focus:ring-[var(--primary)]"
+                    />
+                    <span className="text-sm text-[var(--header-text)]">Show on FAQ Page</span>
+                  </label>
                 </div>
 
                 <div className="flex justify-end gap-2 pt-2">
@@ -232,31 +209,16 @@ export default function FAQManagementPage() {
                   <h3 className="font-semibold text-[var(--header-text)] mb-2">{faq.question}</h3>
                   <p className="text-sm text-gray-600 mb-3">{faq.answer}</p>
                   <div className="flex items-center gap-4 text-xs">
-                    <div className="flex items-center gap-1">
-                      <Home className="w-3 h-3" />
-                      <span className={faq.showOnHomePage ? 'text-green-600' : 'text-gray-400'}>
-                        {faq.showOnHomePage ? 'Home Page' : 'Not on Home'}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <FileText className="w-3 h-3" />
-                      <span className={faq.showOnFAQPage ? 'text-green-600' : 'text-gray-400'}>
-                        {faq.showOnFAQPage ? 'FAQ Page' : 'Not on FAQ Page'}
-                      </span>
-                    </div>
+                    <span className={faq.showOnFAQPage ? "text-green-600" : "text-gray-400"}>
+                      {faq.showOnFAQPage ? "FAQ Page" : "Not on FAQ Page"}
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 ml-4">
-                  <button
-                    onClick={() => handleEdit(faq)}
-                    className="p-2 text-[var(--primary)] rounded"
-                  >
+                  <button onClick={() => handleEdit(faq)} className="p-2 text-[var(--primary)] rounded">
                     <Edit2 className="w-4 h-4" />
                   </button>
-                  <button
-                    onClick={() => handleDeleteFAQ(faq.id)}
-                    className="p-2 text-red-600 rounded"
-                  >
+                  <button onClick={() => handleDeleteFAQ(faq._id)} className="p-2 text-red-600 rounded">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
@@ -265,16 +227,6 @@ export default function FAQManagementPage() {
           </div>
         ))}
       </div>
-
-      <div className="flex justify-end mt-6">
-        <button
-          onClick={handleSubmit}
-          className="flex items-center gap-2 px-6 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium"
-        >
-          <Save className="w-4 h-4" />
-          Save All Changes
-        </button>
-      </div>
     </div>
-  );
+  )
 }

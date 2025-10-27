@@ -40,10 +40,6 @@ export default function MenuManagementPage() {
     }
   }
 
-  const handleSubmit = () => {
-    console.log("Menu saved:", menuItems)
-  }
-
   if (loading) return <div className="p-4">Loading...</div>
 
   return (
@@ -82,16 +78,6 @@ export default function MenuManagementPage() {
               </button>
             </div>
           ))}
-        </div>
-
-        <div className="flex justify-end">
-          <button
-            onClick={handleSubmit}
-            className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium"
-          >
-            <Save className="w-4 h-4" />
-            Save Changes
-          </button>
         </div>
       </div>
     </div>

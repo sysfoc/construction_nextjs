@@ -1,4 +1,29 @@
+'use client';
+import { useEffect, useState } from "react";
+import { isPageVisible } from "@/lib/api/pageVisibility";
+import { useRouter } from "next/navigation";
+
 export default function EmergencyService() {
+  
+const [isVisible, setIsVisible] = useState(true);
+const router = useRouter();
+
+useEffect(() => {
+  const checkVisibility = async () => {
+    const visible = await isPageVisible("emergency-service");
+    setIsVisible(visible);
+    if (!visible) {
+      router.push("/not-found");
+    }
+  };
+  checkVisibility();
+}, [router]);
+
+
+if (!isVisible) {
+  return null;
+}
+
   return (
     <main className='min-h-screen text-gray-900 dark:text-gray-100 px-6 py-16 flex items-center justify-center'>
       <section className='max-w-3xl w-full border border-gray-200 dark:border-gray-700 rounded-2xl shadow-md p-10'>

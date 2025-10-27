@@ -1,7 +1,6 @@
 import type React from "react"
 import { ChevronsRight } from "lucide-react"
-import { ProcessSteps } from "@/app/components/User/why-choose-us/process-steps"
-import { BannerSection } from "@/app/components/User/why-choose-us/banner-section"
+import WhyChooseUs from "@/app/why-choose-us/whyChooseUs"
 
 export const metadata = {
   title: "Why Choose Us | Construction Expertise",
@@ -21,9 +20,7 @@ const Page: React.FC = () => {
           </p>
         </div>
       </section>
-
-      <ProcessSteps />
-      <BannerSection />
+      <WhyChooseUs />
     </div>
   )
 }

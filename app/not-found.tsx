@@ -4,7 +4,7 @@ import Image from "next/image";
 export default function NotFound() {
   return (
     <>
-      <section className="relative bg-[url('/Team/team.png')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center">
+      <section className="relative -mt-20 sm:-mt-10 bg-[url('/Team/team.png')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center">
         <div className='absolute inset-0 bg-[#161D39]/80'></div>
         <div className='relative z-10 text-center text-white px-4'>
           <h1 className='text-5xl font-extrabold mb-4 tracking-wide drop-shadow-lg'>
