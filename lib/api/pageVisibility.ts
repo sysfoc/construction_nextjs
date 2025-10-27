@@ -1,3 +1,12 @@
+interface Page {
+  _id: string
+  slug: string
+  name: string
+  visible: boolean
+  createdAt: string
+  updatedAt: string
+}
+
 export async function getPageVisibility() {
   const res = await fetch("/api/page-visibility")
   if (!res.ok) throw new Error("Failed to fetch page visibility")
@@ -15,7 +24,7 @@ export async function updatePageVisibility(id: string, visible: boolean) {
 }
 
 export async function isPageVisible(slug: string) {
-  const pages = await getPageVisibility()
-  const page = pages.find((p: any) => p.slug === slug)
+  const pages = (await getPageVisibility()) as Page[]
+  const page = pages.find((p: Page) => p.slug === slug)
   return page?.visible ?? true
 }
