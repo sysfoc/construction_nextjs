@@ -1,8 +1,10 @@
 // app/projects/page.tsx
-"use client"
-import { useState, useEffect } from "react"
-import { ChevronsRight, Calendar, MapPin, Users } from "lucide-react"
-import type { ProjectData } from "@/lib/models/Project"
+"use client";
+import { useState, useEffect } from "react";
+import { ChevronsRight, Calendar, MapPin, Users } from "lucide-react";
+import type { ProjectData } from "@/lib/models/Project";
+import { isPageVisible } from "@/lib/api/pageVisibility";
+import { useRouter } from "next/navigation";
 
 const statusConfig = {
   ongoing: {
@@ -20,71 +22,83 @@ const statusConfig = {
     color: "bg-amber-100 text-amber-800",
     dotColor: "bg-amber-500",
   },
-}
+};
 
 export default function ProjectsClient() {
-  const [projects, setProjects] = useState<ProjectData[]>([])
-  const [filteredProjects, setFilteredProjects] = useState<ProjectData[]>([])
-  const [activeFilter, setActiveFilter] = useState<"all" | "ongoing" | "completed" | "upcoming">("all")
-  const [loading, setLoading] = useState(true)
+  const [projects, setProjects] = useState<ProjectData[]>([]);
+  const [filteredProjects, setFilteredProjects] = useState<ProjectData[]>([]);
+  const [activeFilter, setActiveFilter] = useState<
+    "all" | "ongoing" | "completed" | "upcoming"
+  >("all");
+  const [loading, setLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await fetch("/api/projects")
-        const data = await response.json()
-        setProjects(data)
-        setFilteredProjects(data)
-      } catch (error) {
-        console.error("Failed to fetch projects:", error)
-      } finally {
-        setLoading(false)
-      }
+    fetchProjects();
+    checkVisibility();
+  }, [router]);
+
+  const checkVisibility = async () => {
+    const visible = await isPageVisible("projects");
+    setIsVisible(visible);
+    if (!visible) {
+      router.push("/not-found");
     }
+  };
 
-    fetchProjects()
-  }, [])
+  const fetchProjects = async () => {
+    try {
+      const response = await fetch("/api/projects");
+      const data = await response.json();
+      setProjects(data);
+      setFilteredProjects(data);
+    } catch (error) {
+      console.error("Failed to fetch projects:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const handleFilter = (filter: "all" | "ongoing" | "completed" | "upcoming") => {
-    setActiveFilter(filter)
+  const handleFilter = (
+    filter: "all" | "ongoing" | "completed" | "upcoming"
+  ) => {
+    setActiveFilter(filter);
     if (filter === "all") {
-      setFilteredProjects(projects)
+      setFilteredProjects(projects);
     } else {
-      setFilteredProjects(projects.filter((p) => p.status === filter))
+      setFilteredProjects(projects.filter((p) => p.status === filter));
     }
-  }
+  };
 
   if (loading) {
     return (
       <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
         <p className="text-gray-600">Loading projects...</p>
       </div>
-    )
+    );
+  }
+  if (!isVisible) {
+    return null;
   }
 
   return (
     <>
-      {/* Hero Section */}
-      <section className="relative -mt-20 sm:-mt-10 bg-[url('/Team/team.png')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center">
-        <div className="absolute inset-0 bg-[#161D39]/80"></div>
-        <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl font-extrabold mb-4 tracking-wide drop-shadow-lg">Projects</h1>
-          <p className="text-lg font-light text-gray-200">
-            Home <ChevronsRight className="inline-block w-4 h-4 text-[#ff6600]" /> <span>Projects</span>
-          </p>
-        </div>
-      </section>
-
       {/* Main Content */}
       <section className="px-4 max-w-6xl mx-auto py-10">
         {/* Header */}
         <div className="mb-8">
-          <span className="text-[#ff6600] font-semibold text-sm uppercase tracking-wide">Our Projects</span>
+          <span className="text-[#ff6600] font-semibold text-sm uppercase tracking-wide">
+            Our Projects
+          </span>
           <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
             <div>
-              <h2 className="text-3xl font-bold text-[#1a2b4c]">Active & Completed Projects</h2>
+              <h2 className="text-3xl font-bold text-[#1a2b4c]">
+                Active & Completed Projects
+              </h2>
               <p className="text-[#1a2b4c]/70 mt-1">
-                Showcasing our portfolio of successful infrastructure and construction projects
+                Showcasing our portfolio of successful infrastructure and
+                construction projects
               </p>
             </div>
           </div>
@@ -151,7 +165,9 @@ export default function ProjectsClient() {
                 {/* Status Badge */}
                 <div className="absolute top-3 right-3">
                   <span
-                    className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusConfig[project.status].color}`}
+                    className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                      statusConfig[project.status].color
+                    }`}
                   >
                     {statusConfig[project.status].label}
                   </span>
@@ -160,30 +176,41 @@ export default function ProjectsClient() {
 
               {/* Content */}
               <div className="p-4">
-                <h3 className="text-base font-bold text-[#1a2b4c] mb-1.5 line-clamp-2">{project.title}</h3>
-                <p className="text-sm text-[#1a2b4c]/70 mb-3 line-clamp-2">{project.description}</p>
+                <h3 className="text-base font-bold text-[#1a2b4c] mb-1.5 line-clamp-2">
+                  {project.title}
+                </h3>
+                <p className="text-sm text-[#1a2b4c]/70 mb-3 line-clamp-2">
+                  {project.description}
+                </p>
 
                 {/* Progress Bar (for ongoing projects) */}
-                {project.status === "ongoing" && project.progress !== undefined && (
-                  <div className="mb-3">
-                    <div className="flex justify-between items-center mb-1.5">
-                      <span className="text-xs font-semibold text-[#1a2b4c]">Progress</span>
-                      <span className="text-xs font-bold text-[#ff6600]">{project.progress}%</span>
+                {project.status === "ongoing" &&
+                  project.progress !== undefined && (
+                    <div className="mb-3">
+                      <div className="flex justify-between items-center mb-1.5">
+                        <span className="text-xs font-semibold text-[#1a2b4c]">
+                          Progress
+                        </span>
+                        <span className="text-xs font-bold text-[#ff6600]">
+                          {project.progress}%
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-[#ff6600] h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${project.progress}%` }}
+                        ></div>
+                      </div>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-[#ff6600] h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${project.progress}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                )}
+                  )}
 
                 {/* Project Info */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-sm">
                     <MapPin className="w-4 h-4 text-[#ff6600] flex-shrink-0" />
-                    <span className="text-[#1a2b4c]/70">{project.location}</span>
+                    <span className="text-[#1a2b4c]/70">
+                      {project.location}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <Calendar className="w-4 h-4 text-[#ff6600] flex-shrink-0" />
@@ -194,7 +221,9 @@ export default function ProjectsClient() {
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <Users className="w-4 h-4 text-[#ff6600] flex-shrink-0" />
-                    <span className="text-[#1a2b4c]/70">{project.team} Team Members</span>
+                    <span className="text-[#1a2b4c]/70">
+                      {project.team} Team Members
+                    </span>
                   </div>
                 </div>
               </div>
@@ -205,10 +234,12 @@ export default function ProjectsClient() {
         {/* Empty State */}
         {filteredProjects.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-[#1a2b4c]/70 text-lg">No projects found for this filter.</p>
+            <p className="text-[#1a2b4c]/70 text-lg">
+              No projects found for this filter.
+            </p>
           </div>
         )}
       </section>
     </>
-  )
+  );
 }

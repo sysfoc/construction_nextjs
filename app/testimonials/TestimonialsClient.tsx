@@ -3,6 +3,8 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ChevronsRight, MapPin } from "lucide-react";
+import { isPageVisible } from "@/lib/api/pageVisibility";
+import { useRouter } from "next/navigation";
 
 interface Testimonial {
   id: string;
@@ -107,38 +109,41 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({
 const TestimonialsClient: React.FC = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    const fetchTestimonials = async () => {
-      try {
-        const response = await fetch("/api/testimonials");
-        const data = await response.json();
-        setTestimonials(data.testimonials || []);
-      } catch (error) {
-        console.error("Failed to fetch testimonials:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchTestimonials();
-  }, []);
+    checkVisibility();
+  }, [router]);
+
+  const checkVisibility = async () => {
+    const visible = await isPageVisible("testimonials");
+    setIsVisible(visible);
+    if (!visible) {
+      router.push("/not-found");
+    }
+  };
+
+  const fetchTestimonials = async () => {
+    try {
+      const response = await fetch("/api/testimonials");
+      const data = await response.json();
+      setTestimonials(data.testimonials || []);
+    } catch (error) {
+      console.error("Failed to fetch testimonials:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <>
-      <section className="relative -mt-20 lg:-mt-10 bg-[url('/Team/team.png')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center">
-        <div className="absolute inset-0 bg-[#161D39]/80"></div>
-        <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl font-extrabold mb-4 tracking-wide drop-shadow-lg">
-            Testimonials
-          </h1>
-          <p className="text-lg font-light text-gray-200">
-            Home <ChevronsRight className="inline-block w-4 h-4 text-primary" />{" "}
-            <span>Testimonials</span>
-          </p>
-        </div>
-      </section>
-
+    
       <div className="bg-[var(--background)] py-12 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8">

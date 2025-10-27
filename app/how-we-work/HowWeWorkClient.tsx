@@ -5,10 +5,25 @@ import { StepRow } from "@/app/components/User/how-we-work/step-row";
 import { WorkProcessSection } from "@/app/components/User/how-we-work/WorkProcessSection";
 import type { HowWeWorkData } from "@/lib/models/HowWeWork";
 import { useEffect, useState } from "react";
+import { isPageVisible } from "@/lib/api/pageVisibility";
+import { useRouter } from "next/navigation";
 
 export default function HowWeWorkPage() {
   const [steps, setSteps] = useState<HowWeWorkData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkVisibility = async () => {
+      const visible = await isPageVisible("how-we-work");
+      setIsVisible(visible);
+      if (!visible) {
+        router.push("/not-found");
+      }
+    };
+    checkVisibility();
+  }, [router]);
 
   useEffect(() => {
     async function fetchSteps() {
@@ -27,6 +42,10 @@ export default function HowWeWorkPage() {
     fetchSteps();
   }, []);
 
+  if (!isVisible) {
+    return null;
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -37,19 +56,6 @@ export default function HowWeWorkPage() {
 
   return (
     <>
-      <section className="relative -mt-20 lg:-mt-10 bg-[url('/Team/team.png')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center">
-        <div className="absolute inset-0 bg-[#161D39]/80"></div>
-        <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl font-extrabold mb-4 tracking-wide drop-shadow-lg">
-            How we work
-          </h1>
-          <p className="text-lg font-light text-gray-200">
-            Home <ChevronsRight className="inline-block w-4 h-4 text-primary" />{" "}
-            <span>How we work</span>
-          </p>
-        </div>
-      </section>
-
       <main className="mx-auto w-full max-w-4xl px-3 py-5">
         {/* Compact header */}
         <header className="m-3">

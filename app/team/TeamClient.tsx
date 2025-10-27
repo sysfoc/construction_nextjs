@@ -1,9 +1,10 @@
-// app/team/page.tsx
 "use client";
 
 import { ChevronsRight, User } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { isPageVisible } from "@/lib/api/pageVisibility";
+import { useRouter } from "next/navigation";
 
 interface TeamMember {
   id: string;
@@ -14,6 +15,20 @@ interface TeamMember {
 
 export default function TeamClient() {
   const [teamData, setTeamData] = useState<TeamMember[]>([]);
+  const [isVisible, setIsVisible] = useState(true);
+  const router = useRouter();
+
+  // 🔹 Page visibility check
+  useEffect(() => {
+    const checkVisibility = async () => {
+      const visible = await isPageVisible("team");
+      setIsVisible(visible);
+      if (!visible) {
+        router.push("/not-found");
+      }
+    };
+    checkVisibility();
+  }, [router]);
 
   useEffect(() => {
     async function fetchTeamMembers() {
@@ -34,20 +49,12 @@ export default function TeamClient() {
     fetchTeamMembers();
   }, []);
 
+  if (!isVisible) {
+    return null;
+  }
+
   return (
     <>
-      <section className="relative bg-[url('/Team/team.png')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center">
-        <div className='absolute inset-0 bg-[#161D39]/80'></div>
-        <div className='relative z-10 text-center text-white px-4'>
-          <h1 className='text-5xl font-extrabold mb-4 tracking-wide drop-shadow-lg'>
-            Our Team
-          </h1>
-          <p className='text-lg font-light text-gray-200'>
-            Home <ChevronsRight className='inline-block w-4 h-4 text-primary' />{" "}
-            <span>Team</span>
-          </p>
-        </div>
-      </section>
       <section className='my-20'>
         <div className='mx-auto text-center'>
           <span className='text-primary'>Great experience in building</span>

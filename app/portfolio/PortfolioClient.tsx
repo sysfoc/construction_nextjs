@@ -1,72 +1,81 @@
 // app/portfolio/page.tsx
-"use client"
-import { ChevronsRight } from "lucide-react"
-import Image from "next/image"
-import { useState, useEffect } from "react"
+"use client";
+import { ChevronsRight } from "lucide-react";
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import { isPageVisible } from "@/lib/api/pageVisibility";
+import { useRouter } from "next/navigation";
 
 interface Project {
-  id: string
-  title: string
-  category: string
-  photos: string[]
+  id: string;
+  title: string;
+  category: string;
+  photos: string[];
 }
 
 export default function PortfolioClient() {
-  const [projects, setProjects] = useState<Project[]>([])
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>([])
-  const [categories, setCategories] = useState<string[]>([])
-  const [activeCategory, setActiveCategory] = useState<string>("All")
-  const [loading, setLoading] = useState(true)
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [activeCategory, setActiveCategory] = useState<string>("All");
+  const [loading, setLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    fetchProjects()
-  }, [])
+    fetchProjects();
+    checkVisibility();
+  }, [router]);
 
+  const checkVisibility = async () => {
+    const visible = await isPageVisible("portfolio");
+    setIsVisible(visible);
+    if (!visible) {
+      router.push("/not-found");
+    }
+  };
   const fetchProjects = async () => {
     try {
-      const response = await fetch("/api/portfolio")
-      const data = await response.json()
-      const fetchedProjects: Project[] = data.projects || []
-      setProjects(fetchedProjects)
-      setFilteredProjects(fetchedProjects)
+      const response = await fetch("/api/portfolio");
+      const data = await response.json();
+      const fetchedProjects: Project[] = data.projects || [];
+      setProjects(fetchedProjects);
+      setFilteredProjects(fetchedProjects);
 
-      const uniqueCategories = Array.from(new Set(fetchedProjects.map((p) => p.category))).filter(Boolean)
-      setCategories(uniqueCategories)
+      const uniqueCategories = Array.from(
+        new Set(fetchedProjects.map((p) => p.category))
+      ).filter(Boolean);
+      setCategories(uniqueCategories);
     } catch (error) {
-      console.error("Error fetching projects:", error)
+      console.error("Error fetching projects:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleFilter = (category: string) => {
-    setActiveCategory(category)
+    setActiveCategory(category);
     if (category === "All") {
-      setFilteredProjects(projects)
+      setFilteredProjects(projects);
     } else {
-      setFilteredProjects(projects.filter((p) => p.category === category))
+      setFilteredProjects(projects.filter((p) => p.category === category));
     }
-  }
+  };
 
   if (loading) {
     return (
       <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
         <p className="text-gray-600">Loading...</p>
       </div>
-    )
+    );
+  }
+
+  if (!isVisible) {
+    return null;
   }
 
   return (
     <>
-      <section className="relative bg-[url('/Team/team.png')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center">
-        <div className="absolute inset-0 bg-[#161D39]/80"></div>
-        <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl font-extrabold mb-4 tracking-wide drop-shadow-lg">Portfolio</h1>
-          <p className="text-lg font-light text-gray-200">
-            Home <ChevronsRight className="inline-block w-4 h-4 text-primary" /> <span>Portfolio</span>
-          </p>
-        </div>
-      </section>
       <section className="px-4 max-w-5xl mx-auto py-16">
         <div>
           <span className="text-primary">Our best portfolio</span>
@@ -76,8 +85,8 @@ export default function PortfolioClient() {
             </div>
             <div className="w-full md:w-1/2">
               <p className="text-sm">
-                We&apos;ve grown up with the internet revolution, and we know how to deliver on its promise of improved
-                business
+                We&apos;ve grown up with the internet revolution, and we know
+                how to deliver on its promise of improved business
               </p>
             </div>
           </div>
@@ -132,5 +141,5 @@ export default function PortfolioClient() {
         </div>
       </section>
     </>
-  )
+  );
 }

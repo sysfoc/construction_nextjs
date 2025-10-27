@@ -1,9 +1,51 @@
+// app/about/AboutClient.tsx
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { ChevronsRight, Phone } from "lucide-react";
+import { isPageVisible } from "@/lib/api/pageVisibility";
+import { useRouter } from "next/navigation";
 
 export default function AboutClient() {
+  // Add visibility check
+  const [isVisible, setIsVisible] = useState(true);
+  const [isChecking, setIsChecking] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkVisibility = async () => {
+      try {
+        const visible = await isPageVisible("about");
+        setIsVisible(visible);
+        if (!visible) {
+          router.push("/not-found");
+        }
+      } catch (error) {
+        console.error("Error checking visibility:", error);
+        setIsVisible(false);
+        router.push("/not-found");
+      } finally {
+        setIsChecking(false);
+      }
+    };
+    checkVisibility();
+  }, [router]);
+
+  if (isChecking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isVisible) {
+    return null; // Will redirect to not-found
+  }
+  // End visibility check
+
   const services = [
     {
       img: "/services/services_01.jpg",
@@ -42,18 +84,6 @@ export default function AboutClient() {
 
   return (
     <div className="bg-background dark:bg-background -mt-20 md:-mt-10">
-        <section className="relative bg-[url('/Team/team.png')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center">
-        <div className='absolute inset-0 bg-[#161D39]/80'></div>
-        <div className='relative z-10 text-center text-white px-4'>
-          <h1 className='text-5xl font-extrabold mb-4 tracking-wide drop-shadow-lg'>
-            About Us
-          </h1>
-          <p className='text-lg font-light text-gray-200'>
-            Home <ChevronsRight className='inline-block w-4 h-4 text-primary' />{" "}
-            <span>About Us</span>
-          </p>
-        </div>
-      </section>
       {/* Hero Section */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-12 py-4 lg:py-10">
         <div className="flex flex-col lg:flex-row items-start justify-around gap-4 lg:gap-6">

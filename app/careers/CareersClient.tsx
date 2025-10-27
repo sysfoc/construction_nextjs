@@ -1,8 +1,11 @@
 "use client"
+
 import type React from "react"
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import { MapPin, Calendar, DollarSign, ChevronsRight } from "lucide-react"
+import { isPageVisible } from "@/lib/api/pageVisibility"
+import { useRouter } from "next/navigation"
 
 interface Job {
   id: string
@@ -68,6 +71,19 @@ const CareerCard: React.FC<Job> = ({ image, title, location, deadline, payRange,
 const CareerCards: React.FC = () => {
   const [jobs, setJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(true)
+  const [isVisible, setIsVisible] = useState(true)
+  const router = useRouter()
+
+  useEffect(() => {
+    const checkVisibility = async () => {
+      const visible = await isPageVisible("careers")
+      setIsVisible(visible)
+      if (!visible) {
+        router.push("/not-found")
+      }
+    }
+    checkVisibility()
+  }, [router])
 
   useEffect(() => {
     fetchJobs()
@@ -86,19 +102,12 @@ const CareerCards: React.FC = () => {
     }
   }
 
+  if (!isVisible) {
+    return null
+  }
+
   return (
     <>
-      <section className="relative -mt-20 lg:-mt-10 bg-[url('/Team/team.png')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center dark:bg-[url('/Team/team-dark.png')]">
-        <div className="absolute inset-0 bg-[#161D39]/80 dark:bg-black/80"></div>
-        <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl font-extrabold mb-4 tracking-wide drop-shadow-lg">Careers</h1>
-          <p className="text-lg font-light text-gray-200 dark:text-gray-400">
-            Home <ChevronsRight className="inline-block w-4 h-4 text-[var(--primary)] dark:text-blue-400" />{" "}
-            <span>Careers</span>
-          </p>
-        </div>
-      </section>
-
       <div className="min-h-screen bg-[var(--background)] dark:bg-gray-950 p-4 py-10 lg:px-16 transition-colors duration-300">
         <div className="max-w-6xl mx-auto">
           {loading ? (

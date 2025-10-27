@@ -1,9 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { isPageVisible } from "@/lib/api/pageVisibility";
+import { useRouter } from "next/navigation";
 
 export default function Gallery() {
   const [activeAlbum, setActiveAlbum] = useState("All");
+  const [isVisible, setIsVisible] = useState(true);
+  const router = useRouter();
+
+  // 🔹 Visibility check
+  useEffect(() => {
+    const checkVisibility = async () => {
+      const visible = await isPageVisible("gallery");
+      setIsVisible(visible);
+      if (!visible) {
+        router.push("/not-found");
+      }
+    };
+    checkVisibility();
+  }, [router]);
+
+  if (!isVisible) {
+    return null;
+  }
 
   const albums = [
     "All",
