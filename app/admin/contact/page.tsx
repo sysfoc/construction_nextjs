@@ -113,10 +113,6 @@ export default function ContactManagementPage() {
     setContactMessages((prev) => prev.filter((msg) => msg.id !== id));
   };
 
-  const handleSubmit = () => {
-    console.log("Changes saved:", { contactInfo, contactMessages });
-  };
-
   const pendingCount = contactMessages.filter((msg) => msg.status === "Pending").length;
   const repliedCount = contactMessages.filter((msg) => msg.status === "Replied").length;
 
@@ -396,16 +392,6 @@ export default function ContactManagementPage() {
             ))}
           </div>
         )}
-
-        <div className="flex justify-end mt-4 sm:mt-6 w-full">
-          <button
-            onClick={handleSubmit}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base"
-          >
-            <Save className="w-4 h-4 flex-shrink-0" />
-            <span>Save All Changes</span>
-          </button>
-        </div>
       </div>
 
       {/* Modal */}

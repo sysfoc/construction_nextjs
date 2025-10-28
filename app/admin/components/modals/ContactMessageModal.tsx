@@ -37,9 +37,9 @@ export default function ContactMessageModal({
           </h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-full transition-colors flex-shrink-0 hover:bg-white hover:bg-opacity-10"
+            className="p-2 rounded-full transition-colors flex-shrink-0 text-[var(--primary-foreground)] hover:text-[var(--primary)] hover:bg-[var(--primary-foreground)] hover:bg-opacity-10"
           >
-            <X className="w-5 h-5 text-white" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
