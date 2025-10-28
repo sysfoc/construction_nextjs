@@ -1,124 +1,52 @@
-"use client";
+import Newsletter from "./Newsletter"
+import { connectDB } from "@/lib/mongodb"
+import SEOMetadata from "@/lib/models/SEOMetadata"
+import { ChevronsRight } from "lucide-react"
 
-import { useState, useEffect } from "react";
-import { isPageVisible } from "@/lib/api/pageVisibility";
-import { useRouter } from "next/navigation";
-
-export default function Newsletter() {
-  const [mode, setMode] = useState<"subscribe" | "unsubscribe">("subscribe");
-  const [email, setEmail] = useState("");
-  const [isVisible, setIsVisible] = useState(true);
-  const router = useRouter();
-
-  useEffect(() => {
-    const checkVisibility = async () => {
-      const visible = await isPageVisible("newsletter");
-      setIsVisible(visible);
-      if (!visible) {
-        router.push("/not-found");
+async function getSEOMetadata() {
+  try {
+    await connectDB()
+    const metadata = await SEOMetadata.findOne({ page: "newsletter" })
+    return (
+      metadata || { 
+        title: "Newsletter | Construction Company", 
+        description: "Subscribe to our newsletter and stay updated with the latest construction industry news, trends, and company updates." 
       }
-    };
-    checkVisibility();
-  }, [router]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (mode === "subscribe") {
-      try {
-        const response = await fetch("/api/newsletter/subscribe", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: email.trim() }),
-        });
-        const data = await response.json();
-        if (response.ok) {
-          setEmail("");
-          alert(data.message);
-        } else {
-          alert(data.error);
-        }
-      } catch (error) {
-        console.error("Error subscribing to newsletter:", error);
-      }
-    } else {
-      try {
-        const response = await fetch("/api/newsletter/unsubscribe", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: email.trim() }),
-        });
-        const data = await response.json();
-        if (response.ok) {
-          setEmail("");
-          alert(data.message);
-        } else {
-          alert(data.error);
-        }
-      } catch (error) {
-        console.error("Error subscribing to newsletter:", error);
-      }
+    )
+  } catch (error) {
+    console.error("Error fetching SEO metadata:", error)
+    return { 
+      title: "Newsletter | Construction Company", 
+      description: "Subscribe to our newsletter and stay updated with the latest construction industry news, trends, and company updates." 
     }
-  };
-
-  if (!isVisible) {
-    return null;
   }
+}
 
+export async function generateMetadata() {
+  const metadata = await getSEOMetadata()
+  return {
+    title: metadata.title,
+    description: metadata.description,
+  }
+}
+
+export default function NewsletterPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center px-6">
-      <section className="max-w-md w-full border border-gray-100 rounded-2xl shadow-md p-8 text-center">
-        <h1 className="text-3xl font-bold mb-3 text-[#ff6600]">
-          {mode === "subscribe" ? "Subscribe to Newsletter" : "Unsubscribe"}
-        </h1>
-        <p className="mb-8">
-          {mode === "subscribe"
-            ? "Enter your email to stay updated. A confirmation link will be sent to your inbox."
-            : "Enter your email to unsubscribe from our mailing list."}
-        </p>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            required
-            placeholder="Enter your email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ff6600]"
-          />
-          <button
-            type="submit"
-            className="w-full bg-[#ff6600] text-white font-semibold py-3 rounded-lg hover:opacity-90 transition-all"
-          >
-            {mode === "subscribe" ? "Subscribe" : "Unsubscribe"}
-          </button>
-        </form>
-        <div className="mt-6 text-sm">
-          {mode === "subscribe" ? (
-            <>
-              Want to unsubscribe?{" "}
-              <button
-                onClick={() => setMode("unsubscribe")}
-                className="text-[#ff6600] font-medium hover:underline"
-              >
-                Click here
-              </button>
-            </>
-          ) : (
-            <>
-              Want to subscribe again?{" "}
-              <button
-                onClick={() => setMode("subscribe")}
-                className="text-[#ff6600] font-medium hover:underline"
-              >
-                Click here
-              </button>
-            </>
-          )}
+    <>
+      {" "}
+      <section className="relative bg-[url('/Team/team.png')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center">
+        <div className="absolute inset-0 bg-[#161D39]/80"></div>
+        <div className="relative z-10 text-center text-white px-4">
+          <h1 className="text-5xl font-extrabold mb-4 tracking-wide drop-shadow-lg">
+            Newsletter
+          </h1>
+          <p className="text-lg font-light text-gray-200">
+            Home <ChevronsRight className="inline-block w-4 h-4 text-primary" />{" "}
+            <span>Newsletter</span>
+          </p>
         </div>
       </section>
-    </main>
-  );
+      <Newsletter />
+    </>
+  )
 }

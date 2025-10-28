@@ -1,16 +1,32 @@
-import { ChevronsRight } from "lucide-react";
-import PartnersClient from "./PartnersClient";
+import PartnersClient from "./PartnersClient"
+import { connectDB } from "@/lib/mongodb"
+import SEOMetadata from "@/lib/models/SEOMetadata"
+import { ChevronsRight } from "lucide-react"
 
-export const metadata = {
-  title: "Partners",
-  description:
-    "Our collaborations with trusted organizations help us deliver lasting value through joint expertise and sustainable project delivery.",
-};
+async function getSEOMetadata() {
+  try {
+    await connectDB()
+    const metadata = await SEOMetadata.findOne({ page: "partners" })
+    return (
+      metadata || { title: "Partners", description: "Our collaborations with trusted organizations help us deliver lasting value through joint expertise and sustainable project delivery." }
+    )
+  } catch (error) {
+    console.error("Error fetching SEO metadata:", error)
+    return { title: "Partners", description: "Our collaborations with trusted organizations help us deliver lasting value through joint expertise and sustainable project delivery." }
+  }
+}
+
+export async function generateMetadata() {
+  const metadata = await getSEOMetadata()
+  return {
+    title: metadata.title,
+    description: metadata.description,
+  }
+}
 
 export default function PartnersPage() {
   return (
     <>
-      {" "}
       <section className="relative -mt-20 lg:-mt-10 bg-[url('/Team/team.png')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center">
         <div className="absolute inset-0 bg-[#161D39]/80"></div>
         <div className="relative z-10 text-center text-white px-4">
@@ -25,5 +41,5 @@ export default function PartnersPage() {
       </section>
       <PartnersClient />
     </>
-  );
+  )
 }

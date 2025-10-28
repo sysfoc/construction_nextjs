@@ -1,6 +1,4 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { cookies } from "next/headers"
-import { verifyToken } from "@/lib/jwt"
 import { connectDB } from "@/lib/mongodb"
 import Gallery, { type GalleryCategory, type GalleryImage } from "@/lib/models/Gallery"
 
@@ -9,17 +7,6 @@ export async function DELETE(
   { params }: { params: Promise<{ action: string; id: string }> }
 ) {
   try {
-    const token = (await cookies()).get("token")?.value
-
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const payload = await verifyToken(token)
-
-    if (!payload || payload.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-    }
 
     const { action, id } = await params
     await connectDB()
@@ -52,18 +39,6 @@ export async function PUT(
   { params }: { params: Promise<{ action: string; id: string }> }
 ) {
   try {
-    const token = (await cookies()).get("token")?.value
-
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const payload = await verifyToken(token)
-
-    if (!payload || payload.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-    }
-
     const { action, id } = await params
     const { data } = await request.json()
     await connectDB()

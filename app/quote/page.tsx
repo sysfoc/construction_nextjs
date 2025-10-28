@@ -1,145 +1,52 @@
-"use client";
+import RequestQuote from "./RequestQuote"
+import { connectDB } from "@/lib/mongodb"
+import SEOMetadata from "@/lib/models/SEOMetadata"
+import { ChevronsRight } from "lucide-react"
 
-import { useState, useEffect } from "react";
-import { isPageVisible } from "@/lib/api/pageVisibility";
-import { useRouter } from "next/navigation";
-
-export default function RequestQuote() {
-  const [isVisible, setIsVisible] = useState(true);
-  const router = useRouter();
-
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    details: "",
-  });
-
-  useEffect(() => {
-    const checkVisibility = async () => {
-      const visible = await isPageVisible("quote");
-      setIsVisible(visible);
-      if (!visible) {
-        router.push("/not-found");
+async function getSEOMetadata() {
+  try {
+    await connectDB()
+    const metadata = await SEOMetadata.findOne({ page: "quote" })
+    return (
+      metadata || { 
+        title: "Request a Quote | Construction Company", 
+        description: "Request a detailed project quote from our construction experts and get professional assistance for your next project." 
       }
-    };
-    checkVisibility();
-  }, [router]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
-  };
-
-  const handleFormData = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      const response = await fetch("/api/quote/request", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        alert(data.message);
-        setFormData({
-          name: "",
-          email: "",
-          phone: "",
-          details: "",
-        });
-      } else {
-        alert(data.error);
-      }
-    } catch (error) {
-      console.error("Error submitting form data:", error);
+    )
+  } catch (error) {
+    console.error("Error fetching SEO metadata:", error)
+    return { 
+      title: "Request a Quote | Construction Company", 
+      description: "Request a detailed project quote from our construction experts and get professional assistance for your next project." 
     }
-  };
-
-  if (!isVisible) {
-    return null;
   }
+}
 
+export async function generateMetadata() {
+  const metadata = await getSEOMetadata()
+  return {
+    title: metadata.title,
+    description: metadata.description,
+  }
+}
+
+export default function RequestQuotePage() {
   return (
-    <main className="min-h-screen flex items-center justify-center px-6 py-16">
-      <section className="w-full max-w-2xl border border-gray-100 rounded-2xl shadow-md p-10">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-[#ff6600] mb-3">
+    <>
+      {" "}
+      <section className="relative bg-[url('/Team/team.png')] bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center">
+        <div className="absolute inset-0 bg-[#161D39]/80"></div>
+        <div className="relative z-10 text-center text-white px-4">
+          <h1 className="text-5xl font-extrabold mb-4 tracking-wide drop-shadow-lg">
             Request a Quote
           </h1>
-          <p className="text-base">
-            Fill out the form below, and our team will get back to you with a
-            customized quote for your project.
+          <p className="text-lg font-light text-gray-200">
+            Home <ChevronsRight className="inline-block w-4 h-4 text-primary" />{" "}
+            <span>Request a Quote</span>
           </p>
         </div>
-        <form className="space-y-6" onSubmit={handleFormData}>
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium mb-1">
-              Full Name
-            </label>
-            <input
-              id="name"
-              type="text"
-              required
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Enter your full name"
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ff6600]"
-            />
-          </div>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-1">
-              Email Address
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email"
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ff6600]"
-            />
-          </div>
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium mb-1">
-              Phone Number
-            </label>
-            <input
-              id="phone"
-              type="tel"
-              required
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Enter your phone number"
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ff6600]"
-            />
-          </div>
-          <div>
-            <label htmlFor="details" className="block text-sm font-medium mb-1">
-              Project Details
-            </label>
-            <textarea
-              id="details"
-              required
-              rows={5}
-              value={formData.details}
-              onChange={(e) =>
-                setFormData({ ...formData, details: e.target.value })
-              }
-              placeholder="Describe your project goals, requirements, and timeline..."
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ff6600]"
-            ></textarea>
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-[#ff6600] text-white font-semibold py-3 rounded-lg hover:opacity-90 transition-all"
-          >
-            Submit Request
-          </button>
-        </form>
       </section>
-    </main>
-  );
+      <RequestQuote />
+    </>
+  )
 }
