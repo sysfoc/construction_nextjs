@@ -1,6 +1,7 @@
 import JobApply from "./JobApply"
 import { connectDB } from "@/lib/mongodb"
 import SEOMetadata from "@/lib/models/SEOMetadata"
+import { Suspense } from "react"
 
 async function getSEOMetadata() {
   try {
@@ -31,8 +32,8 @@ export async function generateMetadata() {
 
 export default function JobApplyPage() {
   return (
-    <>
+    <Suspense fallback={<div className="my-20 text-center">Loading...</div>}>
       <JobApply />
-    </>
+    </Suspense>
   )
 }

@@ -59,6 +59,7 @@ export default function JobApply() {
 
           if (response.ok) {
             setSubmitted(true)
+            window.scrollTo(0, 0)
             setTimeout(() => {
               router.push("/careers")
             }, 2000)
