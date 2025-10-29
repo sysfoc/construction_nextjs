@@ -34,4 +34,6 @@ const careerSchema = new mongoose.Schema(
   { timestamps: true },
 )
 
-export default mongoose.models.Career || mongoose.model("Career", careerSchema)
+const Career = mongoose.models.Career || mongoose.model("Career", careerSchema)
+
+export default Career

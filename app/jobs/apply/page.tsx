@@ -34,7 +34,7 @@ export async function generateMetadata() {
 export default function JobApplyPage() {
   return (
     <>
-      <PageHeader title="Job Apply" />
+      {/* <PageHeader title="Job Apply" /> */}
       <JobApply />
     </>
   )

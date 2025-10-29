@@ -3,8 +3,7 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import { MapPin, Calendar, DollarSign, ChevronsRight } from "lucide-react"
-import { isPageVisible } from "@/lib/api/pageVisibility"
+import { MapPin, Calendar, DollarSign } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 interface Job {
@@ -18,7 +17,16 @@ interface Job {
   jobType: string
 }
 
-const CareerCard: React.FC<Job> = ({ image, title, location, deadline, payRange, description, jobType }) => {
+const CareerCard: React.FC<Job & { onApply: (title: string) => void }> = ({
+  image,
+  title,
+  location,
+  deadline,
+  payRange,
+  description,
+  jobType,
+  onApply,
+}) => {
   return (
     <div className="bg-[var(--background)] dark:bg-gray-900 rounded-lg overflow-hidden shadow-sm max-w-lg border border-[var(--border-color)] dark:border-gray-700 transition-colors duration-300">
       <div className="flex justify-between px-6">
@@ -60,7 +68,10 @@ const CareerCard: React.FC<Job> = ({ image, title, location, deadline, payRange,
 
         <p className="text-xs text-[var(--paragraph-color)] dark:text-gray-400 mb-3 leading-snug">{description}</p>
 
-        <button className="bg-[var(--primary)] hover:bg-opacity-90 text-[var(--primary-foreground)] dark:text-white font-medium py-2 px-4 rounded text-sm transition-colors duration-300">
+        <button
+          onClick={() => onApply(title)}
+          className="bg-[var(--primary)] hover:bg-opacity-90 text-[var(--primary-foreground)] dark:text-white font-medium py-2 px-4 rounded text-sm transition-colors duration-300"
+        >
           APPLY NOW
         </button>
       </div>
@@ -68,22 +79,10 @@ const CareerCard: React.FC<Job> = ({ image, title, location, deadline, payRange,
   )
 }
 
-const CareerCards: React.FC = () => {
+const CareersClient: React.FC = () => {
   const [jobs, setJobs] = useState<Job[]>([])
   const [loading, setLoading] = useState(true)
-  const [isVisible, setIsVisible] = useState(true)
   const router = useRouter()
-
-  useEffect(() => {
-    const checkVisibility = async () => {
-      const visible = await isPageVisible("careers")
-      setIsVisible(visible)
-      if (!visible) {
-        router.push("/not-found")
-      }
-    }
-    checkVisibility()
-  }, [router])
 
   useEffect(() => {
     fetchJobs()
@@ -102,8 +101,8 @@ const CareerCards: React.FC = () => {
     }
   }
 
-  if (!isVisible) {
-    return null
+  const handleApply = (jobTitle: string) => {
+    router.push(`/jobs/apply?position=${encodeURIComponent(jobTitle)}`)
   }
 
   return (
@@ -117,7 +116,7 @@ const CareerCards: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 justify-items-center gap-5">
               {jobs.map((job) => (
-                <CareerCard key={job.id} {...job} />
+                <CareerCard key={job.id} {...job} onApply={handleApply} />
               ))}
             </div>
           )}
@@ -127,4 +126,4 @@ const CareerCards: React.FC = () => {
   )
 }
 
-export default CareerCards
+export default CareersClient
