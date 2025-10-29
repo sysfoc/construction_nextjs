@@ -1,8 +1,6 @@
 import JobApply from "./JobApply"
 import { connectDB } from "@/lib/mongodb"
 import SEOMetadata from "@/lib/models/SEOMetadata"
-import { ChevronsRight } from "lucide-react"
-import PageHeader from "@/app/components/General/PageHeader"
 
 async function getSEOMetadata() {
   try {
@@ -34,7 +32,6 @@ export async function generateMetadata() {
 export default function JobApplyPage() {
   return (
     <>
-      {/* <PageHeader title="Job Apply" /> */}
       <JobApply />
     </>
   )
