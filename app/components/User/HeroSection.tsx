@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import SolidButton from "../General/buttons/SolidButton";
 import HeroBanner from "./HeroBanner";
 import Link from "next/link";
+import { useGeneralSettings } from "@/app/context/GeneralSettingsContext";
 
 interface Slide {
   id: string;
@@ -18,6 +19,7 @@ interface Slide {
 export default function HeroSection() {
   const [slides, setSlides] = useState<Slide[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { settings } = useGeneralSettings();
 
   useEffect(() => {
     fetchSlides();
@@ -115,7 +117,7 @@ export default function HeroSection() {
                 </div>
                 <div>
                   <p className="text-xs text-paragraph font-medium">CALL NOW</p>
-                  <p className="text-foreground font-bold">+268 2158 1234</p>
+                  <p className="text-foreground font-bold">{settings?.phone}</p>
                 </div>
               </div>
             </div>

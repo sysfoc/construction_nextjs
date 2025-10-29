@@ -5,6 +5,7 @@ import "./globals.css";
 
 import AdminLayout from "./components/AdminLayout";
 import { UserProvider } from "./context/UserContext";
+import { GeneralSettingsProvider } from "./context/GeneralSettingsContext"
 
 const exo = Exo({
   subsets: ["latin"],
@@ -22,7 +23,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${exo.className} antialiased max-w-[1920px] mx-auto`}>
         <UserProvider>
+          <GeneralSettingsProvider>
           <AdminLayout>{children}</AdminLayout>
+          </GeneralSettingsProvider>
         </UserProvider>
       </body>
     </html>

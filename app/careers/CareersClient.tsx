@@ -36,7 +36,7 @@ const CareerCard: React.FC<Job> = ({ image, title, location, deadline, payRange,
         </div>
 
         <div className="mt-4">
-          <span className="px-2 py-0.5 text-xs font-medium text-[var(--primary)] dark:text-blue-400 border border-[var(--primary)] dark:border-blue-400 rounded">
+          <span className="whitespace-nowrap px-2 py-0.5 text-xs font-medium text-[var(--primary)] border border-[var(--primary)] rounded">
             {jobType}
           </span>
         </div>
@@ -45,22 +45,22 @@ const CareerCard: React.FC<Job> = ({ image, title, location, deadline, payRange,
       <div className="p-3">
         <div className="flex flex-wrap items-center gap-10 mb-2 text-xs text-[var(--paragraph-color)] dark:text-gray-400">
           <div className="flex items-center gap-1">
-            <MapPin className="w-3 h-3 text-[var(--primary)] dark:text-blue-400" />
+            <MapPin className="w-3 h-3 text-[var(--primary)] " />
             <span>{location}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Calendar className="w-3 h-3 text-[var(--primary)] dark:text-blue-400" />
+            <Calendar className="w-3 h-3 text-[var(--primary)] " />
             <span>{deadline}</span>
           </div>
           <div className="flex items-center gap-1">
-            <DollarSign className="w-3 h-3 text-[var(--primary)] dark:text-blue-400" />
+            <DollarSign className="w-3 h-3 text-[var(--primary)] " />
             <span>{payRange}</span>
           </div>
         </div>
 
         <p className="text-xs text-[var(--paragraph-color)] dark:text-gray-400 mb-3 leading-snug">{description}</p>
 
-        <button className="bg-[var(--primary)] dark:bg-blue-500 hover:bg-opacity-90 dark:hover:bg-blue-600 text-[var(--primary-foreground)] dark:text-white font-medium py-2 px-4 rounded text-sm transition-colors duration-300">
+        <button className="bg-[var(--primary)] hover:bg-opacity-90 text-[var(--primary-foreground)] dark:text-white font-medium py-2 px-4 rounded text-sm transition-colors duration-300">
           APPLY NOW
         </button>
       </div>

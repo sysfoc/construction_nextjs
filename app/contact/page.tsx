@@ -1,7 +1,6 @@
 import ContactUs from "./ContactUs"
 import { connectDB } from "@/lib/mongodb"
 import SEOMetadata from "@/lib/models/SEOMetadata"
-import { ChevronsRight } from "lucide-react"
 import PageHeader from "../components/General/PageHeader"
 
 async function getSEOMetadata() {

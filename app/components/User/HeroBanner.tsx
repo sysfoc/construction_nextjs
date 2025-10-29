@@ -1,13 +1,15 @@
-"use client";
 import Image from "next/image";
 import { MapPin, Mail } from "lucide-react";
+import { useGeneralSettings } from "@/app/context/GeneralSettingsContext";
 
 export default function HeroBanner() {
+  const { settings } = useGeneralSettings();
+  
   return (
-    <div className="relative max-w-4xl z-20 ml-auto -mt-8">
+    <div className="relative max-w-5xl z-20 ml-auto -mt-8">
       {/* Background with diagonal cut */}
       <div className="bg-gray-200 clip-diagonal">
-        <div className="flex items-center justify-between px-4 lg:px-6 py-3">
+        <div className="flex items-center justify-between px-4 lg:px-6 py-3 gap-4">
           {/* Experience Section */}
           <div className="flex items-end gap-[3px] flex-shrink-0 ml-20 sm:ml-24">
             <span className="text-4xl sm:text-5xl lg:text-6xl font-bold text-primary leading-none relative pr-3">
@@ -25,31 +27,31 @@ export default function HeroBanner() {
           </div>
 
           {/* Location Section (hidden on small screens) */}
-          <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-gray-400 flex items-center justify-center">
+          <div className="hidden sm:flex items-center gap-2 flex-shrink min-w-0 max-w-xs">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-gray-400 flex items-center justify-center flex-shrink-0">
               <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-gray-700" />
             </div>
-            <div className="leading-tight">
-              <p className="text-[10px] sm:text-xs text-gray-500">
+            <div className="leading-tight min-w-0">
+              <p className="text-[10px] sm:text-xs text-gray-500 whitespace-nowrap">
                 Our location
               </p>
-              <p className="text-xs sm:text-sm font-bold text-black">
-                Tariq Bin Ziad Colony, Sahiwal
+              <p className="text-xs sm:text-sm font-bold text-black break-words overflow-hidden">
+                {settings?.address}
               </p>
             </div>
           </div>
 
           {/* Email Section (hidden below md) */}
-          <div className="hidden md:flex items-center gap-3 flex-shrink-0">
-            <div className="w-7 h-7 md:w-8 md:h-8 rounded-full border border-gray-400 flex items-center justify-center">
+          <div className="hidden md:flex items-center gap-3 flex-shrink min-w-0 max-w-xs">
+            <div className="w-7 h-7 md:w-8 md:h-8 rounded-full border border-gray-400 flex items-center justify-center flex-shrink-0">
               <Mail className="w-3 h-3 md:w-4 md:h-4 text-gray-700" />
             </div>
-            <div className="leading-tight">
-              <p className="text-[10px] md:text-xs text-gray-500">
+            <div className="leading-tight min-w-0">
+              <p className="text-[10px] md:text-xs text-gray-500 whitespace-nowrap">
                 Send us mail
               </p>
-              <p className="text-xs md:text-sm font-bold text-primary">
-                info@sysfoc.com
+              <p className="text-xs md:text-sm font-bold text-primary break-words overflow-hidden">
+                {settings?.email}
               </p>
             </div>
           </div>

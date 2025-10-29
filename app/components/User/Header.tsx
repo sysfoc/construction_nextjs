@@ -1,15 +1,19 @@
 "use client";
 
-import { ChevronDown, Zap, MapPin, Mail, Menu, X } from "lucide-react";
-import { GiHouse } from "react-icons/gi";
+import { ChevronDown, Menu } from "lucide-react";
 import { useState, useEffect } from "react";
 import SolidButton from "../General/buttons/SolidButton";
 import Link from "next/link";
+import TopBanner from "./TopBanner";
+import MobileSidebar from "./MobileSidebar";
+import { useGeneralSettings } from "@/app/context/GeneralSettingsContext";
+import Image from "next/image";
 
 export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const { settings } = useGeneralSettings();
 
   const navLinks = [
     {
@@ -71,43 +75,13 @@ export default function Header() {
     }
   };
 
-  const handleMobileDropdown = (index: number) => {
-    if (isMobile) {
-      setActiveDropdown(activeDropdown === index ? null : index);
-    }
-  };
-
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
-    setActiveDropdown(null);
   };
 
   return (
     <div className="w-full relative z-30">
-      {/* Top Banner */}
-      <div className="bg-black hidden sm:block text-primary-foreground py-2 px-4 lg:pb-12">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between text-sm gap-2 sm:gap-4">
-          <div className="flex items-center gap-2 w-full sm:w-auto justify-center sm:justify-start">
-            <Zap className="w-4 h-4 text-primary" fill="currentColor" />
-            <span className="text-xs sm:text-sm text-center sm:text-left">
-              We Will go through all the stages of construction
-            </span>
-          </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-6 w-full sm:w-auto justify-center sm:justify-start">
-            <div className="flex items-center gap-2 justify-center sm:justify-start w-full sm:w-auto">
-              <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
-              <span className="text-xs sm:text-sm text-center sm:text-left">
-                Tariq Bin Ziad Colony, Street # 1 Sahiwal, Pakistan
-              </span>
-            </div>
-            <div className="flex items-center gap-2 justify-center sm:justify-start w-full sm:w-auto">
-              <Mail className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
-              <span className="text-xs sm:text-sm">info@sysfoc.com</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <TopBanner />
       {/* Main Header */}
       <div className="px-4 lg:-mt-10">
         <div className="max-w-6xl mx-auto">
@@ -117,12 +91,19 @@ export default function Header() {
             {/* Main header content */}
             <div className="relative flex items-center justify-between py-4 lg:py-4 px-4 lg:px-8 bg-header-background lg:bg-transparent">
               {/* Logo */}
-              <div className="flex items-center gap-3 z-20">
-                <div className="w-10 h-10 lg:w-12 lg:h-12 bg-primary flex items-center justify-center transform rotate-45">
-                  <GiHouse className="w-5 h-5 lg:w-6 lg:h-6 text-primary-foreground transform -rotate-45" />
-                </div>
+              <div className="flex items-center gap-1 z-20">
+                {settings?.logo && (
+                  <div className="w-10 h-10 lg:w-12 lg:h-12 relative">
+                    <Image
+                      src={settings.logo}
+                      alt="Company Logo"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                )}
                 <span className="text-xl lg:text-2xl font-bold text-header-text">
-                  Construct
+                  {settings?.companyName}
                 </span>
               </div>
 
@@ -178,91 +159,17 @@ export default function Header() {
                   className="p-2 rounded-md text-header-text hover:bg-gray-100"
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 >
-                  {isMobileMenuOpen ? (
-                    <X className="w-6 h-6" />
-                  ) : (
-                    <Menu className="w-6 h-6" />
-                  )}
+                  <Menu className="w-6 h-6" />
                 </button>
               </div>
 
-              {isMobileMenuOpen && (
-                <div
-                  className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30 top-0 left-0 w-full h-full"
-                  onClick={closeMobileMenu}
-                ></div>
-              )}
-
-              {/* Mobile Navigation Menu */}
-              <div
-                className={`
-                lg:hidden fixed top-0 left-0 w-4/5 max-w-sm h-full bg-background z-40 transform transition-transform duration-300 ease-in-out
-                ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
-                pt-8 pb-8 px-6 overflow-y-auto shadow-xl
-              `}
-              >
-                <div className="flex justify-between items-center mb-8 border-b pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-primary flex items-center justify-center transform rotate-45">
-                      <GiHouse className="w-5 h-5 text-primary-foreground transform -rotate-45" />
-                    </div>
-                    <span className="text-xl font-bold text-header-text">
-                      Construct
-                    </span>
-                  </div>
-                  <button
-                    className="p-2 rounded-md text-header-text hover:bg-gray-100"
-                    onClick={closeMobileMenu}
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
-                </div>
-
-                <nav className="flex flex-col space-y-2">
-                  {navLinks.map((link, index) => (
-                    <div key={index} className="border-b border-border pb-2">
-                      {link.sublinks ? (
-                        <div>
-                          <button
-                            className="flex items-center justify-between w-full text-left text-header-text hover:text-primary font-medium py-3 text-base"
-                            onClick={() => handleMobileDropdown(index)}
-                          >
-                            {link.name}
-                            <ChevronDown
-                              className={`w-4 h-4 transition-transform duration-200 ${
-                                activeDropdown === index ? "rotate-180" : ""
-                              }`}
-                            />
-                          </button>
-
-                          {activeDropdown === index && (
-                            <div className="mt-1 ml-4 space-y-1">
-                              {link.sublinks.map((sublink, subIndex) => (
-                                <Link
-                                  key={subIndex}
-                                  href={sublink.href}
-                                  className="block py-2 px-3 text-foreground hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50"
-                                  onClick={closeMobileMenu}
-                                >
-                                  {sublink.name}
-                                </Link>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <Link
-                          href={link.href || "#"}
-                          className="block text-header-text hover:text-primary font-medium py-3 text-base"
-                          onClick={closeMobileMenu}
-                        >
-                          {link.name}
-                        </Link>
-                      )}
-                    </div>
-                  ))}
-                </nav>
-              </div>
+              {/* Mobile Sidebar Component */}
+              <MobileSidebar
+                isOpen={isMobileMenuOpen}
+                onClose={closeMobileMenu}
+                navLinks={navLinks}
+                settings={settings}
+              />
 
               <div className="hidden lg:block absolute bottom-0 right-0 w-64 h-16 bg-primary opacity-20 pointer-events-none z-0 clip-footer"></div>
             </div>
