@@ -1,214 +1,228 @@
-'use client';
-import { Save, Eye, Trash2, ChevronLeft, ChevronRight, Mail, Phone, Calendar } from 'lucide-react';
-import { useState } from 'react';
-import QuoteModal from '../components/modals/QuoteModal';
+"use client"
+
+import { useState, useEffect } from "react"
+import { Trash2, Reply } from "lucide-react"
+import ReplyModal from "@/app/admin/components/quote-reply/reply-modal"
 
 interface Quote {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  projectDetails: string;
-  status: 'Pending' | 'In Review' | 'Quoted' | 'Completed';
-  response: string;
-  date: string;
+  _id: string
+  name: string
+  email: string
+  phone: string
+  details: string
+  status: "pending" | "completed"
+  createdAt: string
 }
 
-// Main Component
-export default function QuoteManagementPage() {
-  const [quotes, setQuotes] = useState<Quote[]>([
-    {
-      id: 1,
-      name: 'Michael Roberts',
-      email: 'michael.roberts@email.com',
-      phone: '+1 (555) 234-5678',
-      projectDetails:
-        'Looking to build a 3-bedroom residential home with modern amenities. Approximately 2500 sq ft. Need completion within 6 months.',
-      status: 'Pending',
-      response: '',
-      date: '2025-10-15',
-    },
-    {
-      id: 2,
-      name: 'Sarah Johnson',
-      email: 'sarah.j@company.com',
-      phone: '+1 (555) 345-6789',
-      projectDetails:
-        'Commercial office renovation project. 5000 sq ft space requiring complete interior remodeling, HVAC updates, and electrical work.',
-      status: 'In Review',
-      response:
-        'We have reviewed your requirements and are preparing a detailed estimate.',
-      date: '2025-10-14',
-    },
-    {
-      id: 3,
-      name: 'David Martinez',
-      email: 'dmartinez@email.com',
-      phone: '+1 (555) 456-7890',
-      projectDetails:
-        'Industrial warehouse construction. 10,000 sq ft with loading docks and office space. Timeline flexible.',
-      status: 'Quoted',
-      response:
-        'Quote sent: $450,000 - $520,000. Estimated timeline 8-10 months. Please review the detailed proposal.',
-      date: '2025-10-12',
-    },
-    {
-      id: 4,
-      name: 'Emma Wilson',
-      email: 'emma.wilson@email.com',
-      phone: '+1 (555) 567-8901',
-      projectDetails:
-        'Home addition and kitchen remodeling. Adding 500 sq ft extension and complete kitchen renovation.',
-      status: 'Completed',
-      response:
-        'Project completed successfully. Thank you for choosing BuildPro Construction.',
-      date: '2025-10-10',
-    },
-  ]);
+export default function QuoteManagement() {
+  const [quotes, setQuotes] = useState<Quote[]>([])
+  const [filteredQuotes, setFilteredQuotes] = useState<Quote[]>([])
+  const [activeTab, setActiveTab] = useState<"all" | "pending" | "completed">("all")
+  const [searchTerm, setSearchTerm] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [replyModal, setReplyModal] = useState({
+    isOpen: false,
+    email: "",
+    phone: "",
+  })
 
-  const statusOptions: Quote['status'][] = ['Pending', 'In Review', 'Quoted', 'Completed'];
-  const statusColors: Record<Quote['status'], string> = {
-    Pending: 'bg-yellow-50 text-yellow-600',
-    'In Review': 'bg-blue-50 text-blue-600',
-    Quoted: 'bg-purple-50 text-purple-600',
-    Completed: 'bg-green-50 text-green-600',
-  };
+  useEffect(() => {
+    fetchQuotes()
+  }, [])
 
-  const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const quotesPerPage = 6;
+  useEffect(() => {
+    filterQuotes()
+  }, [quotes, activeTab, searchTerm])
 
-  const indexOfLastQuote = currentPage * quotesPerPage;
-  const indexOfFirstQuote = indexOfLastQuote - quotesPerPage;
-  const currentQuotes = quotes.slice(indexOfFirstQuote, indexOfLastQuote);
-  const totalPages = Math.ceil(quotes.length / quotesPerPage);
+  const fetchQuotes = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch("/api/quote")
+      const data = await response.json()
+      setQuotes(data)
+    } catch (error) {
+      console.error("Error fetching quotes:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  const handleStatusChange = (id: number, newStatus: Quote['status']) => {
-    setQuotes((prev) =>
-      prev.map((quote) =>
-        quote.id === id ? { ...quote, status: newStatus } : quote
+  const filterQuotes = () => {
+    let filtered = quotes
+
+    if (activeTab !== "all") {
+      filtered = filtered.filter((quote) => quote.status === activeTab)
+    }
+
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (quote) =>
+          quote.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          quote.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          quote.phone.includes(searchTerm) ||
+          quote.details.toLowerCase().includes(searchTerm.toLowerCase()),
       )
-    );
-    if (selectedQuote?.id === id) {
-      setSelectedQuote((prev) => (prev ? { ...prev, status: newStatus } : null));
     }
-  };
 
-  const handleResponseChange = (id: number, newResponse: string) => {
-    setQuotes((prev) =>
-      prev.map((quote) =>
-        quote.id === id ? { ...quote, response: newResponse } : quote
-      )
-    );
-    if (selectedQuote?.id === id) {
-      setSelectedQuote((prev) => (prev ? { ...prev, response: newResponse } : null));
+    setFilteredQuotes(filtered)
+  }
+
+  const handleStatusChange = async (id: string, newStatus: "pending" | "completed" ) => {
+    try {
+      const response = await fetch(`/api/quote/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      })
+
+      if (response.ok) {
+        setQuotes(quotes.map((quote) => (quote._id === id ? { ...quote, status: newStatus } : quote)))
+      }
+    } catch (error) {
+      console.error("Error updating status:", error)
     }
-  };
+  }
 
-  const handleDeleteQuote = (id: number) => {
-    setQuotes((prev) => prev.filter((quote) => quote.id !== id));
-    if (selectedQuote?.id === id) {
-      setSelectedQuote(null);
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this quote?")) return
+
+    try {
+      const response = await fetch(`/api/quote/${id}`, {
+        method: "DELETE",
+      })
+
+      if (response.ok) {
+        setQuotes(quotes.filter((quote) => quote._id !== id))
+      }
+    } catch (error) {
+      console.error("Error deleting quote:", error)
     }
-  };
+  }
 
-  const handleSubmit = () => {
-    console.log('Quotes saved:', quotes);
-    alert('Changes saved successfully!');
-  };
+  const openReplyModal = (email: string, phone: string) => {
+    setReplyModal({ isOpen: true, email, phone })
+  }
+
+  const closeReplyModal = () => {
+    setReplyModal({ isOpen: false, email: "", phone: "" })
+  }
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "completed":
+        return "bg-green-100 text-green-800"
+      default:
+        return "bg-yellow-100 text-yellow-800"
+    }
+  }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen">
-      <div className="mb-6 flex sm:flex-row flex-col gap-2 items-center justify-between">
-        <h1 className="text-2xl font-semibold text-[var(--header-text)]">Quote Management</h1>
-        <button
-          onClick={handleSubmit}
-          className="flex items-center gap-2 px-5 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium hover:opacity-90 transition-opacity"
-        >
-          <Save className="w-4 h-4" />
-          Save Changes
-        </button>
-      </div>
+    <main className="min-h-screen bg-background p-6">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-semibold mb-8">Quote Requests</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        {currentQuotes.map((quote) => (
-          <div
-            key={quote.id}
-            className="bg-[var(--background)] border border-[var(--border-color)] rounded-lg p-4 hover:shadow-md transition-shadow"
-          >
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex-1">
-                <h3 className="font-semibold text-[var(--header-text)] mb-2">{quote.name}</h3>
-                <span
-                  className={`inline-block text-xs px-2 py-1 rounded ${statusColors[quote.status]}`}
-                >
-                  {quote.status}
-                </span>
-              </div>
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => setSelectedQuote(quote)}
-                  className="p-2 text-[var(--primary)] hover:bg-gray-100 rounded transition-colors"
-                  title="View Details"
-                >
-                  <Eye className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleDeleteQuote(quote.id)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
-                  title="Delete"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-            <div className="space-y-1 text-sm text-gray-600">
-              <p className="truncate flex items-center gap-3">
-                <Mail className="w-3.5 h-3.5 text-[var(--primary)]" /> {quote.email}
-              </p>
-              <p className="flex items-center gap-3">
-                <Phone className="w-3.5 h-3.5 text-[var(--primary)]" /> {quote.phone}
-              </p>
-              <p className="flex items-center gap-3">
-                <Calendar className="w-3.5 h-3.5 text-[var(--primary)]" /> {quote.date}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2">
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="p-2 border border-[var(--border-color)] rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <span className="text-sm text-gray-600">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages}
-            className="p-2 border border-[var(--border-color)] rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
+        {/* Search Bar */}
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="Search by name, email, phone, or details..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#ff6600]"
+          />
         </div>
-      )}
 
-      {selectedQuote && (
-        <QuoteModal
-          quote={selectedQuote}
-          onClose={() => setSelectedQuote(null)}
-          onStatusChange={handleStatusChange}
-          onResponseChange={handleResponseChange}
-          statusOptions={statusOptions}
-          statusColors={statusColors}
-        />
-      )}
-    </div>
-  );
+        {/* Tabs */}
+        <div className="flex gap-4 mb-6 border-b border-gray-200 overflow-x-auto">
+          {["all", "pending", "completed"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab as "all" | "pending" | "completed" )}
+              className={`px-4 py-2 font-medium capitalize transition-colors whitespace-nowrap ${
+                activeTab === tab ? "text-[#ff6600] border-b-2 border-[#ff6600]" : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        {/* Quotes List */}
+        {loading ? (
+          <div className="text-center py-8 text-gray-500">Loading...</div>
+        ) : filteredQuotes.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">No quotes found</div>
+        ) : (
+          <div className="space-y-4">
+            {filteredQuotes.map((quote) => (
+              <div key={quote._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="font-semibold text-lg">{quote.name}</h3>
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(quote.status)}`}>
+                        {quote.status}
+                      </span>
+                    </div>
+
+                    <div className="w-fit flex flex-col gap-1 mb-3 text-sm text-gray-600">
+                      <a href={`mailto:${quote.email}`} className="text-[#ff6600] hover:underline">
+                        {quote.email}
+                      </a>
+                      <p>{quote.phone}</p>
+                    </div>
+
+                    <p className="text-gray-700 mb-3 whitespace-pre-wrap line-clamp-2">{quote.details}</p>
+                    <p className="text-sm text-gray-500">{formatDate(quote.createdAt)}</p>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={() => openReplyModal(quote.email, quote.phone)}
+                      className="px-3 py-1 bg-[var(--primary)] text-[var(--primary-foreground)] rounded text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-1"
+                    >
+                      <Reply size={16} />
+                      Reply
+                    </button>
+                    <button
+                      onClick={() =>
+                        handleStatusChange(quote._id, quote.status === "pending" ? "completed" : "pending")
+                      }
+                      className="px-3 py-1 bg-[var(--primary)] text-[var(--primary-foreground)] rounded text-sm hover:opacity-90 transition-opacity"
+                    >
+                      Mark {quote.status === "pending" ? "Done" : "Pending"}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(quote._id)}
+                      className="px-3 py-1 bg-red-500 text-white rounded text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-1"
+                    >
+                      <Trash2 size={16} />
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <ReplyModal
+        isOpen={replyModal.isOpen}
+        onClose={closeReplyModal}
+        email={replyModal.email}
+        phone={replyModal.phone}
+      />
+    </main>
+  )
 }

@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
-const quoteScheama = new mongoose.Schema(
+const quoteSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -25,14 +25,14 @@ const quoteScheama = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ["pending", "completed", "cancelled"],
+      enum: ["pending", "completed"],
       default: "pending",
     },
   },
-  { timestamps: true }
-);
+  { timestamps: true },
+)
 
-quoteScheama.index({ createdAt: -1 });
+quoteSchema.index({ createdAt: -1 })
 
-const Quote = mongoose.models.Quote || mongoose.model("Quote", quoteScheama);
-export default Quote;
+const Quote = mongoose.models.Quote || mongoose.model("Quote", quoteSchema)
+export default Quote

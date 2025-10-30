@@ -23,7 +23,7 @@ export default function CategoryForm({ categoryName, onNameChange, onSave }: Cat
           e.stopPropagation()
           onSave()
         }}
-        className="p-1 text-[var(--primary)] hover:bg-green-100 rounded transition-colors"
+        className="p-1 text-[var(--primary-foreground)] bg-[var(--primary)] rounded transition-colors"
       >
         <Save className="w-4 h-4" />
       </button>

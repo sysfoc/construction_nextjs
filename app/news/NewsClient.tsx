@@ -46,7 +46,7 @@ export default function NewsClient() {
 
   return (
     <>
-      <main className="bg-background text-foreground">
+      <main className="bg-background text-foreground min-h-96">
         <section className="mx-auto max-w-5xl p-4">
           <h1 className="text-balance text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-foreground">
             News

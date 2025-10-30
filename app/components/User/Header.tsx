@@ -8,37 +8,32 @@ import TopBanner from "./TopBanner";
 import MobileSidebar from "./MobileSidebar";
 import { useGeneralSettings } from "@/app/context/GeneralSettingsContext";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const { settings } = useGeneralSettings();
+  const router = useRouter();
 
   const navLinks = [
     {
       name: "Pages",
       sublinks: [
-        { name: "About Us", href: "/about" },
         { name: "Our Team", href: "/team" },
         { name: "Careers", href: "/careers" },
-      ],
-    },
-    {
-      name: "Services",
-      sublinks: [
-        { name: "Construction", href: "/services/construction" },
-        { name: "Renovation", href: "/services/renovation" },
-        { name: "Consulting", href: "/services/consulting" },
+        { name: "Gallery", href: "/gallery" },
+        { name: "About Us", href: "/about" },
       ],
     },
     {
       name: "Projects",
-      sublinks: [
-        { name: "Ongoing", href: "/projects/ongoing" },
-        { name: "Completed", href: "/projects/completed" },
-        { name: "Gallery", href: "/projects/gallery" },
-      ],
+      href: "/projects",
+    },
+    {
+      name: "Portfolio",
+      href: "/portfolio",
     },
     {
       name: "News",
@@ -116,16 +111,23 @@ export default function Header() {
                     onMouseEnter={() => handleMouseEnter(index)}
                     onMouseLeave={handleMouseLeave}
                   >
-                    <button className="flex items-center gap-1 text-header-text hover:text-primary font-medium transition-colors py-2 px-3 lg:px-4 rounded-lg hover:bg-gray-50 dark:bg-gray-900">
-                      {link.name}
-                      {link.sublinks && (
+                    {link.sublinks ? (
+                      <button className="flex items-center gap-1 text-header-text hover:text-primary font-medium transition-colors py-2 px-3 lg:px-4 rounded-lg hover:bg-gray-50 dark:bg-gray-900">
+                        {link.name}
                         <ChevronDown
                           className={`w-4 h-4 transition-transform duration-200 ${
                             activeDropdown === index ? "rotate-180" : ""
                           }`}
                         />
-                      )}
-                    </button>
+                      </button>
+                    ) : (
+                      <Link
+                        href={link.href!}
+                        className="flex items-center gap-1 text-header-text hover:text-primary font-medium transition-colors py-2 px-3 lg:px-4 rounded-lg hover:bg-gray-50 dark:bg-gray-900"
+                      >
+                        {link.name}
+                      </Link>
+                    )}
 
                     {link.sublinks && activeDropdown === index && (
                       <div className="absolute top-full left-0 -mt-1 w-56 bg-background shadow-xl border border-border rounded-lg py-2 z-50">
@@ -146,14 +148,16 @@ export default function Header() {
 
               {/* Desktop CTA Button */}
               <div className="hidden lg:block relative z-10">
-                <SolidButton text="GET A QUOTE" />
+                <SolidButton text="GET A QUOTE" onClick={() => router.push("/quote")} />
               </div>
 
               {/* Mobile Header Right Section */}
               <div className="flex lg:hidden items-center gap-3 z-20">
+                <Link href="/quote">
                 <div className="hidden sm:block bg-primary text-primary-foreground px-4 py-2 font-semibold cursor-pointer hover:opacity-90 transition-colors duration-200 text-sm rounded">
                   GET A QUOTE
                 </div>
+                </Link>
 
                 <button
                   className="p-2 rounded-md text-header-text hover:bg-gray-100"
