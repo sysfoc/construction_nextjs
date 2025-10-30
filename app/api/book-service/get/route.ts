@@ -7,9 +7,10 @@ export async function GET() {
     await connectDB();
     const bookings = await Booking.find().sort({ createdAt: -1 });
     return NextResponse.json({ success: true, data: bookings });
-  } catch (error: any) {
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to fetch bookings", error: error.message },
+      { success: false, message: "Failed to fetch bookings"},
       { status: 500 }
     );
   }

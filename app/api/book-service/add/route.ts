@@ -33,10 +33,10 @@ export async function POST(req: Request) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error("Booking error:", error);
     return NextResponse.json(
-      { success: false, message: "Server error", error: error.message },
+      { success: false, message: "Server error" },
       { status: 500 }
     );
   }
