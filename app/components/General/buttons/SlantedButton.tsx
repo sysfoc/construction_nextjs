@@ -20,7 +20,7 @@ const SlantedButton: React.FC<SlantedButtonProps> = ({ text = "GET STARTED", onC
         </span>
 
         {/* Black diagonal side */}
-        <span className="absolute right-0 top-0 h-full w-[50px] bg-[var(--color-foreground)] clip-button-side flex items-center justify-center">
+        <span className="absolute right-0 top-0 h-full w-[50px] bg-[var(--color-foreground)] dark:bg-gray-800 clip-button-side flex items-center justify-center">
           <RiArrowRightDoubleLine className="w-5 h-5 text-[var(--color-primary-foreground)]" />
         </span>
       </button>

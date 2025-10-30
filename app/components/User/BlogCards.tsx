@@ -57,11 +57,11 @@ const BlogCards: React.FC = () => {
 
               {/* Content */}
               <div className="p-4 flex-1 flex flex-col">
-                <h3 className="text-lg font-bold text-gray-900 mb-4 leading-tight">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4 leading-tight">
                   {post.title}
                 </h3>
-                <p className="text-sm text-gray-600 mt-auto">
-                  By <span className="text-gray-900">{post.author}</span>
+                <p className="text-sm text-gray-600 dark:text-gray-100 mt-auto">
+                  By <span className="text-gray-900 dark:text-gray-100">{post.author}</span>
                 </p>
               </div>
             </div>

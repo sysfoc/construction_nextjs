@@ -71,7 +71,7 @@ export default function ConstructionSection(): React.JSX.Element {
   const currentContent: TabContentData = tabContent[activeTab];
 
  return (
-  <div className="bg-[var(--color-foreground)] text-[var(--color-primary-foreground)] min-h-screen relative overflow-hidden">
+  <div className="bg-[var(--color-foreground)] text-[var(--color-primary-foreground)] dark:bg-gray-800 min-h-screen relative overflow-hidden">
     {/* Background geometric shapes */}
     <div className="absolute inset-0 opacity-20">
       <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-br from-gray-800 to-transparent transform rotate-12"></div>

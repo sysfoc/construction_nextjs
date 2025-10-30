@@ -63,6 +63,7 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
     { icon: Menu, label: 'Menu Management', path: '/admin/menu' },
     { icon: Image, label: 'Slider Management', path: '/admin/heroslider' },
     { icon: Briefcase, label: 'Services', path: '/admin/services' },
+    { icon: Briefcase, label: 'Booking', path: '/admin/booking' },
     { icon: HelpCircle, label: 'FAQs', path: '/admin/faqs' },
     { icon: FolderOpen, label: 'Portfolio', path: '/admin/portfolio' },
     { icon: Users, label: 'Team', path: '/admin/team' },

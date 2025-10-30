@@ -75,7 +75,7 @@ export default function ServicesAndTeam() {
                 </div>
 
                 {/* Button */}
-                <button className="bg-header-text dark:bg-heading text-primary-foreground w-[80%] mx-auto py-2 sm:py-2.5 mb-5 rounded-t-full hover:bg-primary transition-colors">
+                <button className="bg-header-text dark:bg-gray-700 text-primary-foreground w-[80%] mx-auto py-2 sm:py-2.5 mb-5 rounded-t-full hover:bg-primary transition-colors">
                   <span className="text-sm sm:text-base">→</span>
                 </button>
               </div>
@@ -104,7 +104,7 @@ export default function ServicesAndTeam() {
       {/* Team Section */}
       <div className="relative w-full">
         {/* Background Image */}
-        <div className="relative w-full h-[250px]">
+        <div className="relative w-full h-[250px] dark:opacity-40">
           <Image
             src="/bgTeam.jpg"
             alt="Team Background"
