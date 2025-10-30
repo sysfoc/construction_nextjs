@@ -9,7 +9,11 @@ export async function GET(request: NextRequest) {
   const status = searchParams.get("status")
   const search = searchParams.get("search")
 
-  const query: any = {}
+  interface QueryFilter {
+    status?: string
+    $or?: Array<Record<string, { $regex: string; $options: string }>>
+  }
+  const query: QueryFilter = {}
 
   if (status && status !== "all") {
     query.status = status
