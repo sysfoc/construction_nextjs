@@ -1,6 +1,7 @@
 // app/admin/components/newsletter/subscribers-list.tsx
 "use client"
 
+import { Edit2, Trash2 } from "lucide-react"
 import { useState } from "react"
 
 interface Subscriber {
@@ -120,7 +121,7 @@ export function SubscribersList({ subscribers, onUpdate, onDelete }: Subscribers
                   disabled={isLoading}
                   title="Edit"
                 >
-                  ✎
+                  <Edit2 className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => handleDelete(subscriber._id)}
@@ -128,7 +129,7 @@ export function SubscribersList({ subscribers, onUpdate, onDelete }: Subscribers
                   disabled={isLoading}
                   title="Delete"
                 >
-                  🗑
+                  <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             </div>

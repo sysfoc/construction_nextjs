@@ -1,6 +1,8 @@
 // app/admin/components/newsletter/newsletters-list.tsx
 "use client"
 
+import { Trash2 } from "lucide-react"
+
 interface Newsletter {
   _id: string
   subject: string
@@ -35,7 +37,7 @@ export function NewslettersList({ newsletters, onDelete }: NewslettersListProps)
               className="flex-shrink-0 p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
               title="Delete newsletter"
             >
-              🗑
+              <Trash2 className="w-4 h-4" />
             </button>
           </div>
         </div>
