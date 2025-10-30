@@ -1,3 +1,4 @@
+// app/newsletter/Newsletter.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -25,7 +26,7 @@ export default function Newsletter() {
     e.preventDefault();
     if (mode === "subscribe") {
       try {
-        const response = await fetch("/api/newsletter/subscribe", {
+        const response = await fetch("/api/subscribers/subscribe", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -44,7 +45,7 @@ export default function Newsletter() {
       }
     } else {
       try {
-        const response = await fetch("/api/newsletter/unsubscribe", {
+        const response = await fetch("/api/subscribers/unsubscribe", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -55,7 +55,7 @@ export default function TeamClient() {
 
   return (
     <>
-      <section className='my-20'>
+      <section className='my-20 min-h-96'>
         <div className='mx-auto text-center'>
           <span className='text-primary'>Great experience in building</span>
           <h2 className='text-4xl font-bold'>Professional Team</h2>
