@@ -1,390 +1,220 @@
 "use client";
-import { Save, Plus, Trash2, Edit2, X, Mail, Phone, MapPin, Clock, MessageSquare } from "lucide-react";
-import { useState, ChangeEvent } from "react";
-import ContactMessageModal from "../components/modals/ContactMessageModal";
-
-interface ContactInfo {
-  address: string;
-  phone: string;
-  email: string;
-  workingHours: string;
-}
+import { useState, useEffect } from "react";
+import { Trash2, Mail } from "lucide-react";
 
 interface ContactMessage {
-  id: number;
+  _id: string;
   name: string;
   email: string;
   message: string;
-  status: "Pending" | "Replied" | "Resolved";
-  reply: string;
-  date: string;
+  status: "pending" | "replied";
+  createdAt: string;
 }
 
-// Main Contact Management Page
-export default function ContactManagementPage() {
-  const [contactInfo, setContactInfo] = useState<ContactInfo>({
-    address: "123 Construction Ave, Building City, BC 12345",
-    phone: "+1 (555) 123-4567",
-    email: "info@buildpro.com",
-    workingHours: "Monday - Friday: 8:00 AM - 6:00 PM\nSaturday: 9:00 AM - 4:00 PM\nSunday: Closed",
-  });
+export default function ContactManagement() {
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [filteredMessages, setFilteredMessages] = useState<ContactMessage[]>(
+    []
+  );
+  const [activeTab, setActiveTab] = useState<"all" | "pending" | "replied">(
+    "all"
+  );
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const [contactMessages, setContactMessages] = useState<ContactMessage[]>([
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      email: "sarah.johnson@example.com",
-      message:
-        "Hi, I am interested in getting a quote for a home renovation project. We are looking to remodel our kitchen and bathroom. Could you please provide more information about your services and estimated timelines?",
-      status: "Pending",
-      reply: "",
-      date: "2024-10-15",
-    },
-    {
-      id: 2,
-      name: "Michael Chen",
-      email: "m.chen@example.com",
-      message:
-        "I would like to inquire about commercial construction services for our new office building. What is your experience with office spaces?",
-      status: "Replied",
-      reply: "Thank you for your inquiry! We have extensive experience with commercial office projects. I'll send you our portfolio and availability shortly.",
-      date: "2024-10-14",
-    },
-    {
-      id: 3,
-      name: "Emily Rodriguez",
-      email: "emily.r@example.com",
-      message:
-        "Can you provide information about your renovation services? Specifically interested in bathroom remodeling.",
-      status: "Resolved",
-      reply: "Thank you for reaching out! We've sent detailed information about our bathroom remodeling services to your email.",
-      date: "2024-10-12",
-    },
-  ]);
+  useEffect(() => {
+    fetchMessages();
+  }, []);
 
-  const [editingInfo, setEditingInfo] = useState(false);
-  const [infoFormData, setInfoFormData] = useState<ContactInfo>(contactInfo);
-  const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
-  const [activeTab, setActiveTab] = useState<"info" | "messages">("info");
+  useEffect(() => {
+    filterMessages();
+  }, [messages, activeTab, searchTerm]);
 
-  const statusOptions: ContactMessage["status"][] = ["Pending", "Replied", "Resolved"];
-
-  // Contact Info handlers
-  const handleEditInfo = () => {
-    setEditingInfo(true);
-    setInfoFormData(contactInfo);
-  };
-
-  const handleCancelInfo = () => {
-    setEditingInfo(false);
-    setInfoFormData(contactInfo);
-  };
-
-  const handleInfoInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setInfoFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSaveInfo = () => {
-    setContactInfo(infoFormData);
-    setEditingInfo(false);
-  };
-
-  // Contact Message handlers
-  const handleStatusChange = (id: number, status: ContactMessage["status"]) => {
-    setContactMessages((prev) =>
-      prev.map((msg) => (msg.id === id ? { ...msg, status } : msg))
-    );
-    if (selectedMessage && selectedMessage.id === id) {
-      setSelectedMessage({ ...selectedMessage, status });
+  const fetchMessages = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("/api/contact");
+      const data = await response.json();
+      setMessages(data);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleReplyChange = (id: number, reply: string) => {
-    setContactMessages((prev) =>
-      prev.map((msg) => (msg.id === id ? { ...msg, reply, status: reply ? "Replied" : msg.status } : msg))
-    );
-    setSelectedMessage(null);
+  const filterMessages = () => {
+    let filtered = messages;
+
+    if (activeTab !== "all") {
+      filtered = filtered.filter((msg) => msg.status === activeTab);
+    }
+
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (msg) =>
+          msg.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          msg.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          msg.message.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredMessages(filtered);
   };
 
-  const handleDeleteMessage = (id: number) => {
-    setContactMessages((prev) => prev.filter((msg) => msg.id !== id));
+  const handleStatusChange = async (
+    id: string,
+    newStatus: "pending" | "replied"
+  ) => {
+    try {
+      const response = await fetch(`/api/contact/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        setMessages(
+          messages.map((msg) =>
+            msg._id === id ? { ...msg, status: newStatus } : msg
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
   };
 
-  const pendingCount = contactMessages.filter((msg) => msg.status === "Pending").length;
-  const repliedCount = contactMessages.filter((msg) => msg.status === "Replied").length;
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this message?")) return;
+
+    try {
+      const response = await fetch(`/api/contact/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setMessages(messages.filter((msg) => msg._id !== id));
+      }
+    } catch (error) {
+      console.error("Error deleting message:", error);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   return (
-    <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 overflow-x-hidden">
-      <div className="p-4 sm:p-6 max-w-5xl mx-auto">
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-stretch sm:items-center justify-between mb-4 sm:mb-6">
-          <h1 className="text-xl sm:text-2xl font-semibold text-[var(--header-text)] break-words">
-            Contact Management
-          </h1>
+    <main className="min-h-screen bg-background p-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-start sm:gap-3">
+          <h1 className="text-2xl font-semibold mb-1">Contact Messages</h1>
+          <p className="text-sm text-gray-600">
+            Click on any email address to compose a reply.
+          </p>
         </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
-          <div className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-50 rounded">
-                <MessageSquare className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Total Messages</p>
-                <p className="text-lg sm:text-xl font-semibold text-[var(--header-text)]">
-                  {contactMessages.length}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-orange-50 rounded">
-                <Clock className="w-5 h-5 text-orange-600" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Pending</p>
-                <p className="text-lg sm:text-xl font-semibold text-[var(--header-text)]">
-                  {pendingCount}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-50 rounded">
-                <MessageSquare className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Replied</p>
-                <p className="text-lg sm:text-xl font-semibold text-[var(--header-text)]">
-                  {repliedCount}
-                </p>
-              </div>
-            </div>
-          </div>
+        {/* Search Bar */}
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Search by name, email, or message..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff6600]"
+          />
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-4 border-b border-[var(--border-color)]">
-          <button
-            onClick={() => setActiveTab("info")}
-            className={`px-4 py-2 text-sm sm:text-base font-medium ${
-              activeTab === "info"
-                ? "border-b-2 border-[var(--primary)] text-[var(--primary)]"
-                : "text-gray-500"
-            }`}
-          >
-            Contact Information
-          </button>
-          <button
-            onClick={() => setActiveTab("messages")}
-            className={`px-4 py-2 text-sm sm:text-base font-medium ${
-              activeTab === "messages"
-                ? "border-b-2 border-[var(--primary)] text-[var(--primary)]"
-                : "text-gray-500"
-            }`}
-          >
-            Contact Messages
-          </button>
+        <div className="flex gap-3 mb-4 border-b border-gray-200">
+          {["all", "pending", "replied"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab as "all" | "pending" | "replied")}
+              className={`px-3 py-1.5 text-sm font-medium capitalize transition-colors ${
+                activeTab === tab
+                  ? "text-[#ff6600] border-b-2 border-[#ff6600]"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
 
-        {/* Contact Information Tab */}
-        {activeTab === "info" && (
-          <div className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4 w-full overflow-hidden">
-            {editingInfo ? (
-              <div className="space-y-3 sm:space-y-4">
-                <div className="flex items-center justify-between mb-3 sm:mb-4">
-                  <h3 className="text-base sm:text-lg font-semibold text-[var(--header-text)]">
-                    Edit Contact Information
-                  </h3>
-                  <button
-                    onClick={handleCancelInfo}
-                    className="text-gray-500 flex-shrink-0"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-
-                <div className="w-full">
-                  <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                    Address
-                  </label>
-                  <input
-                    type="text"
-                    name="address"
-                    value={infoFormData.address}
-                    onChange={handleInfoInputChange}
-                    className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  <div className="w-full">
-                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                      Phone
-                    </label>
-                    <input
-                      type="text"
-                      name="phone"
-                      value={infoFormData.phone}
-                      onChange={handleInfoInputChange}
-                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
-                    />
-                  </div>
-
-                  <div className="w-full">
-                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={infoFormData.email}
-                      onChange={handleInfoInputChange}
-                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
-                    />
-                  </div>
-                </div>
-
-                <div className="w-full">
-                  <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                    Working Hours
-                  </label>
-                  <textarea
-                    name="workingHours"
-                    value={infoFormData.workingHours}
-                    onChange={handleInfoInputChange}
-                    rows={3}
-                    className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base resize-none"
-                  />
-                </div>
-
-                <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2 w-full">
-                  <button
-                    onClick={handleCancelInfo}
-                    className="w-full sm:w-auto px-4 py-2 border border-[var(--border-color)] rounded text-[var(--header-text)] text-sm sm:text-base"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSaveInfo}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base"
-                  >
-                    <Save className="w-4 h-4 flex-shrink-0" />
-                    <span>Save Information</span>
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-base sm:text-lg font-semibold text-[var(--header-text)]">
-                    Contact Information
-                  </h3>
-                  <button
-                    onClick={handleEditInfo}
-                    className="p-2 text-[var(--primary)] rounded"
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="w-5 h-5 text-[var(--primary)] flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">Address</p>
-                      <p className="text-sm sm:text-base text-gray-700 break-words">
-                        {contactInfo.address}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Phone className="w-5 h-5 text-[var(--primary)] flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">Phone</p>
-                      <p className="text-sm sm:text-base text-gray-700">
-                        {contactInfo.phone}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Mail className="w-5 h-5 text-[var(--primary)] flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">Email</p>
-                      <p className="text-sm sm:text-base text-gray-700 break-all">
-                        {contactInfo.email}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Clock className="w-5 h-5 text-[var(--primary)] flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">Working Hours</p>
-                      <p className="text-sm sm:text-base text-gray-700 whitespace-pre-line">
-                        {contactInfo.workingHours}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+        {/* Messages List */}
+        {loading ? (
+          <div className="text-center py-6 text-sm text-gray-500">
+            Loading...
           </div>
-        )}
-
-        {/* Contact Messages Tab */}
-        {activeTab === "messages" && (
-          <div className="space-y-3 sm:space-y-4">
-            {contactMessages.map((message) => (
+        ) : filteredMessages.length === 0 ? (
+          <div className="text-center py-6 text-sm text-gray-500">
+            No messages found
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filteredMessages.map((msg) => (
               <div
-                key={message.id}
-                className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4 w-full overflow-hidden"
+                key={msg._id}
+                className="border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow"
               >
-                <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-0 w-full">
-                  <div className="flex-1 min-w-0 w-full">
-                    <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-[var(--header-text)] text-sm sm:text-base break-words">
-                        {message.name}
-                      </h3>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <h3 className="font-semibold text-base">{msg.name}</h3>
                       <span
-                        className={`text-xs px-2 py-1 rounded whitespace-nowrap flex-shrink-0 ${
-                          message.status === "Pending"
-                            ? "bg-orange-100 text-orange-700"
-                            : message.status === "Replied"
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-green-100 text-green-700"
+                        className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                          msg.status === "replied"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-yellow-100 text-yellow-800"
                         }`}
                       >
-                        {message.status}
+                        {msg.status}
                       </span>
                     </div>
-                    <p className="text-xs sm:text-sm text-gray-600 mb-1 break-all">
-                      {message.email}
+
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <a
+                        href={`mailto:${msg.email}`}
+                        className="flex items-center gap-1 text-sm text-[#ff6600] hover:underline"
+                      >
+                        <Mail size={14} />
+                        {msg.email}
+                      </a>
+                    </div>
+
+                    <p className="text-sm text-gray-700 mb-2 whitespace-pre-wrap">
+                      {msg.message}
                     </p>
-                    <p className="text-xs sm:text-sm text-gray-600 mb-2 line-clamp-2 break-words">
-                      {message.message}
+                    <p className="text-xs text-gray-500">
+                      {formatDate(msg.createdAt)}
                     </p>
-                    <p className="text-xs text-gray-500">{message.date}</p>
                   </div>
-                  <div className="flex items-center gap-2 w-full sm:w-auto justify-end sm:ml-4 flex-shrink-0">
+
+                  <div className="flex flex-col gap-1.5 flex-shrink-0">
                     <button
-                      onClick={() => setSelectedMessage(message)}
-                      className="px-3 py-1.5 text-xs sm:text-sm bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium"
+                      onClick={() =>
+                        handleStatusChange(
+                          msg._id,
+                          msg.status === "pending" ? "replied" : "pending"
+                        )
+                      }
+                      className="px-2.5 py-1 bg-[var(--primary)] text-[var(--primary-foreground)] rounded text-xs hover:opacity-90 transition-opacity whitespace-nowrap"
                     >
-                      View Details
+                      Mark {msg.status === "pending" ? "Replied" : "Pending"}
                     </button>
                     <button
-                      onClick={() => handleDeleteMessage(message.id)}
-                      className="p-2 text-red-600 rounded"
+                      onClick={() => handleDelete(msg._id)}
+                      className="px-2.5 py-1 bg-red-500 text-white rounded text-xs hover:opacity-90 transition-opacity flex items-center justify-center gap-1"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 size={14} />
+                      Delete
                     </button>
                   </div>
                 </div>
@@ -393,17 +223,6 @@ export default function ContactManagementPage() {
           </div>
         )}
       </div>
-
-      {/* Modal */}
-      {selectedMessage && (
-        <ContactMessageModal
-          message={selectedMessage}
-          onClose={() => setSelectedMessage(null)}
-          onStatusChange={handleStatusChange}
-          onReplyChange={handleReplyChange}
-          statusOptions={statusOptions}
-        />
-      )}
-    </div>
+    </main>
   );
 }

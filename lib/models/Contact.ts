@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
-const contactScheama = new mongoose.Schema(
+const contactSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -17,12 +17,16 @@ const contactScheama = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    status: {
+      type: String,
+      enum: ["pending", "replied"],
+      default: "pending",
+    },
   },
-  { timestamps: true }
-);
+  { timestamps: true },
+)
 
-contactScheama.index({ createdAt: -1 });
+contactSchema.index({ createdAt: -1 })
 
-const Contact =
-  mongoose.models.Contact || mongoose.model("Contact", contactScheama);
-export default Contact;
+const Contact = mongoose.models.Contact || mongoose.model("Contact", contactSchema)
+export default Contact
