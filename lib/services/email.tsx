@@ -1,4 +1,5 @@
-import nodemailer from "nodemailer"
+// lib/services/email.tsx
+import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -8,9 +9,13 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,
   },
-})
+});
 
-export async function sendNewsletter(recipientEmail: string, subject: string, content: string) {
+export async function sendNewsletter(
+  recipientEmail: string,
+  subject: string,
+  content: string
+) {
   try {
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
@@ -19,18 +24,37 @@ export async function sendNewsletter(recipientEmail: string, subject: string, co
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px;">
-            ${content}
+            ${content
+              .split("\n")
+              .map((line) =>
+                line.trim() ? `<p style="margin: 10px 0;">${line}</p>` : "<br>"
+              )
+              .join("")}
           </div>
-          <div style="margin-top: 20px; text-align: center; font-size: 12px; color: #999;">
-            <p>You received this email because you subscribed to our newsletter.</p>
-            <p><a href="${process.env.BASE_URL}/newsletter?mode=unsubscribe" style="color: #ff6600;">Unsubscribe</a></p>
-          </div>
+          
         </div>
       `,
-    })
-    return { success: true }
+    });
+    return { success: true };
   } catch (error) {
-    console.error("Email sending error:", error)
-    throw error
+    console.error("Email sending error:", error);
+    throw error;
   }
 }
+
+
+
+
+
+//Unsubscribed Link
+{/* <div style="margin-top: 20px; text-align: center; font-size: 12px; color: #999;">
+  <p>You received this email because you subscribed to our newsletter.</p>
+  <p>
+    <a
+      href="${process.env.BASE_URL}/newsletter?mode=unsubscribe"
+      style="color: #ff6600;"
+    >
+      Unsubscribe
+    </a>
+  </p>
+</div>; */}
