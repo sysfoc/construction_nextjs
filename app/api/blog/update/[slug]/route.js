@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import Blog from "@/lib/models/Blog.model";
+import Blog from "@/lib/models/blog.model";
 import { connectDB } from "@/lib/mongodb";
 import path from "path";
 import { writeFile, unlink } from "fs/promises";
