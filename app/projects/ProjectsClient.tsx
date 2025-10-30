@@ -73,7 +73,7 @@ export default function ProjectsClient() {
 
   if (loading) {
     return (
-      <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <p className="text-gray-600">Loading projects...</p>
       </div>
     );

@@ -141,14 +141,14 @@ export default function TeamManagementPage() {
 
   if (loading) {
     return (
-      <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <p className="text-gray-600">Loading team members...</p>
       </div>
     );
   }
 
   return (
-    <div className="w-full min-h-screen bg-gray-50 overflow-x-hidden">
+    <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 overflow-x-hidden">
       <div className="p-4 sm:p-6 max-w-full mx-auto">
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-stretch sm:items-center justify-between mb-4 sm:mb-6">
           <h1 className="text-xl sm:text-2xl font-semibold text-[var(--header-text)] break-words">
@@ -188,7 +188,7 @@ export default function TeamManagementPage() {
                       Member Photo
                     </label>
                     <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
-                      <div className="relative w-32 h-52 sm:w-40 sm:h-64 border-2 border-dashed border-[var(--border-color)] rounded-lg flex items-center justify-center bg-gray-50 overflow-hidden flex-shrink-0 mx-auto sm:mx-0">
+                      <div className="relative w-32 h-52 sm:w-40 sm:h-64 border-2 border-dashed border-[var(--border-color)] rounded-lg flex items-center justify-center bg-gray-50 dark:bg-gray-900 overflow-hidden flex-shrink-0 mx-auto sm:mx-0">
                         {formData.photoPreview ? (
                           <Image
                             src={formData.photoPreview}

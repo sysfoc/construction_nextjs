@@ -31,7 +31,7 @@ const BlogCards: React.FC = () => {
   ];
 
   return (
-    <div className="w-full bg-gray-50 py-16 px-6">
+    <div className="w-full bg-gray-50 dark:bg-gray-900 py-16 px-6">
       <div className="max-w-5xl mx-auto">
         {/* Grid layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

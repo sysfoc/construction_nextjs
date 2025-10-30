@@ -104,7 +104,7 @@ export default function SEOSettingsPage() {
   }
 
   return (
-    <div className="p-6 mx-auto bg-gray-50 min-h-screen">
+    <div className="p-6 mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen">
       <h1 className="text-2xl font-semibold text-[var(--header-text)] mb-6">SEO Settings</h1>
 
       <div className="bg-[var(--background)] border border-[var(--border-color)] rounded p-6">

@@ -167,14 +167,14 @@ export default function GalleryManagementPage() {
 
   if (loading) {
     return (
-      <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <p className="text-gray-600">Loading...</p>
       </div>
     )
   }
 
   return (
-    <div className="w-full min-h-screen bg-gray-50 overflow-x-hidden">
+    <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 overflow-x-hidden">
       <div className="p-4 sm:p-6 max-w-6xl mx-auto">
         <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-6">Gallery Management</h1>
 

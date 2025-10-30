@@ -139,7 +139,7 @@ export default function ProjectsSection() {
               className={`px-4 py-2 text-xs font-medium transition-all ${
                 activeTab === index
                   ? "bg-[var(--color-primary)] text-[var(--color-primary-foreground)]"
-                  : "bg-[var(--color-header-background)] text-[var(--color-header-text)] border border-[var(--color-border)] hover:bg-gray-50 dark:hover:bg-gray-700"
+                  : "bg-[var(--color-header-background)] text-[var(--color-header-text)] border border-[var(--color-border)] hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700"
               }`}
             >
               {tab}

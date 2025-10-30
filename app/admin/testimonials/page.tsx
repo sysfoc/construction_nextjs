@@ -202,7 +202,7 @@ export default function TestimonialManagementPage() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-gray-50 overflow-x-hidden">
+    <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 overflow-x-hidden">
       <div className="p-4 sm:p-6 max-w-5xl mx-auto">
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-stretch sm:items-center justify-between mb-4 sm:mb-6">
           <h1 className="text-xl sm:text-2xl font-semibold text-[var(--header-text)] break-words">
@@ -249,7 +249,7 @@ export default function TestimonialManagementPage() {
                         Client Photo
                       </label>
                       <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
-                        <div className="relative w-20 h-20 sm:w-24 sm:h-24 border-2 border-dashed border-[var(--border-color)] rounded-full flex items-center justify-center bg-gray-50 overflow-hidden flex-shrink-0 mx-auto sm:mx-0">
+                        <div className="relative w-20 h-20 sm:w-24 sm:h-24 border-2 border-dashed border-[var(--border-color)] rounded-full flex items-center justify-center bg-gray-50 dark:bg-gray-900 overflow-hidden flex-shrink-0 mx-auto sm:mx-0">
                           {formData.photoPreview ? (
                             <img
                               src={formData.photoPreview || "/placeholder.svg"}

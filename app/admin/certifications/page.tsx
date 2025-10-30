@@ -139,14 +139,14 @@ export default function CertificationsManagementPage() {
 
   if (loading) {
     return (
-      <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <p className="text-gray-500">Loading certifications...</p>
       </div>
     )
   }
 
   return (
-    <div className="w-full min-h-screen bg-gray-50 overflow-x-hidden">
+    <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 overflow-x-hidden">
       <div className="p-4 sm:p-6 max-w-5xl mx-auto">
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-stretch sm:items-center justify-between mb-4 sm:mb-6">
           <h1 className="text-xl sm:text-2xl font-semibold text-[var(--header-text)] break-words">
@@ -181,7 +181,7 @@ export default function CertificationsManagementPage() {
                       Certification Image
                     </label>
                     <div className="flex items-start gap-3 sm:gap-4">
-                      <div className="w-28 h-28 sm:w-32 sm:h-32 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 flex-shrink-0 relative">
+                      <div className="w-28 h-28 sm:w-32 sm:h-32 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 dark:bg-gray-900 flex-shrink-0 relative">
                         {formData.imagePreview ? (
                           <Image
                             src={formData.imagePreview || "/placeholder.svg"}

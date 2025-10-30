@@ -190,14 +190,14 @@ export default function PartnersManagementPage() {
 
   if (loading) {
     return (
-      <div className="w-full min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <p className="text-gray-600">Loading...</p>
       </div>
     )
   }
 
   return (
-    <div className="w-full min-h-screen bg-gray-50 overflow-x-hidden">
+    <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 overflow-x-hidden">
       <div className="p-4 sm:p-6 max-w-6xl mx-auto">
         <div className="flex gap-2 mb-8 border-b border-[var(--border-color)]">
           <button
@@ -283,7 +283,7 @@ export default function PartnersManagementPage() {
                             <>
                               <button
                                 onClick={() => handleEditStat(stat)}
-                                className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-[var(--primary)] border border-[var(--border-color)] rounded text-xs hover:bg-gray-50"
+                                className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-[var(--primary)] border border-[var(--border-color)] rounded text-xs hover:bg-gray-50 dark:bg-gray-900"
                               >
                                 <Edit2 className="w-3 h-3" />
                                 Edit
@@ -337,7 +337,7 @@ export default function PartnersManagementPage() {
 
                       <div>
                         <label className="block text-xs text-[var(--header-text)] mb-2">Partner Logo</label>
-                        <div className="w-full h-24 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 mb-3 relative">
+                        <div className="w-full h-24 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 dark:bg-gray-900 mb-3 relative">
                           {formData.logoPreview ? (
                             <img
                               src={formData.logoPreview || "/placeholder.svg"}
@@ -403,7 +403,7 @@ export default function PartnersManagementPage() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleEditPartner(partner)}
-                          className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-[var(--primary)] border border-[var(--border-color)] rounded text-xs hover:bg-gray-50"
+                          className="flex-1 flex items-center justify-center gap-1 px-3 py-2 text-[var(--primary)] border border-[var(--border-color)] rounded text-xs hover:bg-gray-50 dark:bg-gray-900"
                         >
                           <Edit2 className="w-3 h-3" />
                           Edit

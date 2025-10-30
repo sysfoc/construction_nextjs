@@ -98,7 +98,7 @@ export default function MobileSidebar({
                         <Link
                           key={subIndex}
                           href={sublink.href}
-                          className="block py-2 px-3 text-foreground hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50"
+                          className="block py-2 px-3 text-foreground hover:text-primary transition-colors duration-200 rounded-lg hover:bg-gray-50 dark:bg-gray-900"
                           onClick={onClose}
                         >
                           {sublink.name}

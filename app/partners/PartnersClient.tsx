@@ -62,7 +62,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       </div>
 
       {/* Text Section */}
-      <div className="w-full lg:w-3/5 bg-gray-50 px-4 lg:px-6 py-4 lg:py-6 flex flex-col justify-center">
+      <div className="w-full lg:w-3/5 bg-gray-50 dark:bg-gray-900 px-4 lg:px-6 py-4 lg:py-6 flex flex-col justify-center">
         <h3 className="text-lg md:text-xl font-bold text-[var(--page-heading)] mb-2">
           {title}
         </h3>
@@ -196,7 +196,7 @@ const PartnersClient: React.FC = () => {
       </div>
 
       {/* Partners Slider Section */}
-      <section className="py-6 lg:py-4 bg-gray-50">
+      <section className="py-6 lg:py-4 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <h3 className="text-base md:text-lg font-semibold text-[var(--page-heading)] mb-6 lg:mb-3 text-center">
             Our Trusted Partners

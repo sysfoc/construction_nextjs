@@ -29,7 +29,7 @@ export function StepRow({ index, title, description, imageSrc }: StepRowProps) {
           <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4">
             {/* Image */}
             <div className="w-full md:w-1/2 flex-shrink-0">
-              <div className="relative w-full aspect-[4/3] border border-[var(--border-color,_var(--border))] rounded-lg overflow-hidden bg-gray-50">
+              <div className="relative w-full aspect-[4/3] border border-[var(--border-color,_var(--border))] rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-900">
                 <Image src={imageSrc || "/placeholder.svg"} alt="" fill className="object-contain" />
               </div>
             </div>
@@ -51,7 +51,7 @@ export function StepRow({ index, title, description, imageSrc }: StepRowProps) {
           <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 order-2 md:order-none">
             {/* Image */}
             <div className="w-full md:w-1/2 flex-shrink-0">
-              <div className="relative w-full aspect-[4/3] border border-[var(--border-color,_var(--border))] rounded-lg overflow-hidden bg-gray-50">
+              <div className="relative w-full aspect-[4/3] border border-[var(--border-color,_var(--border))] rounded-lg overflow-hidden bg-gray-50 dark:bg-gray-900">
                 <Image src={imageSrc || "/placeholder.svg"} alt="" fill className="object-contain" />
               </div>
             </div>

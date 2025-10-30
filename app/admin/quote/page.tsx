@@ -118,7 +118,7 @@ export default function QuoteManagementPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-gray-50 min-h-screen">
+    <div className="p-6 max-w-7xl mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="mb-6 flex sm:flex-row flex-col gap-2 items-center justify-between">
         <h1 className="text-2xl font-semibold text-[var(--header-text)]">Quote Management</h1>
         <button

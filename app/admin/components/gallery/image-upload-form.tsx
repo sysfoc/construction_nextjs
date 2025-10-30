@@ -69,7 +69,7 @@ export default function ImageUploadForm({ formData, onFormDataChange, onAddImage
             Upload {formData.imageType === "photo" ? "Image" : "Video"}
           </label>
           <div className="flex items-start gap-4">
-            <div className="w-24 h-24 border-2 border-dashed border-gray-300 rounded flex items-center justify-center bg-gray-50 flex-shrink-0">
+            <div className="w-24 h-24 border-2 border-dashed border-gray-300 rounded flex items-center justify-center bg-gray-50 dark:bg-gray-900 flex-shrink-0">
               {formData.imagePreview ? (
                 formData.imageType === "photo" ? (
                   <Image

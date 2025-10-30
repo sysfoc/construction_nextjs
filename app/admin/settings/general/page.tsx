@@ -150,14 +150,14 @@ const handleSocialLinkChange = (platform: string, url: string) => {
 
   if (loading) {
     return (
-      <div className="p-4 mx-auto bg-gray-50 min-h-screen flex items-center justify-center">
+      <div className="p-4 mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">
         <p className="text-gray-600">Loading settings...</p>
       </div>
     )
   }
 
   return (
-    <div className="p-4 mx-auto bg-gray-50 min-h-screen">
+    <div className="p-4 mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen">
       <h1 className="text-2xl font-semibold text-[var(--header-text)] mb-6">General Settings</h1>
 
       <div className="space-y-6">
@@ -165,7 +165,7 @@ const handleSocialLinkChange = (platform: string, url: string) => {
         <div className="bg-[var(--background)] border border-[var(--border-color)] rounded p-6">
           <h2 className="text-lg font-semibold text-[var(--header-text)] mb-4">Company Logo</h2>
           <div className="flex flex-col sm:flex-row items-start gap-6">
-            <div className="relative w-32 h-32 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50">
+            <div className="relative w-32 h-32 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 dark:bg-gray-900">
               {logoPreview ? (
                 <div className="relative w-full h-full p-2">
                   <Image src={logoPreview || "/placeholder.svg"} alt="Logo preview" fill className="object-contain" />

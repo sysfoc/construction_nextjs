@@ -116,7 +116,7 @@ export default function Header() {
                     onMouseEnter={() => handleMouseEnter(index)}
                     onMouseLeave={handleMouseLeave}
                   >
-                    <button className="flex items-center gap-1 text-header-text hover:text-primary font-medium transition-colors py-2 px-3 lg:px-4 rounded-lg hover:bg-gray-50">
+                    <button className="flex items-center gap-1 text-header-text hover:text-primary font-medium transition-colors py-2 px-3 lg:px-4 rounded-lg hover:bg-gray-50 dark:bg-gray-900">
                       {link.name}
                       {link.sublinks && (
                         <ChevronDown

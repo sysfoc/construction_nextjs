@@ -43,7 +43,7 @@ export default function MenuManagementPage() {
   if (loading) return <div className="p-4">Loading...</div>
 
   return (
-    <div className="p-4 mx-auto bg-gray-50 min-h-screen">
+    <div className="p-4 mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="flex sm:flex-row flex-col items-baseline gap-2 justify-start mb-4">
         <h1 className="text-2xl font-semibold text-[var(--header-text)]">Menu Management</h1>
         <p className="text-sm text-gray-600">Toggle visibility for pages</p>

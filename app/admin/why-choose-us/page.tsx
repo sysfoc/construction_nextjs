@@ -153,7 +153,7 @@ export default function StepsAdmin() {
       <div className="space-y-4">
         <div>
           <label className="block text-sm text-[var(--header-text)] mb-2">Step Icon Image</label>
-          <div className="relative w-40 h-32 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 mb-2 overflow-hidden">
+          <div className="relative w-40 h-32 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 dark:bg-gray-900 mb-2 overflow-hidden">
             {formData.iconPreview ? (
               <img
                 src={formData.iconPreview || "/placeholder.svg"}
@@ -237,7 +237,7 @@ export default function StepsAdmin() {
   if (loading) return <div className="p-8">Loading...</div>
 
   return (
-    <div className="p-4 sm:p-6 mx-auto bg-gray-50 min-h-screen">
+    <div className="p-4 sm:p-6 mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-6">
         <h1 className="text-lg sm:text-2xl font-semibold text-[var(--header-text)]">Steps Management</h1>
         <button

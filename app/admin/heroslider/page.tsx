@@ -151,14 +151,14 @@ export default function HeroSliderPage() {
 
   if (loading) {
     return (
-      <div className="p-6 max-w-5xl mx-auto bg-gray-50 min-h-screen flex items-center justify-center">
+      <div className="p-6 max-w-5xl mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">
         <p className="text-gray-600">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="p-4 sm:p-6 max-w-5xl mx-auto bg-gray-50 min-h-screen">
+    <div className="p-4 sm:p-6 max-w-5xl mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-6">
         <h1 className="text-lg sm:text-2xl font-semibold text-[var(--header-text)]">
           Hero Slider Management
@@ -194,7 +194,7 @@ export default function HeroSliderPage() {
                     Slide Image
                   </label>
                   <div className="flex flex-col sm:flex-row items-start gap-4">
-                    <div className="relative w-full sm:w-40 h-24 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 shrink-0">
+                    <div className="relative w-full sm:w-40 h-24 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 dark:bg-gray-900 shrink-0">
                       {formData.imagePreview ? (
                         <div className="relative w-full h-full rounded overflow-hidden">
                           <Image

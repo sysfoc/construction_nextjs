@@ -200,7 +200,7 @@ export default function ServicesSection({ onDataChange }: ServicesSectionProps) 
                 <div className="w-full">
                   <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-2">Service Icon</label>
                   <div className="flex items-start gap-3 sm:gap-4">
-                    <div className="w-32 h-32 sm:w-40 sm:h-28 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 flex-shrink-0 relative">
+                    <div className="w-32 h-32 sm:w-40 sm:h-28 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 dark:bg-gray-900 flex-shrink-0 relative">
                       {serviceFormData.iconPreview ? (
                         <Image
                           src={serviceFormData.iconPreview || "/placeholder.svg"}

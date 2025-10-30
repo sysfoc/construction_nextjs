@@ -26,7 +26,7 @@ export default function AdminLayout({ children }: Props) {
   // Admin layout
   if (isAdminRoute) {
     return (
-      <div className="flex min-h-screen bg-slate-100">
+      <div className="flex min-h-screen bg-slate-100 dark:bg-gray-900">
         <Sidebar isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen} />
         <div className="flex-1 flex flex-col">
           <AdminHeader onMenuClick={() => setIsDrawerOpen(true)} />

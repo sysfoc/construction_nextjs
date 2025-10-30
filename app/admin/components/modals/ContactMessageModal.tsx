@@ -45,7 +45,7 @@ export default function ContactMessageModal({
 
         <div className="overflow-y-auto flex-1">
           <div className="p-4 sm:p-5 space-y-4">
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 sm:p-4">
+            <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 rounded-lg p-3 sm:p-4">
               <h3 className="font-semibold text-gray-900 mb-2.5 text-sm sm:text-base break-words">
                 {message.name}
               </h3>
@@ -124,7 +124,7 @@ export default function ContactMessageModal({
           </div>
         </div>
 
-        <div className="border-t border-gray-200 bg-gray-50 px-4 py-3 sm:px-5 sm:py-3.5 flex flex-col-reverse sm:flex-row justify-end gap-2">
+        <div className="border-t border-gray-200 bg-gray-50 dark:bg-gray-900 px-4 py-3 sm:px-5 sm:py-3.5 flex flex-col-reverse sm:flex-row justify-end gap-2">
           <button
             onClick={onClose}
             className="w-full sm:w-auto px-4 py-2 border-2 border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition-colors text-sm"
