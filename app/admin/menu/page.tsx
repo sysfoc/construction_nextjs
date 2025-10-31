@@ -1,3 +1,4 @@
+// app/admin/menu/page.tsx
 "use client"
 import { Save, Eye, EyeOff } from "lucide-react"
 import { useState, useEffect } from "react"

@@ -1,9 +1,8 @@
 // app/about/page.tsx
-import AboutClient from "./AboutClient"
 import { connectDB } from "@/lib/mongodb"
 import SEOMetadata from "@/lib/models/SEOMetadata"
-import { ChevronsRight } from "lucide-react"
 import PageHeader from "../components/General/PageHeader"
+import  AboutClient from "./AboutClient" 
 
 async function getSEOMetadata() {
   try {
@@ -31,5 +30,6 @@ export default function AboutPage() {
   <>
   <PageHeader title="About Us" />
   <AboutClient />
+
   </>)
 }

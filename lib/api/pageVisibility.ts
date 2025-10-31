@@ -8,7 +8,8 @@ interface Page {
 }
 
 export async function getPageVisibility() {
-  const res = await fetch("/api/page-visibility")
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+  const res = await fetch(`${baseUrl}/api/page-visibility`)
   if (!res.ok) throw new Error("Failed to fetch page visibility")
   return res.json()
 }
