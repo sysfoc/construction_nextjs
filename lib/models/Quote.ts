@@ -1,3 +1,4 @@
+// lib/models/Quote.ts means enquiries for quotes from users
 import mongoose from "mongoose"
 
 const quoteSchema = new mongoose.Schema(

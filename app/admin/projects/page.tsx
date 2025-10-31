@@ -1,4 +1,3 @@
-// app/admin/projects/page.tsx
 "use client"
 
 import type React from "react"
@@ -24,6 +23,7 @@ export default function ProjectsManagementPage() {
   const [projects, setProjects] = useState<ProjectData[]>([])
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [isAddingNew, setIsAddingNew] = useState(false)
   const [formData, setFormData] = useState<FormData>({
     title: "",
     description: "",
@@ -71,6 +71,7 @@ export default function ProjectsManagementPage() {
 
   const handleCancel = () => {
     setEditingId(null)
+    setIsAddingNew(false)
     setFormData({
       title: "",
       description: "",
@@ -110,7 +111,31 @@ export default function ProjectsManagementPage() {
 
   const handleSaveProject = async () => {
     try {
-      if (editingId) {
+      if (isAddingNew) {
+        // Create new project
+        const response = await fetch("/api/projects", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: formData.title,
+            description: formData.description,
+            location: formData.location,
+            status: formData.status,
+            startDate: formData.startDate,
+            endDate: formData.endDate || null,
+            image: formData.image,
+            team: formData.team,
+            progress: formData.progress,
+          }),
+        })
+
+        if (response.ok) {
+          const newProject = await response.json()
+          setProjects((prev) => [newProject, ...prev])
+          handleCancel()
+        }
+      } else if (editingId) {
+        // Update existing
         const response = await fetch(`/api/projects/${editingId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -138,31 +163,21 @@ export default function ProjectsManagementPage() {
     }
   }
 
-  const handleAddProject = async () => {
-    try {
-      const response = await fetch("/api/projects", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: "New Project",
-          description: "Project description goes here",
-          location: "Project Location",
-          status: "upcoming",
-          startDate: new Date().toLocaleDateString("en-GB"),
-          endDate: null,
-          image: "/projects/projectsPic.png",
-          team: 10,
-          progress: 0,
-        }),
-      })
-
-      if (response.ok) {
-        const newProject = await response.json()
-        setProjects((prev) => [newProject, ...prev])
-      }
-    } catch (error) {
-      console.error("Failed to add project:", error)
-    }
+  const handleAddProject = () => {
+    setIsAddingNew(true)
+    setEditingId(null)
+    setFormData({
+      title: "",
+      description: "",
+      location: "",
+      status: "ongoing",
+      startDate: "",
+      endDate: "",
+      image: "",
+      team: 0,
+      progress: 0,
+      photoPreview: null,
+    })
   }
 
   const handleDeleteProject = async (id: string) => {
@@ -204,6 +219,177 @@ export default function ProjectsManagementPage() {
         </div>
 
         <div className="space-y-3 sm:space-y-4">
+          {isAddingNew && (
+            <div className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4 w-full overflow-hidden">
+              <div className="space-y-3 sm:space-y-4">
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <h3 className="text-base sm:text-lg font-semibold text-[var(--header-text)]">Add Project</h3>
+                  <button onClick={handleCancel} className="text-gray-500 flex-shrink-0">
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="w-full">
+                  <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-2">Project Image</label>
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-32 h-32 sm:w-40 sm:h-28 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 dark:bg-gray-900 flex-shrink-0 relative">
+                      {formData.photoPreview ? (
+                        <img
+                          src={formData.photoPreview || "/placeholder.svg"}
+                          alt="Photo preview"
+                          className="w-full h-full object-cover rounded"
+                        />
+                      ) : (
+                        <Upload className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
+                      )}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handlePhotoChange}
+                        className="block w-full text-xs sm:text-sm text-gray-600 file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4 file:rounded file:border-0 file:text-xs sm:file:text-sm file:font-medium file:bg-[var(--primary)] file:text-[var(--primary-foreground)] cursor-pointer"
+                      />
+                      <p className="text-xs text-gray-500 mt-2">Recommended: 600x400px</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="w-full">
+                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">Title</label>
+                    <input
+                      type="text"
+                      name="title"
+                      value={formData.title}
+                      onChange={handleInputChange}
+                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                    />
+                  </div>
+
+                  <div className="w-full">
+                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                      Location
+                    </label>
+                    <input
+                      type="text"
+                      name="location"
+                      value={formData.location}
+                      onChange={handleInputChange}
+                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="w-full">
+                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">Status</label>
+                    <select
+                      name="status"
+                      value={formData.status}
+                      onChange={handleInputChange}
+                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                    >
+                      <option value="ongoing">Ongoing</option>
+                      <option value="completed">Completed</option>
+                      <option value="upcoming">Upcoming</option>
+                    </select>
+                  </div>
+
+                  <div className="w-full">
+                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                      Team Members
+                    </label>
+                    <input
+                      type="number"
+                      name="team"
+                      value={formData.team}
+                      onChange={handleInputChange}
+                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="w-full">
+                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                      Start Date
+                    </label>
+                    <input
+                      type="text"
+                      name="startDate"
+                      value={formData.startDate}
+                      onChange={handleInputChange}
+                      placeholder="Jan 2024"
+                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                    />
+                  </div>
+
+                  <div className="w-full">
+                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                      End Date
+                    </label>
+                    <input
+                      type="text"
+                      name="endDate"
+                      value={formData.endDate}
+                      onChange={handleInputChange}
+                      placeholder="Dec 2025"
+                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                    />
+                  </div>
+                </div>
+
+                {formData.status === "ongoing" && (
+                  <div className="w-full">
+                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                      Progress (%)
+                    </label>
+                    <input
+                      type="number"
+                      name="progress"
+                      value={formData.progress}
+                      onChange={handleInputChange}
+                      min="0"
+                      max="100"
+                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                    />
+                  </div>
+                )}
+
+                <div className="w-full">
+                  <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    rows={4}
+                    className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base resize-none"
+                  />
+                </div>
+
+                <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2 w-full">
+                  <button
+                    onClick={handleCancel}
+                    className="w-full sm:w-auto px-4 py-2 border border-[var(--border-color)] rounded text-[var(--header-text)] text-sm sm:text-base"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSaveProject}
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base"
+                  >
+                    <Save className="w-4 h-4 flex-shrink-0" />
+                    <span>Save Project</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {projects.map((project) => (
             <div
               key={project._id}

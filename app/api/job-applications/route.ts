@@ -1,3 +1,4 @@
+// app/api/job-applications/route.ts
 import { type NextRequest, NextResponse } from "next/server"
 import { connectDB } from "@/lib/mongodb"
 import JobApplication from "@/lib/models/JobApplication"

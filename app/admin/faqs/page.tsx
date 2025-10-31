@@ -21,6 +21,7 @@ export default function FAQManagementPage() {
   const [faqs, setFaqs] = useState<FAQ[]>([])
   const [loading, setLoading] = useState(true)
   const [editingFAQ, setEditingFAQ] = useState<string | null>(null)
+  const [isAddingNew, setIsAddingNew] = useState(false)
   const [formData, setFormData] = useState<FormData>({
     question: "",
     answer: "",
@@ -45,6 +46,7 @@ export default function FAQManagementPage() {
   }
 
   const handleEdit = (faq: FAQ) => {
+    setIsAddingNew(false)
     setEditingFAQ(faq._id)
     setFormData({
       question: faq.question,
@@ -53,8 +55,19 @@ export default function FAQManagementPage() {
     })
   }
 
+  const handleAddFAQ = () => {
+    setIsAddingNew(true)
+    setEditingFAQ("new")
+    setFormData({
+      question: "",
+      answer: "",
+      showOnFAQPage: false,
+    })
+  }
+
   const handleCancel = () => {
     setEditingFAQ(null)
+    setIsAddingNew(false)
     setFormData({
       question: "",
       answer: "",
@@ -74,38 +87,33 @@ export default function FAQManagementPage() {
 
   const handleSaveFAQ = async () => {
     try {
-      const response = await fetch(`/api/faqs/${editingFAQ}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      })
+      if (isAddingNew) {
+        // Create new FAQ
+        const response = await fetch("/api/faqs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        })
 
-      if (response.ok) {
-        await fetchFAQs()
-        handleCancel()
+        if (response.ok) {
+          await fetchFAQs()
+          handleCancel()
+        }
+      } else {
+        // Update existing FAQ
+        const response = await fetch(`/api/faqs/${editingFAQ}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        })
+
+        if (response.ok) {
+          await fetchFAQs()
+          handleCancel()
+        }
       }
     } catch (error) {
       console.error("Error saving FAQ:", error)
-    }
-  }
-
-  const handleAddFAQ = async () => {
-    try {
-      const response = await fetch("/api/faqs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          question: "New Question?",
-          answer: "Answer to the question.",
-          showOnFAQPage: true,
-        }),
-      })
-
-      if (response.ok) {
-        await fetchFAQs()
-      }
-    } catch (error) {
-      console.error("Error adding FAQ:", error)
     }
   }
 
@@ -141,6 +149,70 @@ export default function FAQManagementPage() {
       </div>
 
       <div className="space-y-4">
+        {isAddingNew && editingFAQ === "new" && (
+          <div className="bg-[var(--background)] border border-[var(--border-color)] rounded p-4">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-[var(--header-text)]">New FAQ</h3>
+                <button onClick={handleCancel} className="text-gray-500">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div>
+                <label className="block text-sm text-[var(--header-text)] mb-2">Question</label>
+                <input
+                  type="text"
+                  name="question"
+                  value={formData.question}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-[var(--header-text)] mb-2">Answer</label>
+                <textarea
+                  name="answer"
+                  value={formData.answer}
+                  onChange={handleInputChange}
+                  rows={4}
+                  className="w-full px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                />
+              </div>
+
+              <div>
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="showOnFAQPage"
+                    checked={formData.showOnFAQPage}
+                    onChange={handleCheckboxChange}
+                    className="w-4 h-4 border-[var(--border-color)] rounded focus:ring-2 focus:ring-[var(--primary)]"
+                  />
+                  <span className="text-sm text-[var(--header-text)]">Show on FAQ Page</span>
+                </label>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  onClick={handleCancel}
+                  className="px-4 py-2 border border-[var(--border-color)] rounded text-[var(--header-text)]"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveFAQ}
+                  className="flex items-center gap-2 px-3 py-1 bg-[var(--primary)] text-[var(--primary-foreground)] rounded"
+                >
+                  <Save className="w-4 h-4" />
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {faqs.map((faq) => (
           <div key={faq._id} className="bg-[var(--background)] border border-[var(--border-color)] rounded p-4">
             {editingFAQ === faq._id ? (

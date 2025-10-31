@@ -1,5 +1,5 @@
 "use client"
-import { Save, Trash2, Edit2, X, Upload } from "lucide-react"
+import { Save, Trash2, Edit2, X, Upload, Plus } from "lucide-react"
 import { useState, type ChangeEvent, useEffect } from "react"
 
 interface Partner {
@@ -33,6 +33,7 @@ export default function PartnersManagementPage() {
   const [loading, setLoading] = useState(true)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editingType, setEditingType] = useState<"partner" | "stat" | null>(null)
+  const [isAddingNew, setIsAddingNew] = useState(false)
   const [activeTab, setActiveTab] = useState<"stats" | "partners">("stats")
   const [formData, setFormData] = useState<FormData>({
     type: "partner",
@@ -89,6 +90,7 @@ export default function PartnersManagementPage() {
   const handleCancel = () => {
     setEditingId(null)
     setEditingType(null)
+    setIsAddingNew(false)
     setFormData({
       type: "partner",
       name: "",
@@ -158,21 +160,17 @@ export default function PartnersManagementPage() {
     }
   }
 
-  const handleAddPartner = async () => {
-    try {
-      await fetch("/api/partners", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "partner",
-          name: "New Partner",
-          logo: "",
-        }),
-      })
-      await fetchData()
-    } catch (error) {
-      console.error("Error adding partner:", error)
-    }
+  const handleAddPartner = () => {
+    setIsAddingNew(true)
+    setEditingType("partner")
+    setFormData({
+      type: "partner",
+      name: "",
+      logo: "",
+      statKey: "",
+      value: "",
+      logoPreview: null,
+    })
   }
 
   const handleDeletePartner = async (id: string) => {
@@ -316,11 +314,74 @@ export default function PartnersManagementPage() {
                 onClick={handleAddPartner}
                 className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base whitespace-nowrap"
               >
-                <span>+ Add Partner</span>
+                <Plus className="w-4 h-4" />
+                <span>Add Partner</span>
               </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {isAddingNew && (
+                <div className="bg-[var(--background)] border border-[var(--border-color)] rounded p-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-sm font-semibold text-[var(--header-text)]">Add New Partner</h3>
+                      <button onClick={handleCancel} className="text-gray-500">
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs text-[var(--header-text)] mb-2">Partner Logo</label>
+                      <div className="w-full h-24 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 dark:bg-gray-900 mb-3 relative">
+                        {formData.logoPreview ? (
+                          <img
+                            src={formData.logoPreview || "/placeholder.svg"}
+                            alt="Logo preview"
+                            className="w-full h-full object-contain rounded p-2"
+                          />
+                        ) : (
+                          <Upload className="w-6 h-6 text-gray-400" />
+                        )}
+                      </div>
+
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoChange}
+                        className="block w-full text-xs text-gray-600 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-[var(--primary)] file:text-[var(--primary-foreground)] cursor-pointer mb-3"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs text-[var(--header-text)] mb-1.5">Partner Name</label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm"
+                      />
+                    </div>
+
+                    <div className="flex gap-2 pt-2">
+                      <button
+                        onClick={handleCancel}
+                        className="flex-1 px-3 py-2 border border-[var(--border-color)] rounded text-[var(--header-text)] text-xs"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleSave}
+                        className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-xs"
+                      >
+                        <Save className="w-3 h-3" />
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {partners.map((partner) => (
                 <div
                   key={partner.id}

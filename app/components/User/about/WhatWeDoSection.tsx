@@ -69,10 +69,6 @@ export default function WhatWeDoSection({ data }: WhatWeDoSectionProps) {
                 </li>
               ))}
             </ul>
-
-            <button className="bg-header-text dark:bg-gray-700 text-primary-foreground hover:opacity-90 transition-opacity px-6 py-2.5 text-sm font-semibold uppercase tracking-wide shadow-md hover:shadow-lg">
-              More Explore
-            </button>
           </div>
         </div>
       </div>

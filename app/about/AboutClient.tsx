@@ -1,35 +1,49 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { isPageVisible } from "@/lib/api/pageVisibility";
 import AboutHeroSection from "@/app/components/User/about/AboutHeroSection";
 import WhatWeDoSection from "@/app/components/User/about/WhatWeDoSection";
 import ServicesAndTeamSection from "@/app/components/User/about/ServicesAndTeamSection";
 
-async function getAboutData() {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const response = await fetch(`${baseUrl}/api/about`);
-    if (!response.ok) throw new Error("Failed to fetch");
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching about data:", error);
-    return null;
-  }
-}
+export default function AboutPage() {
+  const [aboutData, setAboutData] = useState<any>(null);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
-async function checkPageVisibility() {
-  try {
-    const visible = await isPageVisible("about");
-    return visible;
-  } catch (error) {
-    console.error("Error checking visibility:", error);
-    return false;
-  }
-}
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [visible, aboutResponse] = await Promise.all([
+          isPageVisible("about"),
+          fetch(`/api/about`),
+        ]);
 
-export default async function AboutPage() {
-  const [isVisible, aboutData] = await Promise.all([
-    checkPageVisibility(),
-    getAboutData(),
-  ]);
+        setIsVisible(visible);
+
+        if (aboutResponse.ok) {
+          const data = await aboutResponse.json();
+          setAboutData(data);
+        } else {
+          console.error("Failed to fetch about data");
+        }
+      } catch (error) {
+        console.error("Error loading about page:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-gray-500">Loading...</p>
+      </div>
+    );
+  }
 
   if (!isVisible) {
     return null;

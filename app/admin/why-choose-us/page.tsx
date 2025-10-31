@@ -1,3 +1,4 @@
+// app/admin/why-choose-us/page.tsx
 "use client"
 
 import type React from "react"
@@ -26,7 +27,7 @@ interface FormData {
 export default function StepsAdmin() {
   const [steps, setSteps] = useState<Step[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [isAdding, setIsAdding] = useState(false)
+  const [isAddingNew, setIsAddingNew] = useState(false)
   const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState<FormData>({
     title: "",
@@ -67,7 +68,7 @@ export default function StepsAdmin() {
 
   const handleCancel = () => {
     setEditingId(null)
-    setIsAdding(false)
+    setIsAddingNew(false)
     setFormData({
       title: "",
       description: "",
@@ -95,8 +96,8 @@ export default function StepsAdmin() {
 
   const handleSave = async () => {
     try {
-      const method = editingId ? "PUT" : "POST"
-      const url = editingId ? `/api/why-choose-us/${editingId}` : "/api/why-choose-us"
+      const method = editingId && !isAddingNew ? "PUT" : "POST"
+      const url = editingId && !isAddingNew ? `/api/why-choose-us/${editingId}` : "/api/why-choose-us"
 
       const response = await fetch(url, {
         method,
@@ -112,7 +113,7 @@ export default function StepsAdmin() {
 
       if (response.ok) {
         setEditingId(null)
-        setIsAdding(false)
+        setIsAddingNew(false)
         setFormData({
           title: "",
           description: "",
@@ -143,7 +144,7 @@ export default function StepsAdmin() {
     <div className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4 mb-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-base sm:text-lg font-semibold text-[var(--header-text)]">
-          {editingId ? "Edit Step" : "Add New Step"}
+          {isAddingNew ? "Add New Step" : "Edit Step"}
         </h3>
         <button onClick={handleCancel} className="text-gray-500">
           <X className="w-5 h-5" />
@@ -242,7 +243,7 @@ export default function StepsAdmin() {
         <h1 className="text-lg sm:text-2xl font-semibold text-[var(--header-text)]">Steps Management</h1>
         <button
           onClick={() => {
-            setIsAdding(true)
+            setIsAddingNew(true)
             setEditingId(null)
             setFormData({
               title: "",
@@ -259,7 +260,7 @@ export default function StepsAdmin() {
         </button>
       </div>
 
-      {isAdding && renderEditForm()}
+      {(isAddingNew || editingId) && renderEditForm()}
 
       <div className="space-y-3 sm:space-y-4">
         {steps.map((step) => (
@@ -299,12 +300,6 @@ export default function StepsAdmin() {
                 </div>
               </div>
             </div>
-            
-            {editingId === step._id && (
-              <div className="mt-3 sm:mt-4">
-                {renderEditForm()}
-              </div>
-            )}
           </div>
         ))}
       </div>

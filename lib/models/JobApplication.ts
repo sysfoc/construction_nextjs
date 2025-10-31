@@ -1,3 +1,4 @@
+// lib/models/JobApplication.ts
 import mongoose from "mongoose"
 
 const jobApplicationSchema = new mongoose.Schema(

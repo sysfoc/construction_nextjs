@@ -1,3 +1,4 @@
+// app/api/services/route.ts
 import { type NextRequest, NextResponse } from "next/server"
 import { connectDB } from "@/lib/mongodb"
 import Service from "@/lib/models/Service"

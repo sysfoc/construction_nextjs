@@ -1,4 +1,3 @@
-// app/admin/portfolio/page.tsx
 "use client"
 import { Save, Plus, Trash2, Edit2, X, Upload, Images } from "lucide-react"
 import Image from "next/image"
@@ -20,6 +19,7 @@ interface FormData {
 export default function PortfolioManagementPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
+  const [isAddingNew, setIsAddingNew] = useState(false)
 
   const categories: string[] = ["Residential", "Commercial", "Renovation", "Industrial", "Infrastructure"]
 
@@ -57,6 +57,7 @@ export default function PortfolioManagementPage() {
 
   const handleCancel = () => {
     setEditingProject(null)
+    setIsAddingNew(false)
     setFormData({
       title: "",
       category: "",
@@ -96,43 +97,49 @@ export default function PortfolioManagementPage() {
 
   const handleSaveProject = async () => {
     try {
-      const response = await fetch(`/api/portfolio/${editingProject}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: formData.title,
-          category: formData.category,
-          photos: formData.photoPreviews,
-        }),
-      })
+      if (isAddingNew) {
+        const response = await fetch("/api/portfolio", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: formData.title,
+            category: formData.category,
+            photos: formData.photoPreviews,
+          }),
+        })
 
-      if (response.ok) {
-        await fetchProjects()
-        handleCancel()
+        if (response.ok) {
+          await fetchProjects()
+          handleCancel()
+        }
+      } else {
+        const response = await fetch(`/api/portfolio/${editingProject}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: formData.title,
+            category: formData.category,
+            photos: formData.photoPreviews,
+          }),
+        })
+
+        if (response.ok) {
+          await fetchProjects()
+          handleCancel()
+        }
       }
     } catch (error) {
       console.error("Error saving project:", error)
     }
   }
 
-  const handleAddProject = async () => {
-    try {
-      const response = await fetch("/api/portfolio", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: "New Project",
-          category: "Residential",
-          photos: [],
-        }),
-      })
-
-      if (response.ok) {
-        await fetchProjects()
-      }
-    } catch (error) {
-      console.error("Error adding project:", error)
-    }
+  const handleAddProject = () => {
+    setIsAddingNew(true)
+    setFormData({
+      title: "",
+      category: "Residential",
+      photoPreviews: [],
+    })
   }
 
   const handleDeleteProject = async (id: string) => {
@@ -178,6 +185,102 @@ export default function PortfolioManagementPage() {
         </div>
 
         <div className="space-y-3 sm:space-y-4">
+          {isAddingNew && (
+            <div className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4 w-full overflow-hidden">
+              <div className="space-y-3 sm:space-y-4">
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <h3 className="text-base sm:text-lg font-semibold text-[var(--header-text)]">Add New Project</h3>
+                  <button onClick={handleCancel} className="text-gray-500 flex-shrink-0">
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="w-full">
+                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">Title</label>
+                    <input
+                      type="text"
+                      name="title"
+                      value={formData.title}
+                      onChange={handleInputChange}
+                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                    />
+                  </div>
+
+                  <div className="w-full">
+                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                      Category
+                    </label>
+                    <select
+                      name="category"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-white text-sm sm:text-base"
+                    >
+                      {categories.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="w-full">
+                  <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                    Project Photos
+                  </label>
+
+                  {formData.photoPreviews.length > 0 && (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3 mb-2 sm:mb-3">
+                      {formData.photoPreviews.map((photo, index) => (
+                        <div key={index} className="relative group w-full h-20 sm:h-24">
+                          <Image
+                            src={photo || "/placeholder.svg"}
+                            alt={`Preview ${index + 1}`}
+                            fill
+                            className="object-cover rounded border border-[var(--border-color)]"
+                          />
+                          <button
+                            onClick={() => handleRemovePhoto(index)}
+                            className="absolute top-1 right-1 bg-red-600 text-white rounded p-1 flex-shrink-0"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="border-2 border-dashed border-[var(--border-color)] rounded p-4 sm:p-6 text-center bg-gray-50 dark:bg-gray-900 w-full">
+                    <Upload className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400 mx-auto mb-2" />
+                    <label className="cursor-pointer">
+                      <span className="text-xs sm:text-sm text-[var(--primary)] font-medium">Upload Photos</span>
+                      <input type="file" accept="image/*" multiple onChange={handlePhotosChange} className="hidden" />
+                    </label>
+                    <p className="text-xs text-gray-500 mt-1">You can select multiple images</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2 w-full">
+                  <button
+                    onClick={handleCancel}
+                    className="w-full sm:w-auto px-4 py-2 border border-[var(--border-color)] rounded text-[var(--header-text)] text-sm sm:text-base"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSaveProject}
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base"
+                  >
+                    <Save className="w-4 h-4 flex-shrink-0" />
+                    <span>Save Project</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {projects.map((project) => (
             <div
               key={project.id}

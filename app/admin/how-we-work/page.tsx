@@ -16,6 +16,7 @@ export default function HowWeWorkManagementPage() {
   const [steps, setSteps] = useState<HowWeWorkData[]>([])
   const [loading, setLoading] = useState(true)
   const [editingStep, setEditingStep] = useState<string | null>(null)
+  const [isAddingNew, setIsAddingNew] = useState(false)
   const [formData, setFormData] = useState<FormData>({
     title: "",
     description: "",
@@ -51,6 +52,7 @@ export default function HowWeWorkManagementPage() {
 
   const handleCancel = () => {
     setEditingStep(null)
+    setIsAddingNew(false)
     setFormData({
       title: "",
       description: "",
@@ -81,43 +83,50 @@ export default function HowWeWorkManagementPage() {
 
   const handleSaveStep = async () => {
     try {
-      const response = await fetch(`/api/how-we-work/${editingStep}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: formData.title,
-          description: formData.description,
-          imgSrc: formData.imgSrc,
-        }),
-      })
+      if (isAddingNew) {
+        const response = await fetch("/api/how-we-work", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: formData.title,
+            description: formData.description,
+            imgSrc: formData.imgSrc,
+          }),
+        })
 
-      if (response.ok) {
-        await fetchSteps()
-        handleCancel()
+        if (response.ok) {
+          await fetchSteps()
+          handleCancel()
+        }
+      } else if (editingStep) {
+        const response = await fetch(`/api/how-we-work/${editingStep}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: formData.title,
+            description: formData.description,
+            imgSrc: formData.imgSrc,
+          }),
+        })
+
+        if (response.ok) {
+          await fetchSteps()
+          handleCancel()
+        }
       }
     } catch (error) {
       console.error("Error saving step:", error)
     }
   }
 
-  const handleAddStep = async () => {
-    try {
-      const response = await fetch("/api/how-we-work", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: "New Step",
-          description: "Description of this step in the process",
-          imgSrc: "/how-we-work/construction-site-meeting.jpg",
-        }),
-      })
-
-      if (response.ok) {
-        await fetchSteps()
-      }
-    } catch (error) {
-      console.error("Error adding step:", error)
-    }
+  const handleAddStep = () => {
+    setIsAddingNew(true)
+    setFormData({
+      title: "",
+      description: "",
+      imgSrc: "",
+      imagePreview: null,
+    })
   }
 
   const handleDeleteStep = async (id: string) => {
@@ -159,6 +168,89 @@ export default function HowWeWorkManagementPage() {
         </div>
 
         <div className="space-y-3 sm:space-y-4">
+          {isAddingNew && (
+            <div className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4 w-full overflow-hidden">
+              <div className="space-y-3 sm:space-y-4">
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <h3 className="text-base sm:text-lg font-semibold text-[var(--header-text)]">Add New Step</h3>
+                  <button onClick={handleCancel} className="text-gray-500 flex-shrink-0">
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="w-full">
+                  <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-2">Step Image</label>
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-32 h-32 sm:w-40 sm:h-28 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 dark:bg-gray-900 flex-shrink-0 relative">
+                      {formData.imagePreview ? (
+                        <Image
+                          src={formData.imagePreview || "/placeholder.svg"}
+                          alt="Image preview"
+                          fill
+                          className="object-cover rounded"
+                        />
+                      ) : (
+                        <Upload className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
+                      )}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="block text-xs sm:text-sm text-gray-600 file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4 file:rounded file:border-0 file:text-xs sm:file:text-sm file:font-medium file:bg-[var(--primary)] file:text-[var(--primary-foreground)] cursor-pointer"
+                      />
+                      <p className="text-xs text-gray-500 mt-2">Recommended: 600x400px</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="w-full">
+                  <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                    Step Title
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                  />
+                </div>
+
+                <div className="w-full">
+                  <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    rows={3}
+                    className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base resize-none"
+                  />
+                </div>
+
+                <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2 w-full">
+                  <button
+                    onClick={handleCancel}
+                    className="w-full sm:w-auto px-4 py-2 border border-[var(--border-color)] rounded text-[var(--header-text)] text-sm sm:text-base"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSaveStep}
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base"
+                  >
+                    <Save className="w-4 h-4 flex-shrink-0" />
+                    <span>Save Step</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {steps.map((step) => (
             <div
               key={step._id}

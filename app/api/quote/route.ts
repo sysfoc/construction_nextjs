@@ -1,3 +1,4 @@
+// app/api/quote/route.ts
 import Quote from "@/lib/models/Quote"
 import { connectDB } from "@/lib/mongodb"
 import { type NextRequest, NextResponse } from "next/server"
