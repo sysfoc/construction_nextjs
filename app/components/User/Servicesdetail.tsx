@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Check } from "lucide-react";
 import Image from "next/image";
 import SlantedButton from "../General/buttons/SlantedButton";
+import { useRouter } from "next/navigation";
 
 interface Stat {
   number: string;
@@ -25,6 +26,7 @@ type TabKey = keyof TabContentMap;
 
 export default function ConstructionSection(): React.JSX.Element {
   const [activeTab, setActiveTab] = useState<TabKey>("architecture");
+  const router = useRouter();
 
   const tabContent: TabContentMap = {
     architecture: {
@@ -211,7 +213,7 @@ export default function ConstructionSection(): React.JSX.Element {
 
           {/* Get Started Button */}
           <div>
-          <SlantedButton text="GET STARTED"/>
+          <SlantedButton text="Our Projects" onClick={() => router.push("/projects")}/>
           </div>
         </div>
       </div>

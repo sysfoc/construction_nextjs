@@ -1,4 +1,3 @@
-// app/components/User/Footer.tsx
 "use client";
 import { GiHouse } from "react-icons/gi";
 import {
@@ -44,6 +43,20 @@ const SOCIAL_ICONS = {
   mastodon: { icon: AtSign, color: "hover:bg-purple-700" },
 };
 
+const QUICK_LINKS = [
+  { name: "About", href: "/about" },
+  { name: "Careers", href: "/careers" },
+  { name: "Contact", href: "/contact" },
+  { name: "FAQ", href: "/faqs" },
+];
+
+const SHOWCASE_LINKS = [
+  { name: "Partners", href: "/partners" },
+  { name: "Projects", href: "/projects" },
+  { name: "Portfolio", href: "/portfolio" },
+  { name: "Gallery", href: "/gallery" },
+];
+
 function Footer() {
   const [email, setEmail] = useState("");
   const { settings } = useGeneralSettings();
@@ -52,7 +65,7 @@ function Footer() {
     e.preventDefault();
 
     try {
-      const response = await fetch("/api/newsletter/subscribe", {
+      const response = await fetch("/api/subscribers/subscribe", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -120,85 +133,42 @@ function Footer() {
               </span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              Lorem ipsum dolor sit amet, sectetur adipisicing elit, sed do
-              eiusmod mpor incididunt ut labore et dolore Lorem ipsum dolor sit
-              amet, sectetur adipisicing elit, sed do eiusmod
+              Construct is a trusted construction company committed to quality, innovation, and reliability. We deliver efficient and lasting solutions for residential, commercial, and infrastructure projects.
             </p>
           </div>
+
           <div>
             <h3 className="text-white text-lg font-bold mb-6">Quick Link</h3>
             <ul className="space-y-3">
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-primary transition-colors duration-200"
-                >
-                  About
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-primary transition-colors duration-200"
-                >
-                  Career
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-primary transition-colors duration-200"
-                >
-                  Contact
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-primary transition-colors duration-200"
-                >
-                  FAQ
-                </a>
-              </li>
+              {QUICK_LINKS.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-400 hover:text-primary transition-colors duration-200"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
+
           <div>
-            <h3 className="text-white text-lg font-bold mb-6">Services</h3>
+            <h3 className="text-white text-lg font-bold mb-6">Showcase</h3>
             <ul className="space-y-3">
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-primary transition-colors duration-200"
-                >
-                  Interior
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-primary transition-colors duration-200"
-                >
-                  Exterior
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-primary transition-colors duration-200"
-                >
-                  Renovation
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-primary transition-colors duration-200"
-                >
-                  Consulting
-                </a>
-              </li>
+              {SHOWCASE_LINKS.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-gray-400 hover:text-primary transition-colors duration-200"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
+
           <div>
             <h3 className="text-white text-lg font-bold mb-6">Contact Info</h3>
             <div className="space-y-4">

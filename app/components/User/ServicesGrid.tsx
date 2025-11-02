@@ -58,7 +58,7 @@ export default function ServicesGrid() {
       <div className="container mx-auto px-5  sm:px-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {services.map((service) => (
-            <div key={service.id} className="bg-gray-50 dark:bg-gray-900 dark:bg-gray-800 p-5 relative group">
+            <div key={service.id} className="bg-gray-50 dark:bg-gray-900 p-5 relative group">
               {/* Icon and Title Row */}
               <div className="flex items-start gap-4 mb-4">
                 <div className="flex-shrink-0">

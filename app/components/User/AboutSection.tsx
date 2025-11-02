@@ -1,7 +1,10 @@
+'use client';
 import Image from "next/image";
 import SolidButton from "../General/buttons/SolidButton";
+import { useRouter } from "next/navigation";
 
 export default function AboutSection() {
+  const router = useRouter();
   return (
     <section className="w-full bg-background dark:bg-gray-900 py-16 mt-10 px-8">
       <div className="max-w-6xl mx-auto">
@@ -118,7 +121,7 @@ export default function AboutSection() {
 
             {/* CTA Button */}
             <div className="mt-8">
-              <SolidButton text="GET STARTED" />
+              <SolidButton text="GET STARTED" onClick={() => router.push("/quote")}/>
             </div>
           </div>
         </div>
