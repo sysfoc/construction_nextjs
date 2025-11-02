@@ -1,4 +1,3 @@
-// app/admin/components/emergency-services/emergency-service-modal.tsx
 "use client"
 
 import type React from "react"
@@ -29,25 +28,20 @@ export function EmergencyServiceModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-900">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-4 sm:px-6 py-4 flex items-center justify-between">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">
             {editingId ? "Edit Service" : "Add Emergency Service"}
           </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
+          <button onClick={onClose} className="text-gray-400">
             <X size={24} />
           </button>
         </div>
 
-        <form onSubmit={onSubmit} className="p-6 space-y-4">
+        <form onSubmit={onSubmit} className="p-4 sm:p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Service Title *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Service Title *</label>
             <input
               type="text"
               name="title"
@@ -60,9 +54,7 @@ export function EmergencyServiceModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Slug (auto-generated) *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Slug (auto-generated) *</label>
             <input
               type="text"
               name="slug"
@@ -74,9 +66,7 @@ export function EmergencyServiceModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <textarea
               name="description"
               value={form.description}
@@ -88,9 +78,7 @@ export function EmergencyServiceModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Image *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Image *</label>
             <input
               type="file"
               accept="image/*"
@@ -111,18 +99,16 @@ export function EmergencyServiceModal({
             />
             {form.image && (
               <img
-                src={form.image}
+                src={form.image || "/placeholder.svg"}
                 alt="Preview"
                 className="mt-2 h-20 w-20 object-cover rounded"
               />
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Callout Price ($) *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Callout Price ($) *</label>
               <input
                 type="number"
                 name="calloutPrice"
@@ -136,9 +122,7 @@ export function EmergencyServiceModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Service Price ($) *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Service Price ($) *</label>
               <input
                 type="number"
                 name="price"
@@ -153,9 +137,7 @@ export function EmergencyServiceModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Response Time *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Response Time *</label>
             <input
               type="text"
               name="responseTime"
@@ -168,9 +150,7 @@ export function EmergencyServiceModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              What We Help With (one per line) *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">What We Help With (one per line) *</label>
             <textarea
               name="whatWeHelpWith"
               value={form.whatWeHelpWith}
@@ -180,16 +160,14 @@ export function EmergencyServiceModal({
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Enter each item on a new line
-            </p>
+            <p className="text-xs text-gray-500 mt-1">Enter each item on a new line</p>
           </div>
 
-          <div className="flex gap-2 pt-4">
+          <div className="flex flex-col sm:flex-row gap-2 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-400 transition-colors"
+              className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 font-medium rounded-lg"
             >
               Cancel
             </button>
@@ -198,11 +176,7 @@ export function EmergencyServiceModal({
               disabled={submitting}
               className="flex-1 px-4 py-2 bg-primary text-primary-foreground font-medium rounded-lg disabled:opacity-50"
             >
-              {submitting
-                ? "Saving..."
-                : editingId
-                ? "Update Service"
-                : "Create Service"}
+              {submitting ? "Saving..." : editingId ? "Update Service" : "Create Service"}
             </button>
           </div>
         </form>

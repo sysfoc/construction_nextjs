@@ -1,11 +1,10 @@
-// app/admin/emergency-service/page.tsx
 "use client"
 
 import type React from "react"
 import { useState, useEffect } from "react"
 import { EmergencySettings } from "@/app/admin/components/emergency-services/emergency-settings"
 import { EmergencyServiceModal } from "@/app/admin/components/emergency-services/emergency-service-modal"
-import { type EmergencyServiceForm } from "@/app/admin/components/emergency-services/emergency-services-form"
+import type { EmergencyServiceForm } from "@/app/admin/components/emergency-services/emergency-services-form"
 import { EmergencyServicesList } from "@/app/admin/components/emergency-services/emergency-services-list"
 import type { EmergencyService } from "@/app/admin/components/emergency-services/emergency-services-form"
 
@@ -227,30 +226,25 @@ export default function AdminEmergencyServicePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-5 px-4">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-5 px-3 sm:px-4">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2 text-gray-900">Emergency Services Management</h1>
-        <p className="text-gray-600 mb-8">Manage emergency contact settings and services</p>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-gray-900">Emergency Services Management</h1>
+        <p className="text-sm sm:text-base text-gray-600 mb-8">Manage emergency contact settings and services</p>
 
-        {/* Tab Navigation */}
         <div className="mb-8 border-b border-gray-200">
-          <nav className="flex gap-8">
+          <nav className="flex gap-4 sm:gap-8 overflow-x-auto">
             <button
               onClick={() => setActiveTab("settings")}
-              className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === "settings"
-                  ? "text-primary"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              className={`pb-4 px-1 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap ${
+                activeTab === "settings" ? "text-primary" : "border-transparent text-gray-500"
               }`}
             >
               Email & Phone Settings
             </button>
             <button
               onClick={() => setActiveTab("services")}
-              className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                activeTab === "services"
-                  ? "text-primary"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              className={`pb-4 px-1 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap ${
+                activeTab === "services" ? "text-primary" : "border-transparent text-gray-500"
               }`}
             >
               Services Management
@@ -258,7 +252,6 @@ export default function AdminEmergencyServicePage() {
           </nav>
         </div>
 
-        {/* Tab Content */}
         {activeTab === "settings" && (
           <div>
             <EmergencySettings initialSettings={settings} onSettingsSaved={fetchSettings} />
@@ -277,7 +270,6 @@ export default function AdminEmergencyServicePage() {
           </div>
         )}
 
-        {/* Modal */}
         <EmergencyServiceModal
           isOpen={isModalOpen}
           editingId={editingId}

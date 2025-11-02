@@ -1,5 +1,3 @@
-// app/admin/components/emergency-services/emergency-settings.tsx
-
 "use client"
 
 import type React from "react"
@@ -54,9 +52,9 @@ export function EmergencySettings({ initialSettings, onSettingsSaved }: Emergenc
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-      <h2 className="text-xl font-bold mb-6 text-gray-900">Global Emergency Contact Settings</h2>
-      <form onSubmit={handleSaveSettings} className="grid grid-cols-2 gap-4">
+    <div className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200">
+      <h2 className="text-lg sm:text-xl font-bold mb-6 text-gray-900">Global Emergency Contact Settings</h2>
+      <form onSubmit={handleSaveSettings} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Emergency Email *</label>
           <input
@@ -84,7 +82,7 @@ export function EmergencySettings({ initialSettings, onSettingsSaved }: Emergenc
         <button
           type="submit"
           disabled={settingsSaving}
-          className="col-span-2 px-4 py-2 bg-primary text-primary-foreground font-medium rounded-lg disabled:opacity-50"
+          className="col-span-1 max-w-72 sm:col-span-2 px-4 py-2 bg-primary text-primary-foreground font-medium rounded-lg disabled:opacity-50"
         >
           {settingsSaving ? "Saving..." : "Save Emergency Contact Settings"}
         </button>
