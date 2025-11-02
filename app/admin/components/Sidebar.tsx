@@ -6,6 +6,7 @@ import {
   Image,
   HelpCircle, 
   FolderOpen, 
+  Headphones,
   Users,  
   MessageSquare, 
   Briefcase, 
@@ -74,6 +75,8 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
     { icon: FileText, label: 'Projects', path: '/admin/projects' },
     { icon: Newspaper, label: 'News Management', path: '/admin/news' },
     { icon: UserCheck, label: 'Careers', path: '/admin/careers' },
+    { icon: UserCog, label: 'User Management', path: '/admin/user-management' },
+    { icon: UserCog, label: 'Blogs', path: '/admin/blogs' },
     { icon: FileCheck, label: 'Job Applications', path: '/admin/job-applications' },
     { icon: GitBranch, label: 'How we work', path: '/admin/how-we-work' },
     { icon: Shield, label: 'Certifications', path: '/admin/certifications' },
@@ -81,8 +84,7 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
     { icon: Images, label: 'Gallery', path: '/admin/gallery' },
     { icon: Mail, label: 'Newsletter', path: '/admin/newsletter' },
     { icon: MessageCircle, label: 'Contact Form', path: '/admin/contact' },
-    { icon: UserCog, label: 'User Management', path: '/admin/user-management' },
-    { icon: UserCog, label: 'Blogs', path: '/admin/blogs' },
+    { icon: Headphones, label: 'Customer Support', path: '/admin/customer-support' },
   ];
 
   const SidebarContent = () => (
