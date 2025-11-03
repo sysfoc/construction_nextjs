@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ChevronsRight } from "lucide-react";
 import NewsSearchList from "../components/General/news-search-list";
 import type { NewsArticle } from "@/lib/models/News";
 import { isPageVisible } from "@/lib/api/pageVisibility";

@@ -1,7 +1,7 @@
 // app/projects/page.tsx
 "use client";
 import { useState, useEffect } from "react";
-import { ChevronsRight, Calendar, MapPin, Users } from "lucide-react";
+import { Calendar, MapPin, Users } from "lucide-react";
 import type { ProjectData } from "@/lib/models/Project";
 import { isPageVisible } from "@/lib/api/pageVisibility";
 import { useRouter } from "next/navigation";

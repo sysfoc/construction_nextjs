@@ -1,6 +1,5 @@
 // app/portfolio/page.tsx
 "use client";
-import { ChevronsRight } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { isPageVisible } from "@/lib/api/pageVisibility";

@@ -1,7 +1,7 @@
 "use client";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { Users, Award, Shield, Clock, ChevronsRight } from "lucide-react";
+import { Users, Award, Shield, Clock } from "lucide-react";
 import Image from "next/image";
 import { isPageVisible } from "@/lib/api/pageVisibility";
 import { useRouter } from "next/navigation";

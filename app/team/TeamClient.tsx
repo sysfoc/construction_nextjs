@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsRight, User } from "lucide-react";
+import { User } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { isPageVisible } from "@/lib/api/pageVisibility";

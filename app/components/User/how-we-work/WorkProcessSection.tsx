@@ -1,5 +1,6 @@
 // app/components/User/how-we-work/WorkProcessSection.tsx
-import Image from 'next/image'
+import Image from "next/image";
+import Link from "next/link";
 
 export function WorkProcessSection() {
   return (
@@ -27,7 +28,8 @@ export function WorkProcessSection() {
 
         {/* Heading Text */}
         <p className="text-[var(--foreground)] text-sm md:text-base mb-5">
-          Our software development center provides you with the best resources, expertise.
+          Our software development center provides you with the best resources,
+          expertise.
         </p>
 
         {/* List Items */}
@@ -59,10 +61,12 @@ export function WorkProcessSection() {
         </div>
 
         {/* Button */}
-        <button className="bg-[var(--primary)] text-[var(--primary-foreground)] px-8 py-3 text-sm font-semibold uppercase tracking-wide hover:opacity-90 transition-opacity">
-          MORE EXPLORE
-        </button>
+        <Link href="/about">
+          <button className="bg-[var(--primary)] text-[var(--primary-foreground)] px-8 py-3 text-sm font-semibold uppercase tracking-wide hover:opacity-90 transition-opacity">
+            EXPLORE MORE
+          </button>
+        </Link>
       </div>
     </section>
-  )
+  );
 }

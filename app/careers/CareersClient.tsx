@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import { MapPin, Calendar, DollarSign } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { isPageVisible } from "@/lib/api/pageVisibility";
 
 interface Job {
   id: string
@@ -27,6 +28,26 @@ const CareerCard: React.FC<Job & { onApply: (title: string) => void }> = ({
   jobType,
   onApply,
 }) => {
+
+
+   const [isVisible, setIsVisible] = useState(true);
+    const router = useRouter();
+  
+    useEffect(() => {
+      const checkVisibility = async () => {
+        const visible = await isPageVisible("careers");
+        setIsVisible(visible);
+        if (!visible) {
+          router.push("/not-found");
+        }
+      };
+      checkVisibility();
+    }, [router]);
+
+    if (!isVisible) {
+    return null;
+  }
+
   return (
     <div className="bg-[var(--background)] dark:bg-gray-900 rounded-lg overflow-hidden shadow-sm max-w-lg border border-[var(--border-color)] dark:border-gray-700 transition-colors duration-300">
       <div className="flex justify-between px-6">

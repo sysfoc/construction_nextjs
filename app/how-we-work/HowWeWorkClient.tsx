@@ -1,6 +1,5 @@
 "use client";
 
-import { ChevronsRight } from "lucide-react";
 import { StepRow } from "@/app/components/User/how-we-work/step-row";
 import { WorkProcessSection } from "@/app/components/User/how-we-work/WorkProcessSection";
 import type { HowWeWorkData } from "@/lib/models/HowWeWork";
