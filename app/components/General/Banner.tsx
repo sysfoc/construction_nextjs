@@ -24,7 +24,10 @@ const ConstructionCTA: React.FC = () => {
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white text-center mb-8 tracking-wide">
           Construction Projects
         </h2>
-       <SlantedButton text="GET STARTED" onClick={() => router.push("/quote")}/>
+        <div className="flex sm:flex-row flex-col gap-4">
+       <SlantedButton text="How we work" onClick={() => router.push("/how-we-work")}/>
+       <SlantedButton text="Book Service" onClick={() => router.push("/book-service")}/>
+        </div>
       </div>
     </div>
   );

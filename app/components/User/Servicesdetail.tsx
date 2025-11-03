@@ -212,8 +212,9 @@ export default function ConstructionSection(): React.JSX.Element {
           </div>
 
           {/* Get Started Button */}
-          <div>
+          <div className="flex sm:flex-row flex-col gap-4">
            <SolidButton text="Our Projects" onClick={() => router.push("/projects")} />
+           <SolidButton text="Emergency Services" onClick={() => router.push("/emergency-services")} />
           </div>
         </div>
       </div>

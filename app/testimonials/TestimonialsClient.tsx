@@ -2,7 +2,8 @@
 import type React from "react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { ChevronsRight, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
+import Link from "next/link";
 import { isPageVisible } from "@/lib/api/pageVisibility";
 import { useRouter } from "next/navigation";
 
@@ -143,7 +144,6 @@ const TestimonialsClient: React.FC = () => {
 
   return (
     <>
-    
       <div className="bg-[var(--background)] py-12 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8">
@@ -183,9 +183,11 @@ const TestimonialsClient: React.FC = () => {
                 business
               </p>
               <div className="flex flex-wrap gap-3 justify-center">
-                <button className="bg-[var(--primary-foreground)] text-[var(--primary)] px-6 py-3 rounded-lg font-semibold text-sm hover:bg-[var(--background)] transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                  Start Your Project
-                </button>
+                <Link href="/quote">
+                  <button className="bg-[var(--primary-foreground)] text-[var(--primary)] px-6 py-3 rounded-lg font-semibold text-sm hover:bg-[var(--background)] transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                    Get a Quote Now
+                  </button>
+                </Link>
               </div>
             </div>
           </div>

@@ -121,7 +121,7 @@ export default function AboutSection() {
 
             {/* CTA Button */}
             <div className="mt-8">
-              <SolidButton text="GET STARTED" onClick={() => router.push("/quote")}/>
+              <SolidButton text="Testimonials" onClick={() => router.push("/testimonials")}/>
             </div>
           </div>
         </div>

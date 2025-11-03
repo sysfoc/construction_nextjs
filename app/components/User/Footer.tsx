@@ -47,13 +47,17 @@ const QUICK_LINKS = [
   { name: "About", href: "/about" },
   { name: "Careers", href: "/careers" },
   { name: "Contact", href: "/contact" },
+  { name: "News letter", href: "/newsletter" },
+  { name: "How we work", href: "/how-we-work" },
   { name: "FAQ", href: "/faqs" },
 ];
 
 const SHOWCASE_LINKS = [
   { name: "Partners", href: "/partners" },
+  { name: "Certifications", href: "/certifications" },
   { name: "Projects", href: "/projects" },
   { name: "Portfolio", href: "/portfolio" },
+  { name: "Why Choose Us", href: "/why-choose-us" },
   { name: "Gallery", href: "/gallery" },
 ];
 
@@ -133,7 +137,10 @@ function Footer() {
               </span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              Construct is a trusted construction company committed to quality, innovation, and reliability. We deliver efficient and lasting solutions for residential, commercial, and infrastructure projects.
+              Construct is a trusted construction company committed to quality,
+              innovation, and reliability. We deliver efficient and lasting
+              solutions for residential, commercial, and infrastructure
+              projects.
             </p>
           </div>
 

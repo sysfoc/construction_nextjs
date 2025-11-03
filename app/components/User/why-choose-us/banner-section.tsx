@@ -1,5 +1,6 @@
-import type React from "react"
-import Image from "next/image"
+import type React from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 export const BannerSection: React.FC = () => {
   return (
@@ -32,7 +33,9 @@ export const BannerSection: React.FC = () => {
               {/* 25 Years Badge */}
               <div className="absolute bottom-4 left-4 bg-[var(--background)] rounded-full px-3 sm:px-6 sm:py-3 py-2 shadow-xl border border-[var(--border-color)]">
                 <div className="flex gap-1 leading-tight">
-                  <div className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-[var(--primary)]">25</div>
+                  <div className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-[var(--primary)]">
+                    25
+                  </div>
                   <div className="text-[10px] text-start md:text-xs font-semibold text-[var(--paragraph-color)] uppercase tracking-widest">
                     Years of
                     <br />
@@ -64,8 +67,12 @@ export const BannerSection: React.FC = () => {
                     className="object-contain"
                   />
                   <div className="text-left">
-                    <div className="text-xl md:text-2xl font-bold text-[var(--primary)]">434+</div>
-                    <div className="text-[10px] md:text-xs text-white">Quality assurance</div>
+                    <div className="text-xl md:text-2xl font-bold text-[var(--primary)]">
+                      434+
+                    </div>
+                    <div className="text-[10px] md:text-xs text-white">
+                      Quality assurance
+                    </div>
                   </div>
                 </div>
 
@@ -79,20 +86,26 @@ export const BannerSection: React.FC = () => {
                     className="object-contain"
                   />
                   <div className="text-left">
-                    <div className="text-xl md:text-2xl font-bold text-[var(--primary)]">60+</div>
-                    <div className="text-[10px] md:text-xs text-white">Completed Projects</div>
+                    <div className="text-xl md:text-2xl font-bold text-[var(--primary)]">
+                      60+
+                    </div>
+                    <div className="text-[10px] md:text-xs text-white">
+                      Completed Projects
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Button */}
-              <button className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-[var(--primary-foreground)] font-semibold px-5 md:px-6 py-2 rounded transition duration-300 uppercase text-[10px] md:text-xs tracking-wide">
-                More Explore
-              </button>
+              <Link href="/about">
+                <button className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-[var(--primary-foreground)] font-semibold px-5 md:px-6 py-2 rounded transition duration-300 uppercase text-[10px] md:text-xs tracking-wide">
+                  Explore More
+                </button>
+              </Link>
             </div>
           </div>
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
