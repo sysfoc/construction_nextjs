@@ -1,7 +1,8 @@
-// app/api/job-applications/route.ts
 import { type NextRequest, NextResponse } from "next/server"
 import { connectDB } from "@/lib/mongodb"
 import JobApplication from "@/lib/models/JobApplication"
+import { sendEmail } from "@/lib/email/mailer"
+import { jobApplicationTemplate } from "@/lib/email/templates"
 
 export async function GET() {
   try {
@@ -35,6 +36,15 @@ export async function POST(request: NextRequest) {
 
     const applicationData = await request.json()
     const newApplication = await JobApplication.create(applicationData)
+
+    const emailHtml = jobApplicationTemplate(
+      newApplication.firstName,
+      newApplication.lastName,
+      newApplication.email,
+      newApplication.position,
+      newApplication.phone,
+    )
+    await sendEmail("sysfoc@gmail.com", "New Job Application", emailHtml)
 
     return NextResponse.json({
       application: {

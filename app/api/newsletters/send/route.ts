@@ -2,7 +2,7 @@
 import Newsletter from "@/lib/models/Newsletter"
 import Subscriber from "@/lib/models/Subscriber"
 import { connectDB } from "@/lib/mongodb"
-import { sendNewsletter } from "@/lib/services/email"
+import { sendNewsletter } from "@/lib/email/newletter/template"
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {

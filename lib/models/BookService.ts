@@ -1,3 +1,4 @@
+// lib/models/BookService.ts
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IBooking extends Document {

@@ -1,3 +1,4 @@
+// app/api/contact/[id]/route.ts
 import Contact from "@/lib/models/Contact"
 import { connectDB } from "@/lib/mongodb"
 import { type NextRequest, NextResponse } from "next/server"
