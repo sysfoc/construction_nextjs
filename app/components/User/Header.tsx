@@ -86,6 +86,7 @@ export default function Header() {
             {/* Main header content */}
             <div className="relative flex items-center justify-between py-4 lg:py-4 px-4 lg:px-8 bg-header-background lg:bg-transparent">
               {/* Logo */}
+              <Link href="/">
               <div className="flex items-center gap-1 z-20">
                 {settings?.logo && (
                   <div className="w-10 h-10 lg:w-12 lg:h-12 relative">
@@ -94,13 +95,14 @@ export default function Header() {
                       alt="Company Logo"
                       fill
                       className="object-contain"
-                    />
+                      />
                   </div>
                 )}
                 <span className="text-xl lg:text-2xl font-bold text-header-text">
                   {settings?.companyName}
                 </span>
               </div>
+                </Link>
 
               {/* Desktop Navigation */}
               <nav className="hidden lg:flex flex-wrap justify-center gap-1 lg:gap-4 xl:gap-8 z-10">

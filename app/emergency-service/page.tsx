@@ -67,7 +67,7 @@ export default function EmergencyServicePage() {
 
   if (loading) {
     return (
-      <main className="max-w-7xl mx-auto">
+      <main className="max-w-7xl mx-auto min-h-[400px]">
         <div className="px-6 md:px-12 py-12 text-center">
           <p className="text-gray-600">Loading services...</p>
         </div>
@@ -90,10 +90,10 @@ export default function EmergencyServicePage() {
       {/* Hero Section */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-6 md:px-12 py-12 bg-gray-50">
         <div className="flex flex-col justify-center order-2 lg:order-1">
-          <h1 className="text-3xl md:text-4xl font-bold mb-3 text-gray-800">
+          <h1 className="text-3xl md:text-4xl font-bold mb-3 text-header-text">
             Emergency Services
           </h1>
-          <p className="text-base mb-4 leading-relaxed text-gray-600">
+          <p className="text-base mb-4 leading-relaxed text-paragraph">
             Professional emergency response when you need it most. Our team of
             certified technicians is ready to handle any urgent situation
             affecting your property.
@@ -145,35 +145,35 @@ export default function EmergencyServicePage() {
 
       {/* Why Choose Us Section */}
       <section className="px-6 md:px-12 py-10 bg-gray-100">
-        <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center text-gray-800">
+        <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center text-header-text">
           Why Choose Our Emergency Services?
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
           <div className="text-center">
-            <Clock size={36} className="text-orange-500 mx-auto mb-2" />
-            <h3 className="text-lg font-bold mb-2 text-gray-700">
+            <Clock size={36} className="text-primary mx-auto mb-2" />
+            <h3 className="text-lg font-bold mb-2 text-header-text">
               Rapid Response
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-paragraph">
               Our teams reach you within 1-2 hours of your emergency call.
             </p>
           </div>
           <div className="text-center">
-            <AlertCircle size={36} className="text-orange-500 mx-auto mb-2" />
-            <h3 className="text-lg font-bold mb-2 text-gray-700">
+            <AlertCircle size={36} className="text-primary mx-auto mb-2" />
+            <h3 className="text-lg font-bold mb-2 text-header-text">
               Certified Professionals
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-paragraph">
               Fully licensed, insured, and trained in emergency response
               protocols.
             </p>
           </div>
           <div className="text-center">
-            <MessageCircle size={36} className="text-orange-500 mx-auto mb-2" />
-            <h3 className="text-lg font-bold mb-2 text-gray-700">
+            <MessageCircle size={36} className="text-primary mx-auto mb-2" />
+            <h3 className="text-lg font-bold mb-2 text-header-text">
               Always Available
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-paragraph">
               24/7 emergency support with no holidays or off-hours.
             </p>
           </div>
@@ -188,9 +188,8 @@ export default function EmergencyServicePage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {services.map((service) => (
-            <Link
+            <div
               key={service._id}
-              href={`/emergency-service/${service.slug}`}
               className="p-6 border border-gray-300 rounded bg-white shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-center rounded overflow-hidden h-48 mb-4">
@@ -206,17 +205,20 @@ export default function EmergencyServicePage() {
                 {service.title}
               </h3>
               <div className="mb-4 pb-4 border-b border-gray-200">
-                <p className="text-xs font-semibold mb-1 text-orange-500 text-center">
+                <p className="text-xs font-semibold mb-1 text-primary text-center">
                   PRICE RANGE
                 </p>
                 <p className="text-lg font-bold text-gray-700 text-center">
                   ${service.price}
                 </p>
               </div>
-              <div className="w-full px-4 py-2 text-sm font-bold text-white rounded bg-orange-500 hover:bg-orange-600 transition-colors text-center">
+              <Link
+              href={`/emergency-service/${service.slug}`}>
+              <div className="w-full px-4 py-2 text-sm font-bold text-white rounded bg-primary text-center">
                 Learn More
               </div>
-            </Link>
+              </Link>
+            </div>
           ))}
         </div>
       </section>
@@ -224,10 +226,10 @@ export default function EmergencyServicePage() {
       {/* Contact Section */}
       <section className="px-6 md:px-12 py-10 bg-gray-50">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-800">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-header-text">
             Contact Us for Emergency Assistance
           </h2>
-          <p className="text-base mb-8 leading-relaxed text-gray-600">
+          <p className="text-base mb-8 leading-relaxed text-paragraph">
             When disaster strikes, don't wait. Our team is ready to respond
             immediately to your emergency.
           </p>

@@ -28,6 +28,7 @@ import {
   ChevronDown,
   X
 } from 'lucide-react';
+import AdminFooter from './Footer';
 
 interface AdminSidebarProps {
   isDrawerOpen: boolean;
@@ -68,7 +69,6 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
     { icon: HelpCircle, label: 'FAQs', path: '/admin/faqs' },
     { icon: FolderOpen, label: 'Portfolio', path: '/admin/portfolio' },
     { icon: Users, label: 'Team', path: '/admin/team' },
-    // { icon: Share2, label: 'Social Media', path: '/admin/social-media' },
     { icon: MessageSquare, label: 'Testimonials', path: '/admin/testimonials' },
     { icon: Handshake, label: 'Partners', path: '/admin/partners' },
     { icon: Award, label: 'Why Choose Us', path: '/admin/why-choose-us' },
@@ -94,7 +94,6 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
         {menuItems.map((item, index) => (
           <div key={index}>
             {item.subItems ? (
-              // Collapsible menu item
               <div>
                 <button
                   onClick={() => toggleMenu(item.label)}
@@ -109,7 +108,6 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
                   />
                 </button>
 
-                {/* Submenu with smooth slide and fade */}
                 <div
                   className={`transition-all duration-300 ease-out overflow-hidden ${
                     openMenus[item.label] 
@@ -133,7 +131,6 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
                 </div>
               </div>
             ) : (
-              // Regular menu item
               <Link
                 href={item.path!}
                 className="flex items-center gap-3 px-3 py-2.5 text-gray-700 dark:text-white hover:bg-orange-50 hover:text-orange-600 rounded-lg transition-all duration-200 group"
@@ -145,6 +142,9 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
           </div>
         ))}
       </nav>
+      <div className="flex-shrink-0 border-t border-gray-200">
+        <AdminFooter/>
+      </div>
     </div>
   );
 
@@ -164,7 +164,7 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
           isDrawerOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
           <h2 className="text-lg font-semibold text-gray-800">Admin Panel</h2>
           <button
             onClick={() => setIsDrawerOpen(false)}
@@ -173,7 +173,9 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
             <X className="w-5 h-5 text-gray-600" />
           </button>
         </div>
-        <SidebarContent />
+        <div className="h-[calc(100%-73px)]">
+          <SidebarContent />
+        </div>
       </aside>
 
       {/* Desktop Sidebar */}

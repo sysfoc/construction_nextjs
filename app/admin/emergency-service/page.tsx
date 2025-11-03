@@ -14,7 +14,7 @@ interface GlobalSettings {
 }
 
 export default function AdminEmergencyServicePage() {
-  const [activeTab, setActiveTab] = useState<"settings" | "services">("settings")
+  const [activeTab, setActiveTab] = useState<"settings" | "services">("services")
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [services, setServices] = useState<EmergencyService[]>([])
   const [loading, setLoading] = useState(false)
@@ -234,20 +234,20 @@ export default function AdminEmergencyServicePage() {
         <div className="mb-8 border-b border-gray-200">
           <nav className="flex gap-4 sm:gap-8 overflow-x-auto">
             <button
-              onClick={() => setActiveTab("settings")}
-              className={`pb-4 px-1 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap ${
-                activeTab === "settings" ? "text-primary" : "border-transparent text-gray-500"
-              }`}
-            >
-              Email & Phone Settings
-            </button>
-            <button
               onClick={() => setActiveTab("services")}
               className={`pb-4 px-1 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap ${
                 activeTab === "services" ? "text-primary" : "border-transparent text-gray-500"
               }`}
             >
               Services Management
+            </button>
+            <button
+              onClick={() => setActiveTab("settings")}
+              className={`pb-4 px-1 border-b-2 font-medium text-xs sm:text-sm transition-colors whitespace-nowrap ${
+                activeTab === "settings" ? "text-primary" : "border-transparent text-gray-500"
+              }`}
+            >
+              Email & Phone Settings
             </button>
           </nav>
         </div>

@@ -1,7 +1,10 @@
 import React from "react";
 import { LogOut, Menu, User } from "lucide-react";
 import { useGeneralSettings } from "@/app/context/GeneralSettingsContext";
+import { useUser } from "@/app/context/UserContext";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 
 interface AdminHeaderProps {
   onMenuClick: () => void;
@@ -9,6 +12,14 @@ interface AdminHeaderProps {
 
 export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
   const { settings } = useGeneralSettings();
+  const { logout } = useUser();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/login");
+  };
+
   return (
     <header className="bg-white dark:bg-gray-900 fixed top-0 border-b w-full border-gray-200 z-50">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,18 +42,28 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
 
           {/* Action Buttons */}
           <div className="flex items-center gap-3">
-            <button className="hidden sm:flex gap-2 items-center px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded transition-colors text-sm font-medium">
-              <User className="w-4 h-4" />
-              <span>Go to User Side</span>
-            </button>
-            <button className="sm:hidden p-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded transition-colors">
-              <User className="w-5 h-5" />
-            </button>
-            <button className="hidden sm:flex gap-2 items-center px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded transition-colors text-sm font-medium">
+            <Link href="/" className="hidden sm:block">
+              <button className="flex gap-2 items-center px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded transition-colors text-sm font-medium">
+                <User className="w-4 h-4" />
+                <span>Go to User Side</span>
+              </button>
+            </Link>
+            <Link href="/" className="sm:hidden">
+              <button className="p-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded transition-colors">
+                <User className="w-5 h-5" />
+              </button>
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="hidden sm:flex gap-2 items-center px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded transition-colors text-sm font-medium"
+            >
               <LogOut className="w-4 h-4" />
               <span>LogOut</span>
             </button>
-            <button className="sm:hidden p-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded transition-colors">
+            <button
+              onClick={handleLogout}
+              className="sm:hidden p-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded transition-colors"
+            >
               <LogOut className="w-5 h-5" />
             </button>
             <button

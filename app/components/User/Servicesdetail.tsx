@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import { Check } from "lucide-react";
 import Image from "next/image";
-import SlantedButton from "../General/buttons/SlantedButton";
 import { useRouter } from "next/navigation";
+import SolidButton from "../General/buttons/SolidButton";
 
 interface Stat {
   number: string;
@@ -213,7 +213,7 @@ export default function ConstructionSection(): React.JSX.Element {
 
           {/* Get Started Button */}
           <div>
-          <SlantedButton text="Our Projects" onClick={() => router.push("/projects")}/>
+           <SolidButton text="Our Projects" onClick={() => router.push("/projects")} />
           </div>
         </div>
       </div>
