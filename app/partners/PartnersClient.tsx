@@ -115,7 +115,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 const PartnersClient: React.FC = () => {
   const [stats, setStats] = useState<Stat[]>([]);
   const [partners, setPartners] = useState<Partner[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [partnersLoading, setPartnersLoading] = useState(true);
 
   const [isVisible, setIsVisible] = useState(true);
   const router = useRouter();
@@ -134,7 +134,7 @@ const PartnersClient: React.FC = () => {
     } catch (error) {
       console.error("Error fetching partners data:", error);
     } finally {
-      setLoading(false);
+      setPartnersLoading(false);
     }
   };
 
@@ -145,14 +145,6 @@ const PartnersClient: React.FC = () => {
       router.push("/not-found");
     }
   };
-
-  if (loading) {
-    return (
-      <div className="w-full min-h-screen flex items-center justify-center">
-        <p className="text-gray-600">Loading...</p>
-      </div>
-    );
-  }
 
   if (!isVisible) {
     return null;
@@ -202,47 +194,53 @@ const PartnersClient: React.FC = () => {
             Our Trusted Partners
           </h3>
 
-          <div className="relative overflow-hidden">
-            <div className="flex animate-marquee whitespace-nowrap">
-              {partners.map((p) => (
-                <div
-                  key={p.id}
-                  className="flex-shrink-0 flex flex-col items-center mx-8 lg:mx-10"
-                >
-                  <div className="w-20 h-14 lg:w-28 lg:h-18 bg-white rounded-lg shadow-sm flex items-center justify-center hover:shadow-md transition p-2 relative">
-                    <Image
-                      src={p.logo || "/placeholder.svg"}
-                      alt={p.name}
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                  <span className="mt-2 text-xs text-[var(--paragraph-color)] font-medium text-center">
-                    {p.name}
-                  </span>
-                </div>
-              ))}
-              {/* Duplicate for seamless loop */}
-              {partners.map((p) => (
-                <div
-                  key={`${p.id}-duplicate`}
-                  className="flex-shrink-0 flex flex-col items-center mx-8 lg:mx-10"
-                >
-                  <div className="w-20 h-14 lg:w-28 lg:h-18 bg-white rounded-lg shadow-sm flex items-center justify-center hover:shadow-md transition p-2 relative">
-                    <Image
-                      src={p.logo || "/placeholder.svg"}
-                      alt={p.name}
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                  <span className="mt-2 text-xs text-[var(--paragraph-color)] font-medium text-center">
-                    {p.name}
-                  </span>
-                </div>
-              ))}
+          {partnersLoading ? (
+            <div className="w-full min-h-[120px] flex items-center justify-center">
+              <p className="text-gray-600 text-lg">Loading Partners...</p>
             </div>
-          </div>
+          ) : (
+            <div className="relative overflow-hidden">
+              <div className="flex animate-marquee whitespace-nowrap">
+                {partners.map((p) => (
+                  <div
+                    key={p.id}
+                    className="flex-shrink-0 flex flex-col items-center mx-8 lg:mx-10"
+                  >
+                    <div className="w-20 h-14 lg:w-28 lg:h-18 bg-white rounded-lg shadow-sm flex items-center justify-center hover:shadow-md transition p-2 relative">
+                      <Image
+                        src={p.logo || "/placeholder.svg"}
+                        alt={p.name}
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                    <span className="mt-2 text-xs text-[var(--paragraph-color)] font-medium text-center">
+                      {p.name}
+                    </span>
+                  </div>
+                ))}
+                {/* Duplicate for seamless loop */}
+                {partners.map((p) => (
+                  <div
+                    key={`${p.id}-duplicate`}
+                    className="flex-shrink-0 flex flex-col items-center mx-8 lg:mx-10"
+                  >
+                    <div className="w-20 h-14 lg:w-28 lg:h-18 bg-white rounded-lg shadow-sm flex items-center justify-center hover:shadow-md transition p-2 relative">
+                      <Image
+                        src={p.logo || "/placeholder.svg"}
+                        alt={p.name}
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                    <span className="mt-2 text-xs text-[var(--paragraph-color)] font-medium text-center">
+                      {p.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <style jsx>{`
             @keyframes marquee {
