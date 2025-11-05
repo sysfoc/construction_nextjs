@@ -26,7 +26,8 @@ import {
   UserCog,
   Settings,
   ChevronDown,
-  X
+  X,
+  BadgeInfo
 } from 'lucide-react';
 import AdminFooter from './Footer';
 
@@ -75,6 +76,7 @@ export default function AdminSidebar({ isDrawerOpen, setIsDrawerOpen }: AdminSid
     { icon: FileText, label: 'Projects', path: '/admin/projects' },
     { icon: Newspaper, label: 'News Management', path: '/admin/news' },
     { icon: UserCheck, label: 'Careers', path: '/admin/careers' },
+    { icon: BadgeInfo, label: 'About Page', path: '/admin/about' },
     { icon: UserCog, label: 'User Management', path: '/admin/user-management' },
     { icon: UserCog, label: 'Blogs', path: '/admin/blogs' },
     { icon: FileCheck, label: 'Job Applications', path: '/admin/job-applications' },
