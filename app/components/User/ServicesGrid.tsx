@@ -1,8 +1,8 @@
 "use client"
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import SolidButton from "../General/buttons/SolidButton"
 import Link from "next/link"
+import SlantedButton from "../General/buttons/SlantedButton"
 
 interface Service {
   id: string
@@ -93,7 +93,7 @@ export default function ServicesGrid() {
           <div className=" p-6 flex items-center justify-center">
             {button && (
               <Link href={button.buttonUrl || "#"}>
-                <SolidButton text={button.buttonText || "GET STARTED"} />
+                <SlantedButton text={button.buttonText || "GET STARTED"} />
               </Link>
             )}
           </div>
