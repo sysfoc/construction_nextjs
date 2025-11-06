@@ -8,7 +8,7 @@ export default function HeroBanner() {
   return (
     <div className="relative max-w-5xl z-20 ml-auto -mt-8">
       {/* Background with diagonal cut */}
-      <div className="bg-gray-200 clip-diagonal">
+      <div className="bg-background clip-diagonal">
         <div className="flex items-center justify-between px-4 lg:px-6 py-3 gap-4">
           {/* Experience Section */}
           <div className="flex items-end gap-[3px] flex-shrink-0 ml-20 sm:ml-24">
@@ -17,10 +17,10 @@ export default function HeroBanner() {
               <span className="absolute bottom-1 right-0 text-lg">+</span>
             </span>
             <div className="flex flex-col leading-tight">
-              <span className="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wide">
+              <span className="text-[10px] sm:text-xs font-semibold text-paragraph uppercase tracking-wide">
                 Years of
               </span>
-              <span className="text-lg sm:text-xl lg:text-2xl font-bold text-black uppercase">
+              <span className="text-lg sm:text-xl lg:text-2xl font-bold text-paragraph uppercase">
                 Experience
               </span>
             </div>
@@ -35,7 +35,7 @@ export default function HeroBanner() {
               <p className="text-[10px] sm:text-xs text-gray-500 whitespace-nowrap">
                 Our location
               </p>
-              <p className="text-xs sm:text-sm font-bold text-black break-words overflow-hidden">
+              <p className="text-xs sm:text-sm font-bold text-primary break-words overflow-hidden">
                 {settings?.address}
               </p>
             </div>

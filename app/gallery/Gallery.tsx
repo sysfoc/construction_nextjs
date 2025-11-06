@@ -87,7 +87,7 @@ export default function Gallery() {
       <section className="max-w-6xl mx-auto">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-extrabold text-primary mb-3 uppercase tracking-tight">Project Gallery</h1>
-          <p className="dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="dark:text-gray-300 max-w-2xl text-paragraph mx-auto">
             Explore our work through photos and videos. Browse by category to see construction, renovation, and on-site
             progress.
           </p>
@@ -97,7 +97,7 @@ export default function Gallery() {
           <button
             onClick={() => setActiveAlbum("All")}
             className={`px-5 py-2 rounded-full border border-primary text-sm font-medium transition-all ${
-              activeAlbum === "All" ? "bg-primary text-primary-foreground" : "text-primary hover:bg-primary/10"
+              activeAlbum === "All" ? "bg-primary text-primary-foreground" : "text-primary hover:bg-[#ff6600]/10"
             }`}
           >
             All
@@ -133,7 +133,7 @@ export default function Gallery() {
                 <video controls autoPlay src={item.src} className="w-full h-56 object-cover bg-black" />
               )}
               <div className="p-4 text-center">
-                <p className="text-sm font-medium dark:text-gray-300">
+                <p className="text-sm font-medium text-paragraph">
                   {categories.find((c) => c._id === item.categoryId)?.name}
                 </p>
               </div>
