@@ -45,17 +45,19 @@ const SOCIAL_ICONS = {
 
 const QUICK_LINKS = [
   { name: "About", href: "/about" },
-  { name: "Careers", href: "/careers" },
   { name: "Contact", href: "/contact" },
   { name: "News letter", href: "/newsletter" },
   { name: "How we work", href: "/how-we-work" },
   { name: "FAQ", href: "/faqs" },
+  { name: "Privacy policy", href: "/privacy-policy" },
+  { name: "Terms & conditions", href: "/terms-and-conditions" },
 ];
 
 const SHOWCASE_LINKS = [
   { name: "Partners", href: "/partners" },
   { name: "Certifications", href: "/certifications" },
   { name: "Projects", href: "/projects" },
+  { name: "Careers", href: "/careers" },
   { name: "Portfolio", href: "/portfolio" },
   { name: "Why Choose Us", href: "/why-choose-us" },
   { name: "Gallery", href: "/gallery" },
