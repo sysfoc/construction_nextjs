@@ -6,6 +6,7 @@ import Image from "next/image"
 import { MapPin, Calendar, DollarSign } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { isPageVisible } from "@/lib/api/pageVisibility";
+import Loader from "../components/General/Loader"
 
 interface Job {
   id: string
@@ -131,9 +132,9 @@ const CareersClient: React.FC = () => {
       <div className="min-h-screen bg-[var(--background)] dark:bg-gray-950 p-4 py-10 lg:px-16 transition-colors duration-300">
         <div className="max-w-6xl mx-auto">
           {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <p className="text-gray-600 dark:text-gray-400">Loading jobs...</p>
-            </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader />
+      </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 justify-items-center gap-5">
               {jobs.map((job) => (

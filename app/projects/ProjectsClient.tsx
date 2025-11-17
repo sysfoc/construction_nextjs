@@ -5,6 +5,7 @@ import { Calendar, MapPin, Users } from "lucide-react";
 import type { ProjectData } from "@/lib/models/Project";
 import { isPageVisible } from "@/lib/api/pageVisibility";
 import { useRouter } from "next/navigation";
+import Loader from "../components/General/Loader";
 
 const statusConfig = {
   ongoing: {
@@ -73,8 +74,8 @@ export default function ProjectsClient() {
 
   if (loading) {
     return (
-      <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <p className="text-gray-600">Loading projects...</p>
+      <div className="flex items-start mt-20 justify-center min-h-screen">
+        <Loader />
       </div>
     );
   }

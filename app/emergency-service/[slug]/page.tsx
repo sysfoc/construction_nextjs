@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { MessageCircle, Mail as MailIcon, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
+import Loader from "@/app/components/General/Loader";
 
 interface EmergencyService {
   _id: string;
@@ -77,11 +78,9 @@ export default function EmergencyServiceDetailPage() {
 
   if (loading) {
     return (
-      <main className="max-w-6xl mx-auto min-h-[400px]">
-        <div className="px-6 sm:px-12 py-12 text-center">
-          <p className="text-gray-600">Loading service details...</p>
-        </div>
-      </main>
+      <div className="flex items-start mt-20 justify-center min-h-screen">
+        <Loader />
+      </div>
     );
   }
 

@@ -51,7 +51,7 @@ export default function HeroSection() {
       : {
           id: "",
           image: "/Herosection/constructionImage_01.png",
-          heading: "We are Providing\nIndustry Roofing\nSolution",
+          heading: "From Concept to Completion, We Build It All.",
           buttonText: "GET STARTED",
           buttonUrl: "/get-started",
         };

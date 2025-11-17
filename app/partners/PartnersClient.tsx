@@ -5,6 +5,7 @@ import { Users, Award, Shield, Clock } from "lucide-react";
 import Image from "next/image";
 import { isPageVisible } from "@/lib/api/pageVisibility";
 import { useRouter } from "next/navigation";
+import Loader from "../components/General/Loader";
 
 interface ProjectCardProps {
   imageSrc: string;
@@ -195,8 +196,8 @@ const PartnersClient: React.FC = () => {
           </h3>
 
           {partnersLoading ? (
-            <div className="w-full min-h-[120px] flex items-center justify-center">
-              <p className="text-gray-600 text-lg">Loading Partners...</p>
+            <div className="flex items-center justify-center min-h-screen">
+              <Loader />
             </div>
           ) : (
             <div className="relative overflow-hidden">

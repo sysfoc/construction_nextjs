@@ -95,11 +95,16 @@ export default function Header() {
               <Link href="/">
                 <div className="flex items-center gap-1 z-20">
                   {settings?.logo && (
-                    <div className="w-10 h-10 lg:w-12 lg:h-12 relative">
+                    <div className="w-auto h-8 lg:h-12 relative">
+                      {" "}
+                      {/* Changed from fixed w-10 h-10 */}
                       <Image
                         src={settings.logo}
                         alt="Company Logo"
-                        fill
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                        style={{ width: "auto", height: "100%" }}
                         className="object-contain"
                       />
                     </div>
@@ -157,7 +162,10 @@ export default function Header() {
               {/* Desktop CTA and Theme Toggle */}
               <div className="hidden lg:flex items-center gap-3 relative z-10">
                 <ThemeToggle />
-                <SolidButton text="GET A QUOTE" onClick={() => router.push("/quote")} />
+                <SolidButton
+                  text="GET A QUOTE"
+                  onClick={() => router.push("/quote")}
+                />
               </div>
 
               {/* Mobile Header Right Section */}

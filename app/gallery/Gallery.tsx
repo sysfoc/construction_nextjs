@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { isPageVisible } from "@/lib/api/pageVisibility"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import Loader from "../components/General/Loader"
 
 interface GalleryCategory {
   _id: string
@@ -66,12 +67,10 @@ export default function Gallery() {
 
   if (loading) {
     return (
-      <main className="min-h-screen text-gray-900 dark:text-gray-100 px-6 py-16">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-gray-600">Loading gallery...</p>
-        </div>
-      </main>
-    )
+      <div className="flex items-start mt-20 justify-center min-h-screen">
+        <Loader />
+      </div>
+    );
   }
 
   const filteredItems =

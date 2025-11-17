@@ -3,6 +3,8 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import SlantedButton from "../General/buttons/SlantedButton"
+import Loader from "../General/Loader"
+import { Layers } from "lucide-react"
 
 interface Service {
   id: string
@@ -45,17 +47,30 @@ export default function ServicesGrid() {
 
   if (loading) {
     return (
-      <div className="py-12 dark:bg-gray-900">
-        <div className="container mx-auto px-5 sm:px-16 flex items-center justify-center min-h-96">
-          <p className="text-gray-600 dark:text-gray-400">Loading services...</p>
-        </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader />
       </div>
-    )
+    );
   }
 
   return (
     <div className=" py-12 dark:bg-gray-900">
-      <div className="container mx-auto px-5  sm:px-16">
+        <div className="text-center mb-6">
+        <div className="inline-flex items-center gap-2 mb-2 px-3 py-1 bg-primary/10 rounded-full">
+          <Layers className="w-3.5 h-3.5 text-primary" />
+          <span className="text-primary text-xs font-bold uppercase">
+            Featured Services
+          </span>
+        </div>
+        <h2 className="text-3xl font-bold text-foreground dark:text-white mb-2">
+          Our Services
+        </h2>
+        <p className="text-paragraph dark:text-gray-400 text-xs max-w-xl mx-auto mb-4">
+          From Concept to Completion — We Build It All.
+        </p>
+      </div>
+
+      <div className="container mx-auto px-5 sm:px-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {services.map((service) => (
             <div key={service.id} className="bg-background p-5 relative group">

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { isPageVisible } from "@/lib/api/pageVisibility";
 import { useRouter } from "next/navigation";
+import Loader from "../components/General/Loader";
 
 interface Certification {
   _id: string;
@@ -55,13 +56,9 @@ export default function CertificationsClient() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 px-6 py-16">
-        <section className="max-w-6xl mx-auto">
-          <div className="text-center">
-            <p className="text-gray-500">Loading certifications...</p>
-          </div>
-        </section>
-      </main>
+      <div className="flex items-start mt-20 justify-center min-h-screen">
+        <Loader />
+      </div>
     );
   }
 

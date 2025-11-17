@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import ArticleContent from "../../components/General/article-content";
 import type { NewsArticle } from "@/lib/models/News";
+import Loader from "@/app/components/General/Loader";
 
 export default function ArticlePage({
   params,
@@ -42,11 +43,9 @@ export default function ArticlePage({
 
   if (loading) {
     return (
-      <main className="bg-background text-foreground min-h-96">
-        <section className="mx-auto max-w-5xl p-4">
-          <p className="text-muted-foreground">Loading article...</p>
-        </section>
-      </main>
+      <div className="flex items-start mt-20 justify-center min-h-screen">
+        <Loader />
+      </div>
     );
   }
 
