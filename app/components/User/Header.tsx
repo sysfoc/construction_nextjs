@@ -20,7 +20,7 @@ export default function Header() {
 
   const navLinks = [
     {
-      name: "Pages",
+      name: "Overview",
       sublinks: [
         { name: "Careers", href: "/careers" },
         { name: "Gallery", href: "/gallery" },
