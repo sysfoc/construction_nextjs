@@ -122,28 +122,16 @@ function Footer() {
       </div>
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-          <div>
-            <div className="flex items-center gap-1 z-20 mb-3">
-              {settings?.logo && (
-                <div className="w-10 h-10 lg:w-12 lg:h-12 relative">
-                  <Image
-                    src={settings?.logo}
-                    alt="Company Logo"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-              )}
-              <span className="text-xl lg:text-2xl font-bold">
-                {settings?.companyName}
-              </span>
-            </div>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              Construct is a trusted construction company committed to quality,
-              innovation, and reliability. We deliver efficient and lasting
-              solutions for residential, commercial, and infrastructure
-              projects.
-            </p>
+          <div className="flex flex-col items-center justify-center">
+            {settings?.logo && (
+              <Image
+                src={settings?.logo}
+                alt="Company Logo"
+                width={80}
+                height={80}
+                className="object-contain w-44 h-44 lg:w-52 lg:h-52"
+              />
+            )}
           </div>
 
           <div>
