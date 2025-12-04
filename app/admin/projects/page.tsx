@@ -1,269 +1,193 @@
-"use client"
+"use client";
+import { Save, Plus, Trash2, Edit2, X, Shield, User } from "lucide-react";
+import { useState, useEffect } from "react";
+import ConfirmationModal from "../components/modals/confirmationModal";
 
-import type React from "react"
-
-import { Save, Plus, Trash2, Edit2, X, Upload } from "lucide-react"
-import { useState, useEffect } from "react"
-import type { ProjectData } from "@/lib/models/Project"
-import Loader from "@/app/components/General/Loader"
-
-interface FormData {
-  title: string
-  description: string
-  location: string
-  status: "ongoing" | "completed" | "upcoming"
-  startDate: string
-  endDate: string
-  image: string
-  team: number
-  progress: number
-  photoPreview: string | null
+interface UserRole {
+  id: string;
+  name: string;
 }
 
-export default function ProjectsManagementPage() {
-  const [projects, setProjects] = useState<ProjectData[]>([])
-  const [loading, setLoading] = useState(true)
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [isAddingNew, setIsAddingNew] = useState(false)
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  joinDate: string;
+}
+
+interface FormData {
+  name: string;
+  email: string;
+  role: string;
+  password: string;
+}
+
+const roles: UserRole[] = [
+  { id: "admin", name: "Admin" },
+  { id: "user", name: "User" },
+];
+
+export default function UserManagementPage() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [editingUser, setEditingUser] = useState<number | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<number | null>(null);
   const [formData, setFormData] = useState<FormData>({
-    title: "",
-    description: "",
-    location: "",
-    status: "ongoing",
-    startDate: "",
-    endDate: "",
-    image: "",
-    team: 0,
-    progress: 0,
-    photoPreview: null,
-  })
+    name: "",
+    email: "",
+    role: "",
+    password: "",
+  });
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await fetch("/api/projects")
-        const data = await response.json()
-        setProjects(data)
-      } catch (error) {
-        console.error("Failed to fetch projects:", error)
-      } finally {
-        setLoading(false)
-      }
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    const res = await fetch("/api/users");
+    if (res.ok) {
+      const data = await res.json();
+      setUsers(data.users);
     }
+  };
 
-    fetchProjects()
-  }, [])
-
-  const handleEdit = (project: ProjectData) => {
-    setEditingId(project._id)
+  const handleEdit = (user: User) => {
+    setEditingUser(user.id);
     setFormData({
-      title: project.title,
-      description: project.description,
-      location: project.location,
-      status: project.status,
-      startDate: project.startDate,
-      endDate: project.endDate || "",
-      image: project.image,
-      team: project.team,
-      progress: project.progress || 0,
-      photoPreview: project.image,
-    })
-  }
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      password: "",
+    });
+  };
 
   const handleCancel = () => {
-    setEditingId(null)
-    setIsAddingNew(false)
+    setEditingUser(null);
     setFormData({
-      title: "",
-      description: "",
-      location: "",
-      status: "ongoing",
-      startDate: "",
-      endDate: "",
-      image: "",
-      team: 0,
-      progress: 0,
-      photoPreview: null,
-    })
-  }
+      name: "",
+      email: "",
+      role: "",
+      password: "",
+    });
+  };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "team" || name === "progress" ? Number(value) : value,
-    }))
-  }
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setFormData((prev) => ({
-          ...prev,
-          photoPreview: reader.result as string,
-          image: reader.result as string,
-        }))
+  const handleSaveUser = async () => {
+    if (editingUser) {
+      const res = await fetch(`/api/users/${editingUser}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        await fetchUsers();
+        handleCancel();
       }
-      reader.readAsDataURL(file)
     }
-  }
+  };
 
-  const handleSaveProject = async () => {
-    try {
-      if (isAddingNew) {
-        // Create new project
-        const response = await fetch("/api/projects", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: formData.title,
-            description: formData.description,
-            location: formData.location,
-            status: formData.status,
-            startDate: formData.startDate,
-            endDate: formData.endDate || null,
-            image: formData.image,
-            team: formData.team,
-            progress: formData.progress,
-          }),
-        })
-
-        if (response.ok) {
-          const newProject = await response.json()
-          setProjects((prev) => [newProject, ...prev])
-          handleCancel()
-        }
-      } else if (editingId) {
-        // Update existing
-        const response = await fetch(`/api/projects/${editingId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: formData.title,
-            description: formData.description,
-            location: formData.location,
-            status: formData.status,
-            startDate: formData.startDate,
-            endDate: formData.endDate || null,
-            image: formData.image,
-            team: formData.team,
-            progress: formData.progress,
-          }),
-        })
-
-        if (response.ok) {
-          const updated = await response.json()
-          setProjects((prev) => prev.map((item) => (item._id === editingId ? updated : item)))
-          handleCancel()
-        }
-      }
-    } catch (error) {
-      console.error("Failed to save project:", error)
-    }
-  }
-
-  const handleAddProject = () => {
-    setIsAddingNew(true)
-    setEditingId(null)
+  const handleAddUser = () => {
+    setEditingUser(-1);
     setFormData({
-      title: "",
-      description: "",
-      location: "",
-      status: "ongoing",
-      startDate: "",
-      endDate: "",
-      image: "",
-      team: 0,
-      progress: 0,
-      photoPreview: null,
-    })
-  }
+      name: "",
+      email: "",
+      role: "user",
+      password: "",
+    });
+  };
 
-  const handleDeleteProject = async (id: string) => {
-    try {
-      const response = await fetch(`/api/projects/${id}`, {
-        method: "DELETE",
-      })
+  const handleCreateUser = async () => {
+    const res = await fetch("/api/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: Date.now(),
+        name: formData.name,
+        email: formData.email,
+        role: formData.role,
+        password: formData.password,
+        joinDate: new Date().toISOString().split("T")[0],
+      }),
+    });
 
-      if (response.ok) {
-        setProjects((prev) => prev.filter((item) => item._id !== id))
-      }
-    } catch (error) {
-      console.error("Failed to delete project:", error)
+    if (res.ok) {
+      await fetchUsers();
+      handleCancel();
     }
-  }
+  };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader/>
-      </div>
-    )
-  }
+  const handleDeleteUser = async (id: number) => {
+    setUserToDelete(id);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteUser = async () => {
+    if (userToDelete === null) return;
+
+    const res = await fetch(`/api/users/${userToDelete}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      await fetchUsers();
+    }
+
+    setUserToDelete(null);
+  };
+
+  const getRoleLabel = (roleId: string) => {
+    return roles.find((r) => r.id === roleId)?.name || roleId;
+  };
 
   return (
     <div className="w-full min-h-screen bg-background overflow-x-hidden">
-      <div className="p-4 sm:p-6 max-w-5xl mx-auto">
+      <div className="p-4 sm:p-6 mx-auto">
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-stretch sm:items-center justify-between mb-4 sm:mb-6">
           <h1 className="text-xl sm:text-2xl font-semibold text-[var(--header-text)] break-words">
-            Projects Management
+            User Management
           </h1>
           <button
-            onClick={handleAddProject}
+            onClick={handleAddUser}
             className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base whitespace-nowrap"
           >
             <Plus className="w-4 h-4 flex-shrink-0" />
-            <span>Add Project</span>
+            <span>Add User</span>
           </button>
         </div>
 
         <div className="space-y-3 sm:space-y-4">
-          {isAddingNew && (
+          {editingUser === -1 && (
             <div className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4 w-full overflow-hidden">
               <div className="space-y-3 sm:space-y-4">
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
-                  <h3 className="text-base sm:text-lg font-semibold text-[var(--header-text)]">Add Project</h3>
-                  <button onClick={handleCancel} className="text-gray-500 flex-shrink-0">
+                  <h3 className="text-base sm:text-lg font-semibold text-[var(--header-text)]">
+                    Create New User
+                  </h3>
+                  <button
+                    onClick={handleCancel}
+                    className="text-gray-500 flex-shrink-0"
+                  >
                     <X className="w-5 h-5" />
                   </button>
                 </div>
 
-                <div className="w-full">
-                  <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-2">Project Image</label>
-                  <div className="flex items-start gap-3 sm:gap-4">
-                    <div className="w-32 h-32 sm:w-40 sm:h-28 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-background flex-shrink-0 relative">
-                      {formData.photoPreview ? (
-                        <img
-                          src={formData.photoPreview || "/placeholder.svg"}
-                          alt="Photo preview"
-                          className="w-full h-full object-cover rounded"
-                        />
-                      ) : (
-                        <Upload className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
-                      )}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handlePhotoChange}
-                        className="block w-full text-xs sm:text-sm text-gray-600 file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4 file:rounded file:border-0 file:text-xs sm:file:text-sm file:font-medium file:bg-[var(--primary)] file:text-[var(--primary-foreground)] cursor-pointer"
-                      />
-                      <p className="text-xs text-gray-500 mt-2">Recommended: 600x400px</p>
-                    </div>
-                  </div>
-                </div>
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="w-full">
-                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">Title</label>
+                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                      Full Name
+                    </label>
                     <input
                       type="text"
-                      name="title"
-                      value={formData.title}
+                      name="name"
+                      value={formData.name}
                       onChange={handleInputChange}
                       className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
                     />
@@ -271,12 +195,12 @@ export default function ProjectsManagementPage() {
 
                   <div className="w-full">
                     <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                      Location
+                      Email
                     </label>
                     <input
-                      type="text"
-                      name="location"
-                      value={formData.location}
+                      type="email"
+                      name="email"
+                      value={formData.email}
                       onChange={handleInputChange}
                       className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
                     />
@@ -285,91 +209,35 @@ export default function ProjectsManagementPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="w-full">
-                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">Status</label>
+                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                      Role
+                    </label>
                     <select
-                      name="status"
-                      value={formData.status}
+                      name="role"
+                      value={formData.role}
                       onChange={handleInputChange}
                       className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
                     >
-                      <option value="ongoing">Ongoing</option>
-                      <option value="completed">Completed</option>
-                      <option value="upcoming">Upcoming</option>
+                      {roles.map((r) => (
+                        <option className="bg-background" key={r.id} value={r.id}>
+                          {r.name}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
                   <div className="w-full">
                     <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                      Team Members
+                      Password
                     </label>
                     <input
-                      type="number"
-                      name="team"
-                      value={formData.team}
+                      type="password"
+                      name="password"
+                      value={formData.password}
                       onChange={handleInputChange}
                       className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
                     />
                   </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  <div className="w-full">
-                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                      Start Date
-                    </label>
-                    <input
-                      type="text"
-                      name="startDate"
-                      value={formData.startDate}
-                      onChange={handleInputChange}
-                      placeholder="Jan 2024"
-                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
-                    />
-                  </div>
-
-                  <div className="w-full">
-                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                      End Date
-                    </label>
-                    <input
-                      type="text"
-                      name="endDate"
-                      value={formData.endDate}
-                      onChange={handleInputChange}
-                      placeholder="Dec 2025"
-                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
-                    />
-                  </div>
-                </div>
-
-                {formData.status === "ongoing" && (
-                  <div className="w-full">
-                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                      Progress (%)
-                    </label>
-                    <input
-                      type="number"
-                      name="progress"
-                      value={formData.progress}
-                      onChange={handleInputChange}
-                      min="0"
-                      max="100"
-                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
-                    />
-                  </div>
-                )}
-
-                <div className="w-full">
-                  <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                    Description
-                  </label>
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    rows={4}
-                    className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base resize-none"
-                  />
                 </div>
 
                 <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2 w-full">
@@ -380,78 +248,58 @@ export default function ProjectsManagementPage() {
                     Cancel
                   </button>
                   <button
-                    onClick={handleSaveProject}
+                    onClick={handleCreateUser}
                     className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base"
                   >
                     <Save className="w-4 h-4 flex-shrink-0" />
-                    <span>Save Project</span>
+                    <span>Create User</span>
                   </button>
                 </div>
               </div>
             </div>
           )}
 
-          {projects.map((project) => (
+          {users.map((user) => (
             <div
-              key={project._id}
+              key={user.id}
               className="bg-[var(--background)] border border-[var(--border-color)] rounded p-3 sm:p-4 w-full overflow-hidden"
             >
-              {editingId === project._id ? (
+              {editingUser === user.id ? (
                 <div className="space-y-3 sm:space-y-4">
                   <div className="flex items-center justify-between mb-3 sm:mb-4">
-                    <h3 className="text-base sm:text-lg font-semibold text-[var(--header-text)]">Edit Project</h3>
-                    <button onClick={handleCancel} className="text-gray-500 flex-shrink-0">
+                    <h3 className="text-base sm:text-lg font-semibold text-[var(--header-text)]">
+                      Edit User
+                    </h3>
+                    <button
+                      onClick={handleCancel}
+                      className="text-gray-500 flex-shrink-0"
+                    >
                       <X className="w-5 h-5" />
                     </button>
                   </div>
 
-                  <div className="w-full">
-                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-2">Project Image</label>
-                    <div className="flex items-start gap-3 sm:gap-4">
-                      <div className="w-32 h-32 sm:w-40 sm:h-28 border-2 border-dashed border-[var(--border-color)] rounded flex items-center justify-center bg-gray-50 dark:bg-gray-900 flex-shrink-0 relative">
-                        {formData.photoPreview ? (
-                          <img
-                            src={formData.photoPreview || "/placeholder.svg"}
-                            alt="Photo preview"
-                            className="w-full h-full object-cover rounded"
-                          />
-                        ) : (
-                          <Upload className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
-                        )}
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handlePhotoChange}
-                          className="block w-full text-xs sm:text-sm text-gray-600 file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4 file:rounded file:border-0 file:text-xs sm:file:text-sm file:font-medium file:bg-[var(--primary)] file:text-[var(--primary-foreground)] cursor-pointer"
-                        />
-                        <p className="text-xs text-gray-500 mt-2">Recommended: 600x400px</p>
-                      </div>
-                    </div>
-                  </div>
-
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div className="w-full">
-                      <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">Title</label>
-                      <input
-                        type="text"
-                        name="title"
-                        value={formData.title}
-                        onChange={handleInputChange}
-                        className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
-                      />
-                    </div>
-
-                    <div className="w-full">
                       <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                        Location
+                        Full Name
                       </label>
                       <input
                         type="text"
-                        name="location"
-                        value={formData.location}
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                      />
+                    </div>
+
+                    <div className="w-full">
+                      <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
                         onChange={handleInputChange}
                         className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
                       />
@@ -461,92 +309,35 @@ export default function ProjectsManagementPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div className="w-full">
                       <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                        Status
+                        Role
                       </label>
                       <select
-                        name="status"
-                        value={formData.status}
+                        name="role"
+                        value={formData.role}
                         onChange={handleInputChange}
                         className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
                       >
-                        <option value="ongoing">Ongoing</option>
-                        <option value="completed">Completed</option>
-                        <option value="upcoming">Upcoming</option>
+                        {roles.map((r) => (
+                          <option className="bg-background" key={r.id} value={r.id}>
+                            {r.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
 
                     <div className="w-full">
                       <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                        Team Members
+                        Password (leave unchanged to keep current)
                       </label>
                       <input
-                        type="number"
-                        name="team"
-                        value={formData.team}
+                        type="password"
+                        name="password"
+                        value={formData.password}
                         onChange={handleInputChange}
                         className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
+                        placeholder="Enter new password"
                       />
                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    <div className="w-full">
-                      <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                        Start Date
-                      </label>
-                      <input
-                        type="text"
-                        name="startDate"
-                        value={formData.startDate}
-                        onChange={handleInputChange}
-                        placeholder="Jan 2024"
-                        className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
-                      />
-                    </div>
-
-                    <div className="w-full">
-                      <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                        End Date
-                      </label>
-                      <input
-                        type="text"
-                        name="endDate"
-                        value={formData.endDate}
-                        onChange={handleInputChange}
-                        placeholder="Dec 2025"
-                        className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
-                      />
-                    </div>
-                  </div>
-
-                  {formData.status === "ongoing" && (
-                    <div className="w-full">
-                      <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                        Progress (%)
-                      </label>
-                      <input
-                        type="number"
-                        name="progress"
-                        value={formData.progress}
-                        onChange={handleInputChange}
-                        min="0"
-                        max="100"
-                        className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base"
-                      />
-                    </div>
-                  )}
-
-                  <div className="w-full">
-                    <label className="block text-xs sm:text-sm text-[var(--header-text)] mb-1.5 sm:mb-2">
-                      Description
-                    </label>
-                    <textarea
-                      name="description"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                      rows={4}
-                      className="w-full px-3 sm:px-4 py-2 border border-[var(--border-color)] rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-sm sm:text-base resize-none"
-                    />
                   </div>
 
                   <div className="flex flex-col sm:flex-row justify-end gap-2 pt-2 w-full">
@@ -557,53 +348,46 @@ export default function ProjectsManagementPage() {
                       Cancel
                     </button>
                     <button
-                      onClick={handleSaveProject}
+                      onClick={handleSaveUser}
                       className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-[var(--primary)] text-[var(--primary-foreground)] rounded font-medium text-sm sm:text-base"
                     >
                       <Save className="w-4 h-4 flex-shrink-0" />
-                      <span>Save Project</span>
+                      <span>Save User</span>
                     </button>
                   </div>
                 </div>
               ) : (
                 <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-0 w-full">
-                  <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0 w-full">
-                    <div className="w-24 h-24 sm:w-28 sm:h-20 bg-gray-100 border border-[var(--border-color)] rounded flex items-center justify-center flex-shrink-0 relative">
-                      {project.image ? (
-                        <img
-                          src={project.image || "/placeholder.svg"}
-                          alt={project.title}
-                          className="w-full h-full object-cover rounded"
-                        />
-                      ) : (
-                        <span className="text-xs text-gray-400">No Photo</span>
-                      )}
+                  <div className="flex items-start gap-3 sm:gap-4 flex-1 w-full min-w-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[var(--primary)] rounded flex items-center justify-center shrink-0">
+                      <User className="w-5 h-5 sm:w-6 sm:h-6 text-[var(--primary-foreground)]" />
                     </div>
-                    <div className="flex-1 min-w-0 w-full">
-                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-1">
                         <h3 className="font-semibold text-[var(--header-text)] text-sm sm:text-base break-words">
-                          {project.title}
+                          {user.name}
                         </h3>
-                        <span
-                          className={`text-xs px-2 py-1 rounded whitespace-nowrap flex-shrink-0 ${
-                            project.status === "ongoing"
-                              ? "bg-blue-100 text-blue-800"
-                              : project.status === "completed"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-amber-100 text-amber-800"
-                          }`}
-                        >
-                          {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
-                        </span>
                       </div>
-                      <p className="text-xs sm:text-sm text-gray-600 break-words">{project.description}</p>
+                      <p className="text-xs text-gray-500 mb-1 break-all">
+                        {user.email}
+                      </p>
+                      <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 mb-1.5">
+                        <Shield className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                        <span>{getRoleLabel(user.role)}</span>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 w-full sm:w-auto justify-end sm:ml-4 flex-shrink-0">
-                    <button onClick={() => handleEdit(project)} className="p-2 text-[var(--primary)] rounded">
+                  <div className="flex items-center gap-2 w-full sm:w-auto sm:ml-4 justify-end flex-shrink-0">
+                    <button
+                      onClick={() => handleEdit(user)}
+                      className="p-2 text-[var(--primary)] rounded"
+                    >
                       <Edit2 className="w-4 h-4" />
                     </button>
-                    <button onClick={() => handleDeleteProject(project._id)} className="p-2 text-red-600 rounded">
+                    <button
+                      onClick={() => handleDeleteUser(user.id)}
+                      className="p-2 text-red-600 rounded"
+                    >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -613,6 +397,16 @@ export default function ProjectsManagementPage() {
           ))}
         </div>
       </div>
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={confirmDeleteUser}
+        title="Delete User"
+        message="Are you sure you want to delete this user? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+      />
     </div>
-  )
+  );
 }

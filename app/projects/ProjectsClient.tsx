@@ -72,6 +72,21 @@ export default function ProjectsClient() {
     }
   };
 
+  // Helper function to format date from YYYY-MM-DD to readable format
+const formatDateForDisplay = (dateString: string) => {
+  if (!dateString) return '';
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString;
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      year: 'numeric',
+    });
+  } catch {
+    return dateString;
+  }
+};
+
   if (loading) {
     return (
       <div className="flex items-start mt-20 justify-center min-h-screen">
@@ -216,8 +231,7 @@ export default function ProjectsClient() {
                   <div className="flex items-center gap-2 text-sm">
                     <Calendar className="w-4 h-4 text-primary flex-shrink-0" />
                     <span className="text-paragraph/70">
-                      {project.startDate}
-                      {project.endDate && ` - ${project.endDate}`}
+                      {formatDateForDisplay(project.startDate)}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">

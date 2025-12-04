@@ -74,6 +74,21 @@ export default function ProjectsSection() {
     }
   };
 
+  // Helper function to format date from YYYY-MM-DD to readable format
+const formatDateForDisplay = (dateString: string) => {
+  if (!dateString) return '';
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString;
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      year: 'numeric',
+    });
+  } catch {
+    return dateString;
+  }
+};
+
   if (loading) {
     return <Loader height="594px" />;
   }
@@ -181,7 +196,7 @@ export default function ProjectsSection() {
                           <div className="w-5 h-5 rounded bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                             <TrendingUp className="w-3 h-3 text-blue-600 dark:text-blue-400" />
                           </div>
-                          <span className="text-xs font-bold text-foreground dark:text-white">
+                          <span className="text-xs font-bold text-foreground">
                             Progress
                           </span>
                         </div>
@@ -204,7 +219,7 @@ export default function ProjectsSection() {
                     <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center flex-shrink-0">
                       <MapPin className="w-3 h-3 text-primary" />
                     </div>
-                    <span className="text-xs text-paragraph dark:text-gray-400 truncate">
+                    <span className="text-xs text-paragraph  truncate">
                       {project.location}
                     </span>
                   </div>
@@ -212,15 +227,15 @@ export default function ProjectsSection() {
                     <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center flex-shrink-0">
                       <Calendar className="w-3 h-3 text-primary" />
                     </div>
-                    <span className="text-xs text-paragraph dark:text-gray-400 truncate">
-                      {project.startDate}
+                    <span className="text-xs text-paragraph truncate">
+                      {formatDateForDisplay(project.startDate)}
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5 col-span-2">
                     <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center flex-shrink-0">
                       <Users className="w-3 h-3 text-primary" />
                     </div>
-                    <span className="text-xs text-paragraph dark:text-gray-400">
+                    <span className="text-xs text-paragraph">
                       {project.team} Team Members
                     </span>
                   </div>
